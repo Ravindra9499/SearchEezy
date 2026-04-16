@@ -1,0 +1,349 @@
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_ANON_KEY
+
+# Server-side (store in Vercel as SECRET env vars, NOT in .env.local for client use)
+SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
+NEXT_PUBLIC_APP_URL=http://localhost:3000    # change to https://www.searcheazy.com on production
+-- enable uuid gen if not present
+create extension if not exists "uuid-ossp";
+
+create table users (
+  id uuid primary key default uuid_generate_v4(),
+  email text unique not null,
+  full_name text,
+  role text check (role in ('jobseeker', 'employer')) not null default 'jobseeker',
+  avatar_url text,
+  created_at timestamptz default now()
+);
+
+create table jobs (
+  id uuid primary key default uuid_generate_v4(),
+  title text not null,
+  description text,
+  company text,
+  location text,
+  salary text,
+  employer_id uuid references users(id),
+  created_at timestamptz default now()
+);
+
+create table applications (
+  id uuid primary key default uuid_generate_v4(),
+  job_id uuid references jobs(id),
+  user_id uuid references users(id),
+  resume_url text,
+  status text default 'Applied',
+  created_at timestamptz default now()
+);// lib/supabaseClient.js
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+import '../styles/globals.css'
+
+export default function MyApp({ Component, pageProps }) {
+  return <Component {...pageProps} />
+}
+// pages/login.js
+import { useEffect, useState } from 'react'
+import { supabase } from '../lib/supabaseClient'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+
+export default function LoginPage() {
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [role, setRole] = useState('jobseeker') // default
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        // redirect based on role stored in our users table
+        (async () => {
+          const { data } = await supabase
+            .from('users')
+            .select('role')
+            .eq('email', session.user.email)
+            .single()
+          const userRole = data?.role || 'jobseeker'
+          router.push(userRole === 'employer' ? '/dashboard/employer' : '/dashboard/jobseeker')
+        })()
+      }
+    })
+    return () => authListener?.subscription?.unsubscribe()
+  }, [router])
+
+  async function signUpWithEmail(e) {
+    e.preventDefault()
+    setLoading(true)
+    // create auth user
+    const { user, error } = await supabase.auth.signUp({ email, password })
+    if (error) {
+      alert(error.message)
+      setLoading(false)
+      return
+    }
+    // create profile row in users table
+    // NOTE: this is safe because signUp requires email verification in many apps; alternatives: use server-side function
+    await supabase.from('users').upsert({
+      email,
+      full_name: '',
+      role
+    })
+    alert('Check your email for a confirmation link (if enabled).')
+    setLoading(false)
+  }
+
+  async function signInWithEmail(e) {
+    e.preventDefault()
+    setLoading(true)
+    const { user, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) { alert(error.message); setLoading(false); return }
+    // On successful login, the auth state listener will redirect.
+  }
+
+  async function socialSignIn(provider) {
+    // provider: 'google' | 'linkedin'
+    setLoading(true)
+    const redirectTo = `${process.env.NEXT_PUBLIC_APP_URL}/` // where user lands after social sign-in
+    const { error } = await supabase.auth.signInWithOAuth({ provider, options: { redirectTo } })
+    if (error) alert(error.message)
+    setLoading(false)
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white via-sky-50 to-emerald-50">
+      <div className="max-w-md w-full bg-white rounded-lg shadow p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <img src="/logo.png" alt="SearchEazy" className="w-10 h-10" />
+          <h2 className="text-2xl font-bold text-sky-700">Sign in to SearchEazy</h2>
+        </div>
+
+        <div className="mb-4">
+          <label className="text-sm text-gray-600">I am a</label>
+          <div className="mt-2 flex gap-2">
+            <button onClick={() => setRole('jobseeker')} className={`px-3 py-1 rounded ${role==='jobseeker' ? 'bg-sky-600 text-white' : 'border'}`}>Job Seeker</button>
+            <button onClick={() => setRole('employer')} className={`px-3 py-1 rounded ${role==='employer' ? 'bg-emerald-600 text-white' : 'border'}`}>Employer</button>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <button onClick={() => socialSignIn('google')} className="w-full border py-2 rounded">Continue with Google</button>
+          <button onClick={() => socialSignIn('linkedin')} className="w-full border py-2 rounded">Continue with LinkedIn</button>
+        </div>
+
+        <div className="my-4 text-center text-gray-500">— or —</div>
+
+        <form onSubmit={signInWithEmail} className="space-y-3">
+          <input required value={email} onChange={e=>setEmail(e.target.value)} className="w-full border px-3 py-2 rounded" placeholder="Email" />
+          <input required value={password} onChange={e=>setPassword(e.target.value)} type="password" className="w-full border px-3 py-2 rounded" placeholder="Password" />
+          <div className="flex gap-2">
+            <button type="submit" className="flex-1 bg-sky-600 text-white py-2 rounded">Sign In</button>
+            <button type="button" onClick={signUpWithEmail} className="flex-1 border py-2 rounded">Sign Up</button>
+          </div>
+        </form>
+
+        <p className="text-sm text-gray-500 mt-4">By continuing you agree to our Terms & Privacy.</p>
+      </div>
+    </div>
+  )
+}
+// pages/api/ensure-profile.js
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey)
+
+export default async function handler(req, res) {
+  const { email, role = 'jobseeker', full_name = '' } = req.body
+  if (!email) return res.status(400).json({ error: 'Missing email' })
+  const { data, error } = await supabaseAdmin
+    .from('users')
+    .upsert({ email, full_name, role }, { onConflict: 'email' })
+  if (error) return res.status(500).json({ error: error.message })
+  res.json({ data })
+}
+// pages/dashboard/jobseeker/index.js
+import { supabase } from '../../../lib/supabaseClient'
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import Router from 'next/router'
+
+export default function JobseekerDashboard() {
+  const [session, setSession] = useState(null)
+  const [applications, setApplications] = useState([])
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session)
+      if (!data.session) Router.push('/login')
+      else fetchApplications(data.session.user.id)
+    })
+  }, [])
+
+  async function fetchApplications(uid) {
+    const { data } = await supabase
+      .from('applications')
+      .select('*, jobs(*)')
+      .eq('user_id', uid)
+      .order('created_at', { ascending: false })
+    setApplications(data || [])
+  }
+
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-2xl font-bold text-blue-600">Your Applications</h1>
+      <div className="mt-4 space-y-4">
+        <Link href="/jobs" className="text-sky-700 underline">Browse Jobs</Link>
+        {applications.length === 0 && <div className="text-gray-600">No applications yet.</div>}
+        {applications.map(a => (
+          <div key={a.id} className="p-4 border rounded">
+            <div className="font-semibold">{a.jobs?.title}</div>
+            <div className="text-sm text-gray-600">{a.jobs?.company} • {new Date(a.created_at).toLocaleDateString()}</div>
+            <div className="mt-2">Status: <strong>{a.status}</strong></div>
+            <a className="text-sky-600" href={a.resume_url} target="_blank" rel="noreferrer">View Resume</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+// pages/dashboard/employer/index.js
+import { useEffect, useState } from 'react'
+import { supabase } from '../../../lib/supabaseClient'
+import Router from 'next/router'
+
+export default function EmployerDashboard() {
+  const [session, setSession] = useState(null)
+  const [jobs, setJobs] = useState([])
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session)
+      if (!data.session) Router.push('/login')
+      else loadMyJobs(data.session.user.email)
+    })
+  }, [])
+
+  async function loadMyJobs(email) {
+    // assume employer's user record exists and id is used as employer_id in jobs
+    const { data: userData } = await supabase.from('users').select('id').eq('email', email).single()
+    const { data: jobsData } = await supabase.from('jobs').select('*').eq('employer_id', userData?.id).order('created_at', { ascending: false })
+    setJobs(jobsData || [])
+  }
+
+  async function viewApplicants(jobId) {
+    Router.push(`/dashboard/employer/job/${jobId}`)
+  }
+
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-2xl font-bold text-emerald-600">Employer Dashboard</h1>
+      <div className="mt-4">
+        <a className="bg-sky-600 text-white px-4 py-2 rounded" href="/post-job">Post New Job</a>
+      </div>
+      <div className="mt-6 space-y-4">
+        {jobs.map(j => (
+          <div key={j.id} className="p-4 border rounded flex justify-between items-center">
+            <div>
+              <div className="font-semibold">{j.title}</div>
+              <div className="text-sm text-gray-600">{j.company} • {j.location}</div>
+            </div>
+            <div>
+              <button onClick={() => viewApplicants(j.id)} className="border px-3 py-1 rounded">View Applicants</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+// components/ResumeUpload.js
+import { supabase } from '../lib/supabaseClient'
+import { useState } from 'react'
+
+export default function ResumeUpload({ userId }) {
+  const [file, setFile] = useState(null)
+  const [uploading, setUploading] = useState(false)
+
+  async function upload() {
+    if (!file) return alert('Select a file')
+    setUploading(true)
+    const ext = file.name.split('.').pop()
+    const filePath = `${userId}/${Date.now()}.${ext}`
+    const { data, error } = await supabase.storage.from('resumes').upload(filePath, file, { cacheControl: '3600', upsert: true })
+    if (error) {
+      alert(error.message)
+      setUploading(false)
+      return
+    }
+    // get public URL (if bucket public) or create signed url
+    const { data: publicData } = supabase.storage.from('resumes').getPublicUrl(filePath)
+    const publicUrl = publicData.publicUrl
+    // Save resume URL to resumes/applications or users table depending on your design
+    await supabase.from('users').upsert({ email: supabase.auth.user()?.email, avatar_url: publicUrl }, { onConflict: 'email' })
+    alert('Uploaded!')
+    setUploading(false)
+  }
+
+  return (
+    <div>
+      <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+      <button onClick={upload} disabled={uploading} className="bg-emerald-600 text-white px-3 py-1 rounded ml-2">
+        {uploading ? 'Uploading...' : 'Upload Resume'}
+      </button>
+    </div>
+  )
+}
+// pages/post-job.js
+import { supabase } from '../lib/supabaseClient'
+import { useState, useEffect } from 'react'
+import Router from 'next/router'
+
+export default function PostJob() {
+  const [title, setTitle] = useState('')
+  const [company, setCompany] = useState('')
+  const [location, setLocation] = useState('')
+  const [description, setDescription] = useState('')
+
+  async function submit(e) {
+    e.preventDefault()
+    const session = await supabase.auth.getSession()
+    if (!session.data.session) return Router.push('/login')
+    const email = session.data.session.user.email
+    const { data: user } = await supabase.from('users').select('id').eq('email', email).single()
+    const { error } = await supabase.from('jobs').insert([{
+      title, company, location, description, employer_id: user.id
+    }])
+    if (error) return alert(error.message)
+    alert('Job posted!')
+    Router.push('/dashboard/employer')
+  }
+
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-2xl font-bold">Post a Job</h1>
+      <form onSubmit={submit} className="max-w-2xl space-y-3 mt-4">
+        <input required value={title} onChange={e=>setTitle(e.target.value)} className="w-full border p-2" placeholder="Job title" />
+        <input required value={company} onChange={e=>setCompany(e.target.value)} className="w-full border p-2" placeholder="Company" />
+        <input value={location} onChange={e=>setLocation(e.target.value)} className="w-full border p-2" placeholder="Location" />
+        <textarea required value={description} onChange={e=>setDescription(e.target.value)} className="w-full border p-2" rows="6" placeholder="Job description (HTML allowed)"></textarea>
+        <button className="bg-sky-600 text-white px-4 py-2 rounded">Post Job</button>
+      </form>
+    </div>
+  )
+}
+// client-side example
+const session = await supabase.auth.getSession()
+const uid = session.data.session.user.id
+const { error } = await supabase.from('applications').insert([{
+  job_id: JOB_ID,
+  user_id: uid,
+  resume_url: RESUME_PUBLIC_URL
+}])
+
