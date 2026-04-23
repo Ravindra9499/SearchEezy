@@ -1,4 +1,4 @@
-import { prisma } from "./app/prisma";
+import prisma from "./app/prisma";
 
 async function main() {
   // 1️⃣ Insert a sample employer
