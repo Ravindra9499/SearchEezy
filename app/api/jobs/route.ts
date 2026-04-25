@@ -12,7 +12,7 @@ export async function GET() {
       },
     });
 
-    const safeJobs = jobs.map((job) => ({
+    const safeJobs = jobs.map((job: any) => ({
       ...job,
       id: job.id.toString(),
     }));
