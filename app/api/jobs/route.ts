@@ -31,12 +31,13 @@ export async function POST(req: Request) {
         title: body.title,
         company: body.company,
         location: body.location,
+        description: body.description,
       },
     });
 
     return NextResponse.json({
       ...job,
-      id: job.id.toString(), // 🔥 fix here also
+      id: job.id.toString(),
     });
   } catch (error) {
     console.error("POST ERROR:", error);
