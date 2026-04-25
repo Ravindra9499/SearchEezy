@@ -6,11 +6,13 @@ const prisma = new PrismaClient();
 export default async function JobDetails({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
+
   const job = await prisma.jobs.findUnique({
     where: {
-      id: BigInt(params.id),
+      id: BigInt(id),
     },
   });
 
@@ -40,7 +42,6 @@ export default async function JobDetails({
 
   return (
     <div style={{ padding: "40px", maxWidth: "800px", margin: "auto" }}>
-      
       <Link href="/">
         <button
           style={{
@@ -67,7 +68,10 @@ export default async function JobDetails({
       <hr style={{ margin: "20px 0" }} />
 
       <h3>Job Description</h3>
-      <p>This is a sample job description.</p>
+
+      <p>
+        {job.description || "No description provided."}
+      </p>
 
       <button
         style={{
