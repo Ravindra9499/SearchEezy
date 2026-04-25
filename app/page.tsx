@@ -170,6 +170,39 @@ export default function Home() {
               }}>
                 📍 {job.location}
               </p>
+
+              <button
+                onClick={async (e) => {
+                  e.stopPropagation();
+
+                  const confirmDelete = confirm("Delete this job?");
+
+                  if (!confirmDelete) return;
+
+                  await fetch("/api/jobs", {
+                    method: "DELETE",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      id: job.id,
+                    }),
+                  });
+
+                  fetchJobs();
+                }}
+                style={{
+                  marginTop: "10px",
+                  background: "red",
+                  color: "white",
+                  border: "none",
+                  padding: "8px 12px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Delete Job
+              </button>
             </div>
           ))}
         </div>
@@ -219,7 +252,6 @@ export default function Home() {
               }}
             />
 
-            {/* ✅ NEW DESCRIPTION FIELD */}
             <textarea
               placeholder="Job Description"
               value={description}

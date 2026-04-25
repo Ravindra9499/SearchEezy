@@ -6,9 +6,12 @@ const prisma = new PrismaClient();
 // ✅ GET all jobs
 export async function GET() {
   try {
-    const jobs = await prisma.jobs.findMany();
+    const jobs = await prisma.jobs.findMany({
+      orderBy: {
+        created_at: "desc",
+      },
+    });
 
-    // 🔥 Fix BigInt issue
     const safeJobs = jobs.map((job) => ({
       ...job,
       id: job.id.toString(),
@@ -42,5 +45,25 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("POST ERROR:", error);
     return NextResponse.json({ error: "POST failed" }, { status: 500 });
+  }
+}
+
+// ✅ DELETE job
+export async function DELETE(req: Request) {
+  try {
+    const { id } = await req.json();
+
+    await prisma.jobs.delete({
+      where: {
+        id: BigInt(id),
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+    });
+  } catch (error) {
+    console.error("DELETE ERROR:", error);
+    return NextResponse.json({ error: "DELETE failed" }, { status: 500 });
   }
 }
