@@ -70,7 +70,7 @@ export default function Home() {
           color: "#1c4ed8",
           fontWeight: "bold"
         }}>
-          SearchEasy Jobs
+          SearchEezy Jobs
         </h2>
       </div>
 
