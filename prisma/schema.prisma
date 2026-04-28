@@ -10,8 +10,11 @@ datasource db {
 model jobs {
   id          BigInt   @id(map: "Jobs_pkey") @default(autoincrement())
   created_at  DateTime @default(now()) @db.Timestamptz(6)
+
   title       String?
   company     String?
   location    String?
   description String?
+
+  userEmail   String?
 }

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-// ✅ GET all jobs
+// GET all jobs
 export async function GET() {
   try {
     const jobs = await prisma.jobs.findMany({
@@ -20,11 +20,15 @@ export async function GET() {
     return NextResponse.json(safeJobs);
   } catch (error) {
     console.error("GET ERROR:", error);
-    return NextResponse.json({ error: "GET failed" }, { status: 500 });
+
+    return NextResponse.json(
+      { error: "GET failed" },
+      { status: 500 }
+    );
   }
 }
 
-// ✅ POST new job
+// POST new job
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -35,6 +39,7 @@ export async function POST(req: Request) {
         company: body.company,
         location: body.location,
         description: body.description,
+        userEmail: body.userEmail,
       },
     });
 
@@ -44,26 +49,34 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("POST ERROR:", error);
-    return NextResponse.json({ error: "POST failed" }, { status: 500 });
+
+    return NextResponse.json(
+      { error: "POST failed" },
+      { status: 500 }
+    );
   }
 }
 
-// ✅ DELETE job
+// DELETE job
 export async function DELETE(req: Request) {
   try {
-    const { id } = await req.json();
+    const body = await req.json();
 
     await prisma.jobs.delete({
       where: {
-        id: BigInt(id),
+        id: BigInt(body.id),
       },
     });
 
     return NextResponse.json({
-      success: true,
+      message: "Job deleted",
     });
   } catch (error) {
     console.error("DELETE ERROR:", error);
-    return NextResponse.json({ error: "DELETE failed" }, { status: 500 });
+
+    return NextResponse.json(
+      { error: "DELETE failed" },
+      { status: 500 }
+    );
   }
 }
