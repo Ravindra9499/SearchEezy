@@ -57,6 +57,37 @@ export async function POST(req: Request) {
   }
 }
 
+// UPDATE job
+export async function PUT(req: Request) {
+  try {
+    const body = await req.json();
+
+    const updatedJob = await prisma.jobs.update({
+      where: {
+        id: BigInt(body.id),
+      },
+      data: {
+        title: body.title,
+        company: body.company,
+        location: body.location,
+        description: body.description,
+      },
+    });
+
+    return NextResponse.json({
+      ...updatedJob,
+      id: updatedJob.id.toString(),
+    });
+  } catch (error) {
+    console.error("PUT ERROR:", error);
+
+    return NextResponse.json(
+      { error: "UPDATE failed" },
+      { status: 500 }
+    );
+  }
+}
+
 // DELETE job
 export async function DELETE(req: Request) {
   try {

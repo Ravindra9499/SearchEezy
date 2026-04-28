@@ -107,22 +107,44 @@ export default function Home() {
                 Logged in as: {user.email}
               </p>
 
-              <button
-                onClick={async () => {
-                  await supabase.auth.signOut();
-                  window.location.reload();
-                }}
+              <div
                 style={{
-                  padding: "6px 10px",
-                  background: "red",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
+                  display: "flex",
+                  gap: "10px",
                 }}
               >
-                Logout
-              </button>
+                <a href="/my-jobs">
+                  <button
+                    style={{
+                      padding: "6px 10px",
+                      background: "#1c4ed8",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    My Jobs
+                  </button>
+                </a>
+
+                <button
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    window.location.reload();
+                  }}
+                  style={{
+                    padding: "6px 10px",
+                    background: "red",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
             </div>
           ) : (
             <>
