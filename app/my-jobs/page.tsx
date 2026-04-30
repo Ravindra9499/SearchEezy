@@ -25,34 +25,65 @@ export default function MyJobsPage() {
     setUser(user);
 
     const res = await fetch("/api/jobs");
+
     const data = await res.json();
 
     const myJobs = data.filter(
-      (job: any) => job.userEmail === user.email
+      (job: any) =>
+        job.userEmail === user.email
     );
 
-    setJobs(myJobs);
+    const jobsWithCounts =
+      await Promise.all(
+        myJobs.map(async (job: any) => {
+          const appRes = await fetch(
+            `/api/applications?jobId=${job.id}`
+          );
+
+          const applications =
+            await appRes.json();
+
+          return {
+            ...job,
+            applicantCount:
+              applications.length,
+          };
+        })
+      );
+
+    setJobs(jobsWithCounts);
+
     setLoading(false);
   };
 
   const deleteJob = async (id: string) => {
-    const confirmDelete = confirm("Delete this job?");
+    const confirmDelete =
+      confirm("Delete this job?");
 
     if (!confirmDelete) return;
 
     await fetch("/api/jobs", {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type":
+          "application/json",
       },
       body: JSON.stringify({ id }),
     });
 
-    setJobs(jobs.filter((job) => job.id !== id));
+    setJobs(
+      jobs.filter(
+        (job) => job.id !== id
+      )
+    );
   };
 
   if (loading) {
-    return <p style={{ padding: "20px" }}>Loading...</p>;
+    return (
+      <p style={{ padding: "20px" }}>
+        Loading...
+      </p>
+    );
   }
 
   return (
@@ -72,7 +103,8 @@ export default function MyJobsPage() {
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent:
+              "space-between",
             alignItems: "center",
             marginBottom: "20px",
           }}
@@ -88,10 +120,12 @@ export default function MyJobsPage() {
           <a href="/">
             <button
               style={{
-                background: "#1c4ed8",
+                background:
+                  "#1c4ed8",
                 color: "white",
                 border: "none",
-                padding: "10px 15px",
+                padding:
+                  "10px 15px",
                 borderRadius: "5px",
                 cursor: "pointer",
               }}
@@ -101,70 +135,148 @@ export default function MyJobsPage() {
           </a>
         </div>
 
-        <p style={{ marginBottom: "20px" }}>
-          Logged in as: {user?.email}
+        <p
+          style={{
+            marginBottom: "20px",
+          }}
+        >
+          Logged in as:
+          {" "}
+          {user?.email}
         </p>
 
         {jobs.length === 0 ? (
-          <p>You have not posted any jobs yet.</p>
+          <p>
+            You have not posted
+            any jobs yet.
+          </p>
         ) : (
           jobs.map((job) => (
             <div
               key={job.id}
               style={{
-                background: "white",
+                background:
+                  "white",
                 padding: "15px",
-                borderRadius: "10px",
-                marginBottom: "15px",
-                border: "1px solid #ddd",
+                borderRadius:
+                  "10px",
+                marginBottom:
+                  "15px",
+                border:
+                  "1px solid #ddd",
               }}
             >
               <h2
                 style={{
-                  color: "#1c4ed8",
-                  marginBottom: "5px",
+                  color:
+                    "#1c4ed8",
+                  marginBottom:
+                    "5px",
                 }}
               >
                 {job.title}
               </h2>
 
               <p>
-                <strong>{job.company}</strong>
+                <strong>
+                  {job.company}
+                </strong>
               </p>
 
-              <p>📍 {job.location}</p>
+              <p>
+                📍 {job.location}
+              </p>
+
+              <p
+                style={{
+                  marginTop:
+                    "10px",
+                  fontWeight:
+                    "bold",
+                }}
+              >
+                Applicants:
+                {" "}
+                {
+                  job.applicantCount
+                }
+              </p>
 
               <div
                 style={{
                   display: "flex",
                   gap: "10px",
-                  marginTop: "10px",
+                  marginTop:
+                    "10px",
+                  flexWrap:
+                    "wrap",
                 }}
               >
-                <a href={`/edit-job/${job.id}`}>
+                <a
+                  href={`/edit-job/${job.id}`}
+                >
                   <button
                     style={{
-                      background: "#1c4ed8",
-                      color: "white",
-                      border: "none",
-                      padding: "8px 12px",
-                      borderRadius: "5px",
-                      cursor: "pointer",
+                      background:
+                        "#1c4ed8",
+                      color:
+                        "white",
+                      border:
+                        "none",
+                      padding:
+                        "8px 12px",
+                      borderRadius:
+                        "5px",
+                      cursor:
+                        "pointer",
                     }}
                   >
                     Edit Job
                   </button>
                 </a>
 
+                <a
+                  href={`/applications/${job.id}`}
+                >
+                  <button
+                    style={{
+                      background:
+                        "green",
+                      color:
+                        "white",
+                      border:
+                        "none",
+                      padding:
+                        "8px 12px",
+                      borderRadius:
+                        "5px",
+                      cursor:
+                        "pointer",
+                    }}
+                  >
+                    View Applicants
+                  </button>
+                </a>
+
                 <button
-                  onClick={() => deleteJob(job.id)}
+                  onClick={() =>
+                    deleteJob(
+                      job.id
+                    )
+                  }
                   style={{
-                    background: "red",
-                    color: "white",
-                    border: "none",
-                    padding: "8px 12px",
-                    borderRadius: "5px",
-                    cursor: "pointer",
+                    background:
+                      "red",
+                    color:
+                      "white",
+                    border:
+                      "none",
+                    padding:
+                      "8px 12px",
+                    borderRadius:
+                      "5px",
+                    cursor:
+                      "pointer",
                   }}
                 >
                   Delete Job
