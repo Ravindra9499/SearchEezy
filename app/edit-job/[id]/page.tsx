@@ -1,158 +1,226 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+
+import { useParams } from "next/navigation";
+
+import dynamic from "next/dynamic";
+
+import "react-quill-new/dist/quill.snow.css";
+
+const ReactQuill = dynamic(
+  () => import("react-quill-new"),
+  { ssr: false }
+);
 
 export default function EditJobPage() {
   const params = useParams();
-  const router = useRouter();
 
-  const [title, setTitle] = useState("");
-  const [company, setCompany] = useState("");
-  const [location, setLocation] = useState("");
-  const [description, setDescription] = useState("");
+  const id = params.id;
 
-  const [loading, setLoading] = useState(true);
+  const [title, setTitle] =
+    useState("");
+
+  const [company, setCompany] =
+    useState("");
+
+  const [location, setLocation] =
+    useState("");
+
+  const [
+    description,
+    setDescription,
+  ] = useState("");
 
   useEffect(() => {
     fetchJob();
   }, []);
 
   const fetchJob = async () => {
-    const res = await fetch("/api/jobs");
+    const res = await fetch(
+      "/api/jobs"
+    );
+
     const data = await res.json();
 
     const job = data.find(
-      (j: any) => j.id === params.id
+      (j: any) =>
+        j.id.toString() === id
     );
 
-    if (!job) {
-      alert("Job not found");
-      return;
+    if (job) {
+      setTitle(job.title || "");
+
+      setCompany(
+        job.company || ""
+      );
+
+      setLocation(
+        job.location || ""
+      );
+
+      setDescription(
+        job.description || ""
+      );
     }
-
-    setTitle(job.title || "");
-    setCompany(job.company || "");
-    setLocation(job.location || "");
-    setDescription(job.description || "");
-
-    setLoading(false);
   };
 
-  const handleUpdate = async (e: any) => {
-    e.preventDefault();
+  const updateJob = async () => {
+    const res = await fetch(
+      "/api/jobs",
+      {
+        method: "PUT",
 
-    await fetch("/api/jobs", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: params.id,
-        title,
-        company,
-        location,
-        description,
-      }),
-    });
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
 
-    alert("Job updated successfully");
+        body: JSON.stringify({
+          id,
 
-    router.push("/my-jobs");
+          title,
+
+          company,
+
+          location,
+
+          description,
+        }),
+      }
+    );
+
+    if (res.ok) {
+      alert(
+        "Job updated successfully"
+      );
+
+      window.location.href =
+        "/my-jobs";
+    } else {
+      alert(
+        "Failed to update job"
+      );
+    }
   };
-
-  if (loading) {
-    return <p style={{ padding: "20px" }}>Loading...</p>;
-  }
 
   return (
     <div
       style={{
-        background: "#f3f2f1",
-        minHeight: "100vh",
-        padding: "20px",
+        maxWidth: "900px",
+
+        margin: "40px auto",
+
+        background: "white",
+
+        padding: "30px",
+
+        borderRadius: "10px",
+
+        border:
+          "1px solid #ddd",
       }}
     >
-      <div
+      <h1
         style={{
-          maxWidth: "600px",
-          margin: "0 auto",
-          background: "white",
-          padding: "20px",
-          borderRadius: "10px",
+          color: "#1c4ed8",
         }}
       >
-        <h1
+        Edit Job
+      </h1>
+
+      <input
+        value={title}
+        onChange={(e) =>
+          setTitle(
+            e.target.value
+          )
+        }
+        placeholder="Job Title"
+        style={{
+          width: "100%",
+
+          padding: "12px",
+
+          marginBottom: "15px",
+        }}
+      />
+
+      <input
+        value={company}
+        onChange={(e) =>
+          setCompany(
+            e.target.value
+          )
+        }
+        placeholder="Company"
+        style={{
+          width: "100%",
+
+          padding: "12px",
+
+          marginBottom: "15px",
+        }}
+      />
+
+      <input
+        value={location}
+        onChange={(e) =>
+          setLocation(
+            e.target.value
+          )
+        }
+        placeholder="Location"
+        style={{
+          width: "100%",
+
+          padding: "12px",
+
+          marginBottom: "15px",
+        }}
+      />
+
+      <div
+        style={{
+          marginBottom: "60px",
+        }}
+      >
+        <ReactQuill
+          theme="snow"
+          value={description}
+          onChange={
+            setDescription
+          }
           style={{
-            color: "#1c4ed8",
-            marginBottom: "20px",
+            height: "300px",
           }}
-        >
-          Edit Job
-        </h1>
-
-        <form onSubmit={handleUpdate}>
-          <input
-            placeholder="Job Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "10px",
-              marginBottom: "10px",
-            }}
-          />
-
-          <input
-            placeholder="Company"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "10px",
-              marginBottom: "10px",
-            }}
-          />
-
-          <input
-            placeholder="Location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "10px",
-              marginBottom: "10px",
-            }}
-          />
-
-          <textarea
-            placeholder="Job Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "10px",
-              marginBottom: "10px",
-              minHeight: "200px",
-            }}
-          />
-
-          <button
-            style={{
-              width: "100%",
-              padding: "12px",
-              background: "#1c4ed8",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
-            Update Job
-          </button>
-        </form>
+        />
       </div>
+
+      <button
+        onClick={updateJob}
+        style={{
+          width: "100%",
+
+          padding: "14px",
+
+          background: "#1c4ed8",
+
+          color: "white",
+
+          border: "none",
+
+          borderRadius: "8px",
+
+          fontWeight: "bold",
+
+          fontSize: "16px",
+
+          cursor: "pointer",
+        }}
+      >
+        Update Job
+      </button>
     </div>
   );
 }
