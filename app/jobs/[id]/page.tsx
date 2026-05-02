@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import Link from "next/link";
-
 import { useParams } from "next/navigation";
 
 import { supabase } from "../../lib/supabase";
@@ -15,14 +13,10 @@ export default function JobDetails() {
 
   const [job, setJob] = useState<any>(null);
 
-  const [user, setUser] =
-    useState<any>(null);
+  const [user, setUser] = useState<any>(null);
 
-  const [name, setName] =
-    useState("");
-
-  const [email, setEmail] =
-    useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
   const [resumeFile, setResumeFile] =
     useState<any>(null);
@@ -30,141 +24,124 @@ export default function JobDetails() {
   const [coverLetter, setCoverLetter] =
     useState("");
 
+  const [
+    screeningAnswers,
+    setScreeningAnswers,
+  ] = useState<any>({});
+
   const [success, setSuccess] =
     useState("");
 
   useEffect(() => {
     fetchJob();
-
     getUser();
   }, []);
 
   const getUser = async () => {
     const {
       data: { user },
-    } =
-      await supabase.auth.getUser();
+    } = await supabase.auth.getUser();
 
     setUser(user);
   };
 
   const fetchJob = async () => {
-    const res =
-      await fetch("/api/jobs");
+    const res = await fetch("/api/jobs");
 
-    const data =
-      await res.json();
+    const data = await res.json();
 
-    const foundJob =
-      data.find(
-        (j: any) =>
-          String(j.id) ===
-          String(id)
-      );
+    const foundJob = data.find(
+      (j: any) =>
+        String(j.id) === String(id)
+    );
 
     setJob(foundJob);
   };
 
-  const uploadResume =
-    async () => {
-      if (!resumeFile)
-        return "";
+  const uploadResume = async () => {
+    if (!resumeFile) return "";
 
-      const fileName = `${Date.now()}-${resumeFile.name}`;
+    const fileName = `${Date.now()}-${resumeFile.name}`;
 
-      const { error } =
-        await supabase.storage
-          .from("resumes")
-          .upload(
-            fileName,
-            resumeFile
-          );
+    const { error } = await supabase.storage
+      .from("resumes")
+      .upload(fileName, resumeFile);
 
-      if (error) {
-        alert(
-          "Resume upload failed"
-        );
+    if (error) {
+      alert("Resume upload failed");
 
-        return "";
-      }
+      return "";
+    }
 
-      const { data } =
-        supabase.storage
-          .from("resumes")
-          .getPublicUrl(
-            fileName
-          );
+    const { data } = supabase.storage
+      .from("resumes")
+      .getPublicUrl(fileName);
 
-      return data.publicUrl;
-    };
+    return data.publicUrl;
+  };
 
-  const applyToJob =
-    async () => {
-      if (!name || !email) {
-        alert(
-          "Name and email required"
-        );
+  const applyToJob = async () => {
+    if (!name || !email) {
+      alert(
+        "Name and email required"
+      );
 
-        return;
-      }
+      return;
+    }
 
-      let resumeLink = "";
+    let resumeLink = "";
 
-      if (resumeFile) {
-        resumeLink =
-          await uploadResume();
+    if (resumeFile) {
+      resumeLink =
+        await uploadResume();
 
-        if (!resumeLink)
-          return;
-      }
+      if (!resumeLink) return;
+    }
 
-      const res =
-        await fetch(
-          "/api/applications",
-          {
-            method: "POST",
+    const res = await fetch(
+      "/api/applications",
+      {
+        method: "POST",
 
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
 
-            body: JSON.stringify(
-              {
-                name,
-                email,
-                resumeLink,
-                coverLetter,
-                jobId: id,
-              }
+        body: JSON.stringify({
+          name,
+          email,
+          resumeLink,
+          coverLetter,
+          screeningAnswers:
+            JSON.stringify(
+              screeningAnswers
             ),
-          }
-        );
-
-      if (res.ok) {
-        setSuccess(
-          "Application submitted successfully!"
-        );
-
-        setName("");
-        setEmail("");
-        setResumeFile(
-          null
-        );
-        setCoverLetter("");
-      } else {
-        alert(
-          "Failed to apply"
-        );
+          jobId: id,
+        }),
       }
-    };
+    );
+
+    if (res.ok) {
+      setSuccess(
+        "Application submitted successfully!"
+      );
+
+      setName("");
+      setEmail("");
+      setResumeFile(null);
+      setCoverLetter("");
+      setScreeningAnswers({});
+    } else {
+      alert("Failed to apply");
+    }
+  };
 
   if (!job) {
     return (
       <div
         style={{
-          padding:
-            "40px",
+          padding: "40px",
         }}
       >
         Loading...
@@ -176,26 +153,28 @@ export default function JobDetails() {
     user?.email ===
     job.userEmail;
 
+  const questions =
+    job.screeningQuestions
+      ? job.screeningQuestions
+          .split("\n")
+          .filter(
+            (q: string) =>
+              q.trim() !== ""
+          )
+      : [];
+
   return (
     <div
       style={{
-        background:
-          "#f3f2f1",
-
-        minHeight:
-          "100vh",
-
-        padding:
-          "40px 20px",
+        background: "#f3f2f1",
+        minHeight: "100vh",
+        padding: "40px 20px",
       }}
     >
       <div
         style={{
-          maxWidth:
-            "950px",
-
-          margin:
-            "0 auto",
+          maxWidth: "900px",
+          margin: "0 auto",
         }}
       >
         <Link href="/">
@@ -210,8 +189,7 @@ export default function JobDetails() {
               background:
                 "#e5e7eb",
 
-              border:
-                "none",
+              border: "none",
 
               borderRadius:
                 "6px",
@@ -227,15 +205,11 @@ export default function JobDetails() {
           </button>
         </Link>
 
-        {/* JOB DETAILS */}
-
         <div
           style={{
-            background:
-              "white",
+            background: "white",
 
-            padding:
-              "35px",
+            padding: "30px",
 
             borderRadius:
               "12px",
@@ -249,14 +223,10 @@ export default function JobDetails() {
         >
           <h1
             style={{
-              color:
-                "#1c4ed8",
+              color: "#1c4ed8",
 
               marginBottom:
                 "10px",
-
-              fontSize:
-                "36px",
             }}
           >
             {job.title}
@@ -266,93 +236,60 @@ export default function JobDetails() {
             style={{
               marginBottom:
                 "10px",
-
-              fontSize:
-                "24px",
             }}
           >
             {job.company}
           </h2>
 
-          <div
+          <p
             style={{
-              display:
-                "flex",
-
-              gap: "12px",
-
-              flexWrap:
-                "wrap",
+              color: "gray",
 
               marginBottom:
                 "20px",
+
+              fontSize:
+                "16px",
             }}
           >
+            📍 {job.location}
+          </p>
+
+          {job.jobType && (
             <div
               style={{
+                display:
+                  "inline-block",
+
                 background:
-                  "#eff6ff",
+                  "#dbeafe",
 
                 color:
-                  "#1d4ed8",
+                  "#1e40af",
 
                 padding:
-                  "8px 14px",
+                  "6px 12px",
 
                 borderRadius:
-                  "999px",
+                  "20px",
 
                 fontWeight:
                   "bold",
 
-                fontSize:
-                  "14px",
+                marginBottom:
+                  "20px",
               }}
             >
-              📍{" "}
-              {
-                job.location
-              }
+              {job.jobType}
             </div>
-
-            {job.jobType && (
-              <div
-                style={{
-                  background:
-                    "#dcfce7",
-
-                  color:
-                    "#166534",
-
-                  padding:
-                    "8px 14px",
-
-                  borderRadius:
-                    "999px",
-
-                  fontWeight:
-                    "bold",
-
-                  fontSize:
-                    "14px",
-                }}
-              >
-                💼{" "}
-                {
-                  job.jobType
-                }
-              </div>
-            )}
-          </div>
+          )}
 
           <hr
             style={{
               margin:
-                "30px 0",
+                "25px 0",
             }}
           />
-
-          {/* DESCRIPTION */}
 
           <h3
             style={{
@@ -360,7 +297,7 @@ export default function JobDetails() {
                 "20px",
 
               fontSize:
-                "28px",
+                "24px",
             }}
           >
             Job Description
@@ -374,92 +311,7 @@ export default function JobDetails() {
                 "No description provided.",
             }}
           />
-
-          {/* SCREENING QUESTIONS */}
-
-          {job.screeningQuestions && (
-            <>
-              <hr
-                style={{
-                  margin:
-                    "35px 0",
-                }}
-              />
-
-              <h3
-                style={{
-                  marginBottom:
-                    "15px",
-
-                  fontSize:
-                    "26px",
-                }}
-              >
-                Screening Questions
-              </h3>
-
-              <div
-                style={{
-                  background:
-                    "#f9fafb",
-
-                  padding:
-                    "20px",
-
-                  borderRadius:
-                    "10px",
-
-                  border:
-                    "1px solid #e5e7eb",
-
-                  whiteSpace:
-                    "pre-line",
-
-                  lineHeight:
-                    "1.8",
-                }}
-              >
-                {
-                  job.screeningQuestions
-                }
-              </div>
-            </>
-          )}
         </div>
-
-        {/* EMPLOYER NOTICE */}
-
-        {isOwner && (
-          <div
-            style={{
-              background:
-                "#fef3c7",
-
-              border:
-                "1px solid #fcd34d",
-
-              padding:
-                "20px",
-
-              borderRadius:
-                "10px",
-
-              marginBottom:
-                "25px",
-
-              color:
-                "#92400e",
-
-              fontWeight:
-                "bold",
-            }}
-          >
-            You are the employer who posted this job.
-            Applications are disabled for your own job posting.
-          </div>
-        )}
-
-        {/* APPLY SECTION */}
 
         {!isOwner && (
           <div
@@ -467,8 +319,7 @@ export default function JobDetails() {
               background:
                 "white",
 
-              padding:
-                "35px",
+              padding: "30px",
 
               borderRadius:
                 "12px",
@@ -480,10 +331,7 @@ export default function JobDetails() {
             <h2
               style={{
                 marginBottom:
-                  "25px",
-
-                fontSize:
-                  "30px",
+                  "20px",
               }}
             >
               Apply Now
@@ -499,7 +347,7 @@ export default function JobDetails() {
                     "bold",
 
                   marginBottom:
-                    "20px",
+                    "15px",
                 }}
               >
                 {success}
@@ -519,13 +367,13 @@ export default function JobDetails() {
                   "100%",
 
                 padding:
-                  "14px",
+                  "12px",
 
                 marginBottom:
-                  "14px",
+                  "12px",
 
                 borderRadius:
-                  "8px",
+                  "6px",
 
                 border:
                   "1px solid #ccc",
@@ -545,45 +393,112 @@ export default function JobDetails() {
                   "100%",
 
                 padding:
-                  "14px",
+                  "12px",
 
                 marginBottom:
-                  "14px",
+                  "12px",
 
                 borderRadius:
-                  "8px",
+                  "6px",
 
                 border:
                   "1px solid #ccc",
               }}
             />
 
+            {questions.length > 0 && (
+              <div
+                style={{
+                  marginBottom:
+                    "20px",
+                }}
+              >
+                <h3>
+                  Screening Questions
+                </h3>
+
+                {questions.map(
+                  (
+                    question: string,
+                    index: number
+                  ) => (
+                    <div
+                      key={index}
+                      style={{
+                        marginBottom:
+                          "15px",
+                      }}
+                    >
+                      <label
+                        style={{
+                          display:
+                            "block",
+
+                          marginBottom:
+                            "8px",
+
+                          fontWeight:
+                            "bold",
+                        }}
+                      >
+                        {
+                          question
+                        }
+                      </label>
+
+                      <textarea
+                        placeholder="Your answer"
+                        value={
+                          screeningAnswers[
+                            question
+                          ] || ""
+                        }
+                        onChange={(
+                          e
+                        ) =>
+                          setScreeningAnswers(
+                            {
+                              ...screeningAnswers,
+
+                              [question]:
+                                e
+                                  .target
+                                  .value,
+                            }
+                          )
+                        }
+                        style={{
+                          width:
+                            "100%",
+
+                          padding:
+                            "12px",
+
+                          minHeight:
+                            "100px",
+
+                          borderRadius:
+                            "6px",
+
+                          border:
+                            "1px solid #ccc",
+                        }}
+                      />
+                    </div>
+                  )
+                )}
+              </div>
+            )}
+
             <div
               style={{
                 marginBottom:
-                  "14px",
+                  "12px",
               }}
             >
-              <label
-                style={{
-                  display:
-                    "block",
-
-                  marginBottom:
-                    "8px",
-
-                  fontWeight:
-                    "bold",
-                }}
-              >
-                Upload Resume
-              </label>
-
               <input
                 type="file"
-                onChange={(
-                  e: any
-                ) =>
+                onChange={(e: any) =>
                   setResumeFile(
                     e.target
                       .files[0]
@@ -607,16 +522,16 @@ export default function JobDetails() {
                   "100%",
 
                 padding:
-                  "14px",
+                  "12px",
 
                 minHeight:
-                  "160px",
+                  "140px",
 
                 marginBottom:
-                  "18px",
+                  "15px",
 
                 borderRadius:
-                  "8px",
+                  "6px",
 
                 border:
                   "1px solid #ccc",
@@ -629,7 +544,7 @@ export default function JobDetails() {
               }
               style={{
                 padding:
-                  "16px 28px",
+                  "14px 24px",
 
                 background:
                   "#1c4ed8",
@@ -641,16 +556,13 @@ export default function JobDetails() {
                   "none",
 
                 borderRadius:
-                  "8px",
+                  "6px",
 
                 cursor:
                   "pointer",
 
                 fontWeight:
                   "bold",
-
-                fontSize:
-                  "16px",
               }}
             >
               Submit
@@ -662,27 +574,27 @@ export default function JobDetails() {
 
       <style jsx global>{`
         .job-description {
-          line-height: 1.9;
+          line-height: 1.8;
           font-size: 16px;
           color: #111827;
         }
 
         .job-description h1 {
-          font-size: 34px;
+          font-size: 32px;
           font-weight: bold;
-          margin: 24px 0 12px;
+          margin: 20px 0 10px;
         }
 
         .job-description h2 {
-          font-size: 28px;
+          font-size: 26px;
           font-weight: bold;
-          margin: 24px 0 12px;
+          margin: 20px 0 10px;
         }
 
         .job-description h3 {
-          font-size: 24px;
+          font-size: 22px;
           font-weight: bold;
-          margin: 24px 0 12px;
+          margin: 20px 0 10px;
         }
 
         .job-description p {
@@ -691,13 +603,13 @@ export default function JobDetails() {
 
         .job-description ul {
           padding-left: 30px;
-          margin-bottom: 18px;
+          margin-bottom: 16px;
           list-style-type: disc;
         }
 
         .job-description ol {
           padding-left: 30px;
-          margin-bottom: 18px;
+          margin-bottom: 16px;
           list-style-type: decimal;
         }
 
@@ -707,14 +619,6 @@ export default function JobDetails() {
 
         .job-description strong {
           font-weight: bold;
-        }
-
-        .job-description li[data-list="bullet"] {
-          list-style-type: disc;
-        }
-
-        .job-description li[data-list="ordered"] {
-          list-style-type: decimal;
         }
       `}</style>
     </div>

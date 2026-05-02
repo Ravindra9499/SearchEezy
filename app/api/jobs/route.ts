@@ -1,12 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
 
 // GET all jobs
-
 export async function GET() {
   try {
     const jobs =
@@ -20,7 +18,8 @@ export async function GET() {
       (job: any) => ({
         ...job,
 
-        id: job.id.toString(),
+        id:
+          job.id.toString(),
       })
     );
 
@@ -35,7 +34,6 @@ export async function GET() {
 
     return NextResponse.json(
       { error: "GET failed" },
-
       { status: 500 }
     );
   }
@@ -43,13 +41,11 @@ export async function GET() {
 
 
 // POST new job
-
 export async function POST(
   req: Request
 ) {
   try {
-    const body =
-      await req.json();
+    const body = await req.json();
 
     const job =
       await prisma.jobs.create({
@@ -79,7 +75,8 @@ export async function POST(
     return NextResponse.json({
       ...job,
 
-      id: job.id.toString(),
+      id:
+        job.id.toString(),
     });
   } catch (error) {
     console.error(
@@ -89,7 +86,6 @@ export async function POST(
 
     return NextResponse.json(
       { error: "POST failed" },
-
       { status: 500 }
     );
   }
@@ -97,18 +93,18 @@ export async function POST(
 
 
 // UPDATE job
-
 export async function PUT(
   req: Request
 ) {
   try {
-    const body =
-      await req.json();
+    const body = await req.json();
 
     const updatedJob =
       await prisma.jobs.update({
         where: {
-          id: BigInt(body.id),
+          id: BigInt(
+            body.id
+          ),
         },
 
         data: {
@@ -148,7 +144,6 @@ export async function PUT(
         error:
           "UPDATE failed",
       },
-
       { status: 500 }
     );
   }
@@ -156,17 +151,17 @@ export async function PUT(
 
 
 // DELETE job
-
 export async function DELETE(
   req: Request
 ) {
   try {
-    const body =
-      await req.json();
+    const body = await req.json();
 
     await prisma.jobs.delete({
       where: {
-        id: BigInt(body.id),
+        id: BigInt(
+          body.id
+        ),
       },
     });
 
@@ -185,7 +180,6 @@ export async function DELETE(
         error:
           "DELETE failed",
       },
-
       { status: 500 }
     );
   }

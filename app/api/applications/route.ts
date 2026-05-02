@@ -9,26 +9,45 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const application = await prisma.applications.create({
-      data: {
-        name: body.name,
-        email: body.email,
-        resumeLink: body.resumeLink,
-        coverLetter: body.coverLetter,
-        jobId: BigInt(body.jobId),
-      },
-    });
+    const application =
+      await prisma.applications.create({
+        data: {
+          name: body.name,
+
+          email: body.email,
+
+          resumeLink:
+            body.resumeLink,
+
+          coverLetter:
+            body.coverLetter,
+
+          screeningAnswers:
+            body.screeningAnswers,
+
+          jobId: BigInt(
+            body.jobId
+          ),
+        },
+      });
 
     return NextResponse.json({
       ...application,
-      id: application.id.toString(),
-      jobId: application.jobId.toString(),
+
+      id:
+        application.id.toString(),
+
+      jobId:
+        application.jobId.toString(),
     });
   } catch (error) {
     console.error(error);
 
     return NextResponse.json(
-      { error: "Application failed" },
+      {
+        error:
+          "Application failed",
+      },
       { status: 500 }
     );
   }
@@ -36,28 +55,44 @@ export async function POST(req: Request) {
 
 
 // GET applications by job
-export async function GET(req: Request) {
+export async function GET(
+  req: Request
+) {
   try {
-    const { searchParams } = new URL(req.url);
+    const { searchParams } =
+      new URL(req.url);
 
-    const jobId = searchParams.get("jobId");
+    const jobId =
+      searchParams.get("jobId");
 
     const applications =
-      await prisma.applications.findMany({
-        where: {
-          jobId: BigInt(jobId!),
-        },
-        orderBy: {
-          created_at: "desc",
-        },
-      });
+      await prisma.applications.findMany(
+        {
+          where: {
+            jobId: BigInt(
+              jobId!
+            ),
+          },
+
+          orderBy: {
+            created_at:
+              "desc",
+          },
+        }
+      );
 
     const safeApplications =
-      applications.map((app: any) => ({
-        ...app,
-        id: app.id.toString(),
-        jobId: app.jobId.toString(),
-      }));
+      applications.map(
+        (app: any) => ({
+          ...app,
+
+          id:
+            app.id.toString(),
+
+          jobId:
+            app.jobId.toString(),
+        })
+      );
 
     return NextResponse.json(
       safeApplications
@@ -66,7 +101,10 @@ export async function GET(req: Request) {
     console.error(error);
 
     return NextResponse.json(
-      { error: "Failed to fetch applications" },
+      {
+        error:
+          "Failed to fetch applications",
+      },
       { status: 500 }
     );
   }
