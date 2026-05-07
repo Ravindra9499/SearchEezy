@@ -1,45 +1,62 @@
-import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
+import { createClient } from "@supabase/supabase-js";
 
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_ANON_KEY!
+);
 
 // CREATE application
-export async function POST(req: Request) {
+export async function POST(
+  req: Request
+) {
   try {
-    const body = await req.json();
+    const body =
+      await req.json();
 
-    const application =
-      await prisma.applications.create({
-        data: {
-          name: body.name,
+    const { data, error } =
+      await supabase
+        .from("applications")
+        .insert([
+          {
+            name:
+              body.name,
 
-          email: body.email,
+            email:
+              body.email,
 
-          resumeLink:
-            body.resumeLink,
+            resumeLink:
+              body.resumeLink,
 
-          coverLetter:
-            body.coverLetter,
+            coverLetter:
+              body.coverLetter,
 
-          screeningAnswers:
-            body.screeningAnswers,
+            screeningAnswers:
+              body.screeningAnswers,
 
-          jobId: BigInt(
-            body.jobId
-          ),
+            jobId:
+              body.jobId,
+          },
+        ])
+        .select()
+        .single();
+
+    if (error) {
+      console.error(error);
+
+      return NextResponse.json(
+        {
+          error:
+            error.message,
         },
-      });
+        { status: 500 }
+      );
+    }
 
-    return NextResponse.json({
-      ...application,
-
-      id:
-        application.id.toString(),
-
-      jobId:
-        application.jobId.toString(),
-    });
+    return NextResponse.json(
+      data
+    );
   } catch (error) {
     console.error(error);
 
@@ -53,7 +70,6 @@ export async function POST(req: Request) {
   }
 }
 
-
 // GET applications by job
 export async function GET(
   req: Request
@@ -65,37 +81,32 @@ export async function GET(
     const jobId =
       searchParams.get("jobId");
 
-    const applications =
-      await prisma.applications.findMany(
+    const { data, error } =
+      await supabase
+        .from("applications")
+        .select("*")
+        .eq("jobId", jobId)
+        .order(
+          "created_at",
+          {
+            ascending: false,
+          }
+        );
+
+    if (error) {
+      console.error(error);
+
+      return NextResponse.json(
         {
-          where: {
-            jobId: BigInt(
-              jobId!
-            ),
-          },
-
-          orderBy: {
-            created_at:
-              "desc",
-          },
-        }
+          error:
+            error.message,
+        },
+        { status: 500 }
       );
-
-    const safeApplications =
-      applications.map(
-        (app: any) => ({
-          ...app,
-
-          id:
-            app.id.toString(),
-
-          jobId:
-            app.jobId.toString(),
-        })
-      );
+    }
 
     return NextResponse.json(
-      safeApplications
+      data
     );
   } catch (error) {
     console.error(error);

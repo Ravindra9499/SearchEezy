@@ -1,0 +1,29 @@
+.job-description ul {
+  padding-left: 25px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  list-style-type: disc;
+}
+
+.job-description ol {
+  padding-left: 25px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  list-style-type: decimal;
+}
+
+.job-description li {
+  margin-bottom: 10px;
+}
+
+.job-description h1,
+.job-description h2,
+.job-description h3,
+.job-description h4 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.job-description p {
+  margin-bottom: 12px;
+}

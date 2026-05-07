@@ -32,9 +32,87 @@ export default function ApplicationsPage() {
       setLoading(false);
     };
 
+  const renderAnswers = (
+    answers: string
+  ) => {
+    if (!answers) {
+      return (
+        <p>
+          No screening answers
+          provided.
+        </p>
+      );
+    }
+
+    try {
+      const parsed =
+        JSON.parse(answers);
+
+      return Object.entries(
+        parsed
+      ).map(
+        (
+          [question, answer]: any,
+          index
+        ) => (
+          <div
+            key={index}
+            style={{
+              background:
+                "#f9fafb",
+
+              padding: "15px",
+
+              borderRadius:
+                "8px",
+
+              marginBottom:
+                "12px",
+
+              border:
+                "1px solid #e5e7eb",
+            }}
+          >
+            <p
+              style={{
+                fontWeight:
+                  "bold",
+
+                marginBottom:
+                  "8px",
+              }}
+            >
+              {question}
+            </p>
+
+            <p
+              style={{
+                whiteSpace:
+                  "pre-wrap",
+              }}
+            >
+              {String(answer)}
+            </p>
+          </div>
+        )
+      );
+    } catch {
+      return (
+        <p>
+          Failed to load
+          answers
+        </p>
+      );
+    }
+  };
+
   if (loading) {
     return (
-      <div style={{ padding: "20px" }}>
+      <div
+        style={{
+          padding: "20px",
+        }}
+      >
         Loading...
       </div>
     );
@@ -44,109 +122,151 @@ export default function ApplicationsPage() {
     <div
       style={{
         background: "#f3f2f1",
+
         minHeight: "100vh",
+
         padding: "20px",
       }}
     >
       <div
         style={{
           maxWidth: "900px",
+
           margin: "0 auto",
         }}
       >
-        <div
+        <h1
           style={{
-            display: "flex",
-            justifyContent:
-              "space-between",
-            alignItems: "center",
-            marginBottom: "20px",
+            color: "#1c4ed8",
           }}
         >
-          <h1
-            style={{
-              color: "#1c4ed8",
-            }}
-          >
-            Job Applicants
-          </h1>
+          Job Applicants
+        </h1>
 
-          <a href="/my-jobs">
-            <button
-              style={{
-                background:
-                  "#1c4ed8",
-                color: "white",
-                border: "none",
-                padding:
-                  "10px 15px",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-            >
-              Back to My Jobs
-            </button>
-          </a>
-        </div>
-
-        {applications.length === 0 ? (
+        {applications.length ===
+        0 ? (
           <p>
-            No applications yet.
+            No applications
+            yet.
           </p>
         ) : (
-          applications.map((app) => (
-            <div
-              key={app.id}
-              style={{
-                background:
-                  "white",
-                padding: "20px",
-                borderRadius:
-                  "10px",
-                marginBottom:
-                  "15px",
-                border:
-                  "1px solid #ddd",
-              }}
-            >
-              <h2>
-                {app.name}
-              </h2>
+          applications.map(
+            (app) => (
+              <div
+                key={app.id}
+                style={{
+                  background:
+                    "white",
 
-              <p>
-                <strong>
-                  Email:
-                </strong>{" "}
-                {app.email}
-              </p>
+                  padding:
+                    "25px",
 
-              <p>
-                <strong>
-                  Resume:
-                </strong>{" "}
-                <a
-                  href={
-                    app.resumeLink
-                  }
-                  target="_blank"
+                  borderRadius:
+                    "12px",
+
+                  marginBottom:
+                    "20px",
+
+                  border:
+                    "1px solid #ddd",
+                }}
+              >
+                <h2>
+                  {app.name}
+                </h2>
+
+                <p>
+                  <strong>
+                    Email:
+                  </strong>{" "}
+                  {app.email}
+                </p>
+
+                <div
+                  style={{
+                    marginTop:
+                      "15px",
+                  }}
                 >
-                  View Resume
-                </a>
-              </p>
+                  <strong>
+                    Resume:
+                  </strong>{" "}
 
-              <p>
-                <strong>
-                  Cover Letter:
-                </strong>
-              </p>
+                  {app.resumeLink ? (
+                    <a
+                      href={
+                        app.resumeLink
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View Resume
+                    </a>
+                  ) : (
+                    "No resume uploaded"
+                  )}
+                </div>
 
-              <p>
-                {
-                  app.coverLetter
-                }
-              </p>
-            </div>
-          ))
+                <div
+                  style={{
+                    marginTop:
+                      "20px",
+                  }}
+                >
+                  <h3>
+                    Cover Letter
+                  </h3>
+
+                  <div
+                    style={{
+                      background:
+                        "#f9fafb",
+
+                      padding:
+                        "15px",
+
+                      borderRadius:
+                        "8px",
+
+                      border:
+                        "1px solid #e5e7eb",
+
+                      marginTop:
+                        "10px",
+
+                      whiteSpace:
+                        "pre-wrap",
+                    }}
+                  >
+                    {app.coverLetter ||
+                      "No cover letter provided."}
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    marginTop:
+                      "20px",
+                  }}
+                >
+                  <h3>
+                    Screening Answers
+                  </h3>
+
+                  <div
+                    style={{
+                      marginTop:
+                        "10px",
+                    }}
+                  >
+                    {renderAnswers(
+                      app.screeningAnswers
+                    )}
+                  </div>
+                </div>
+              </div>
+            )
+          )
         )}
       </div>
     </div>

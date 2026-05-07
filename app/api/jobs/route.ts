@@ -1,30 +1,40 @@
-import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
+import { createClient } from "@supabase/supabase-js";
 
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_ANON_KEY!
+);
 
 // GET all jobs
 export async function GET() {
   try {
-    const jobs =
-      await prisma.jobs.findMany({
-        orderBy: {
-          created_at: "desc",
+    const { data, error } =
+      await supabase
+        .from("jobs")
+        .select("*")
+        .order(
+          "created_at",
+          {
+            ascending: false,
+          }
+        );
+
+    if (error) {
+      console.error(error);
+
+      return NextResponse.json(
+        {
+          error:
+            error.message,
         },
-      });
-
-    const safeJobs = jobs.map(
-      (job: any) => ({
-        ...job,
-
-        id:
-          job.id.toString(),
-      })
-    );
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
-      safeJobs
+      data
     );
   } catch (error) {
     console.error(
@@ -39,45 +49,59 @@ export async function GET() {
   }
 }
 
-
 // POST new job
 export async function POST(
   req: Request
 ) {
   try {
-    const body = await req.json();
+    const body =
+      await req.json();
 
-    const job =
-      await prisma.jobs.create({
-        data: {
-          title: body.title,
+    const { data, error } =
+      await supabase
+        .from("jobs")
+        .insert([
+          {
+            title:
+              body.title,
 
-          company:
-            body.company,
+            company:
+              body.company,
 
-          location:
-            body.location,
+            location:
+              body.location,
 
-          description:
-            body.description,
+            description:
+              body.description,
 
-          jobType:
-            body.jobType,
+            jobType:
+              body.jobType,
 
-          screeningQuestions:
-            body.screeningQuestions,
+            screeningQuestions:
+              body.screeningQuestions,
 
-          userEmail:
-            body.userEmail,
+            userEmail:
+              body.userEmail,
+          },
+        ])
+        .select()
+        .single();
+
+    if (error) {
+      console.error(error);
+
+      return NextResponse.json(
+        {
+          error:
+            error.message,
         },
-      });
+        { status: 500 }
+      );
+    }
 
-    return NextResponse.json({
-      ...job,
-
-      id:
-        job.id.toString(),
-    });
+    return NextResponse.json(
+      data
+    );
   } catch (error) {
     console.error(
       "POST ERROR:",
@@ -85,30 +109,29 @@ export async function POST(
     );
 
     return NextResponse.json(
-      { error: "POST failed" },
+      {
+        error:
+          "POST failed",
+      },
       { status: 500 }
     );
   }
 }
-
 
 // UPDATE job
 export async function PUT(
   req: Request
 ) {
   try {
-    const body = await req.json();
+    const body =
+      await req.json();
 
-    const updatedJob =
-      await prisma.jobs.update({
-        where: {
-          id: BigInt(
-            body.id
-          ),
-        },
-
-        data: {
-          title: body.title,
+    const { data, error } =
+      await supabase
+        .from("jobs")
+        .update({
+          title:
+            body.title,
 
           company:
             body.company,
@@ -124,15 +147,26 @@ export async function PUT(
 
           screeningQuestions:
             body.screeningQuestions,
+        })
+        .eq("id", body.id)
+        .select()
+        .single();
+
+    if (error) {
+      console.error(error);
+
+      return NextResponse.json(
+        {
+          error:
+            error.message,
         },
-      });
+        { status: 500 }
+      );
+    }
 
-    return NextResponse.json({
-      ...updatedJob,
-
-      id:
-        updatedJob.id.toString(),
-    });
+    return NextResponse.json(
+      data
+    );
   } catch (error) {
     console.error(
       "PUT ERROR:",
@@ -149,21 +183,31 @@ export async function PUT(
   }
 }
 
-
 // DELETE job
 export async function DELETE(
   req: Request
 ) {
   try {
-    const body = await req.json();
+    const body =
+      await req.json();
 
-    await prisma.jobs.delete({
-      where: {
-        id: BigInt(
-          body.id
-        ),
-      },
-    });
+    const { error } =
+      await supabase
+        .from("jobs")
+        .delete()
+        .eq("id", body.id);
+
+    if (error) {
+      console.error(error);
+
+      return NextResponse.json(
+        {
+          error:
+            error.message,
+        },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       message:
