@@ -20,16 +20,20 @@ export default function ApplicationsPage() {
 
   const fetchApplications =
     async () => {
-      const res = await fetch(
-        `/api/applications?jobId=${jobId}`
-      );
+      try {
+        const res = await fetch(
+          `/api/applications?jobId=${jobId}`
+        );
 
-      const data =
-        await res.json();
+        const data =
+          await res.json();
 
-      setApplications(data);
-
-      setLoading(false);
+        setApplications(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     };
 
   const renderAnswers = (
@@ -135,13 +139,59 @@ export default function ApplicationsPage() {
           margin: "0 auto",
         }}
       >
-        <h1
+        {/* Header */}
+        <div
           style={{
-            color: "#1c4ed8",
+            display: "flex",
+
+            justifyContent:
+              "space-between",
+
+            alignItems: "center",
+
+            marginBottom:
+              "20px",
+
+            flexWrap: "wrap",
+
+            gap: "10px",
           }}
         >
-          Job Applicants
-        </h1>
+          <h1
+            style={{
+              color: "#1c4ed8",
+            }}
+          >
+            Job Applicants
+          </h1>
+
+          <a href="/my-jobs">
+            <button
+              style={{
+                background:
+                  "#1c4ed8",
+
+                color: "white",
+
+                border: "none",
+
+                padding:
+                  "10px 15px",
+
+                borderRadius:
+                  "5px",
+
+                cursor:
+                  "pointer",
+
+                fontWeight:
+                  "bold",
+              }}
+            >
+              Back to My Jobs
+            </button>
+          </a>
+        </div>
 
         {applications.length ===
         0 ? (

@@ -3,33 +3,64 @@
 import "./page.css";
 
 import { useEffect, useState } from "react";
+
 import { useParams } from "next/navigation";
+
+import { supabase } from "../../lib/supabase";
 
 export default function JobDetailsPage() {
   const params = useParams();
 
   const jobId = params.id;
 
-  const [job, setJob] = useState<any>(null);
+  const [job, setJob] =
+    useState<any>(null);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [user, setUser] =
+    useState<any>(null);
 
-  const [coverLetter, setCoverLetter] =
+  const [name, setName] =
     useState("");
 
-  const [resumeFile, setResumeFile] =
-    useState<File | null>(null);
+  const [email, setEmail] =
+    useState("");
 
-  const [screeningAnswers, setScreeningAnswers] =
-    useState<{ [key: string]: string }>({});
+  const [
+    coverLetter,
+    setCoverLetter,
+  ] = useState("");
+
+  const [
+    resumeFile,
+    setResumeFile,
+  ] = useState<File | null>(
+    null
+  );
+
+  const [
+    screeningAnswers,
+    setScreeningAnswers,
+  ] = useState<{
+    [key: string]: string;
+  }>({});
 
   const [loading, setLoading] =
     useState(true);
 
   useEffect(() => {
     fetchJob();
+
+    getUser();
   }, []);
+
+  const getUser = async () => {
+    const {
+      data: { user },
+    } =
+      await supabase.auth.getUser();
+
+    setUser(user);
+  };
 
   const fetchJob = async () => {
     try {
@@ -129,7 +160,9 @@ export default function JobDetailsPage() {
         setCoverLetter("");
         setResumeFile(null);
 
-        setScreeningAnswers({});
+        setScreeningAnswers(
+          {}
+        );
       } else {
         alert(
           "Failed to submit application"
@@ -168,6 +201,12 @@ export default function JobDetailsPage() {
     );
   }
 
+  // Employer owns this job?
+
+  const isOwner =
+    user?.email ===
+    job?.userEmail;
+
   return (
     <div
       style={{
@@ -175,7 +214,8 @@ export default function JobDetailsPage() {
 
         minHeight: "100vh",
 
-        padding: "30px 20px",
+        padding:
+          "30px 20px",
       }}
     >
       <div
@@ -185,24 +225,87 @@ export default function JobDetailsPage() {
           margin: "0 auto",
         }}
       >
-        {/* Job Details */}
+        {/* Header */}
+
         <div
           style={{
-            background: "white",
+            display: "flex",
 
-            padding: "30px",
+            justifyContent:
+              "space-between",
 
-            borderRadius: "12px",
+            alignItems:
+              "center",
 
-            border:
-              "1px solid #ddd",
+            marginBottom:
+              "20px",
 
-            marginBottom: "25px",
+            flexWrap: "wrap",
+
+            gap: "10px",
           }}
         >
           <h1
             style={{
               color: "#1c4ed8",
+            }}
+          >
+            Job Details
+          </h1>
+
+          <a href="/">
+            <button
+              style={{
+                background:
+                  "#1c4ed8",
+
+                color:
+                  "white",
+
+                border:
+                  "none",
+
+                padding:
+                  "10px 15px",
+
+                borderRadius:
+                  "5px",
+
+                cursor:
+                  "pointer",
+
+                fontWeight:
+                  "bold",
+              }}
+            >
+              Back to Home
+            </button>
+          </a>
+        </div>
+
+        {/* Job Details */}
+
+        <div
+          style={{
+            background:
+              "white",
+
+            padding: "30px",
+
+            borderRadius:
+              "12px",
+
+            border:
+              "1px solid #ddd",
+
+            marginBottom:
+              "25px",
+          }}
+        >
+          <h1
+            style={{
+              color:
+                "#1c4ed8",
 
               marginBottom:
                 "10px",
@@ -232,9 +335,11 @@ export default function JobDetailsPage() {
           <div
             className="job-description"
             style={{
-              lineHeight: "1.8",
+              lineHeight:
+                "1.8",
 
-              fontSize: "16px",
+              fontSize:
+                "16px",
             }}
             dangerouslySetInnerHTML={{
               __html:
@@ -243,281 +348,308 @@ export default function JobDetailsPage() {
           />
         </div>
 
-        {/* Application Form */}
-        <div
-          style={{
-            background: "white",
+        {/* Hide Apply UI for employer */}
 
-            padding: "30px",
-
-            borderRadius: "12px",
-
-            border:
-              "1px solid #ddd",
-          }}
-        >
-          <h2
+        {!isOwner && (
+          <div
             style={{
-              marginBottom:
-                "20px",
+              background:
+                "white",
+
+              padding: "30px",
+
+              borderRadius:
+                "12px",
+
+              border:
+                "1px solid #ddd",
             }}
           >
-            Apply Now
-          </h2>
-
-          <form
-            onSubmit={
-              handleSubmit
-            }
-          >
-            <input
-              type="text"
-              placeholder="Your Name"
-              value={name}
-              onChange={(e) =>
-                setName(
-                  e.target.value
-                )
-              }
-              required
-              style={{
-                width: "100%",
-
-                padding: "12px",
-
-                marginBottom:
-                  "15px",
-
-                border:
-                  "1px solid #ccc",
-
-                borderRadius:
-                  "6px",
-              }}
-            />
-
-            <input
-              type="email"
-              placeholder="Your Email"
-              value={email}
-              onChange={(e) =>
-                setEmail(
-                  e.target.value
-                )
-              }
-              required
-              style={{
-                width: "100%",
-
-                padding: "12px",
-
-                marginBottom:
-                  "20px",
-
-                border:
-                  "1px solid #ccc",
-
-                borderRadius:
-                  "6px",
-              }}
-            />
-
-            {/* Screening Questions */}
-            {job.screeningQuestions &&
-              job.screeningQuestions
-                .split("\n")
-                .filter(
-                  (q: string) =>
-                    q.trim() !==
-                    ""
-                )
-                .map(
-                  (
-                    question: string,
-                    index: number
-                  ) => (
-                    <div
-                      key={index}
-                      style={{
-                        marginBottom:
-                          "20px",
-                      }}
-                    >
-                      <p
-                        style={{
-                          fontWeight:
-                            "bold",
-
-                          marginBottom:
-                            "8px",
-                        }}
-                      >
-                        {
-                          question
-                        }
-                      </p>
-
-                      <textarea
-                        value={
-                          screeningAnswers[
-                            question
-                          ] || ""
-                        }
-                        onChange={(
-                          e
-                        ) =>
-                          handleAnswerChange(
-                            question,
-                            e.target
-                              .value
-                          )
-                        }
-                        required
-                        style={{
-                          width:
-                            "100%",
-
-                          minHeight:
-                            "100px",
-
-                          padding:
-                            "12px",
-
-                          border:
-                            "1px solid #ccc",
-
-                          borderRadius:
-                            "6px",
-                        }}
-                      />
-                    </div>
-                  )
-                )}
-
-            {/* Resume Upload */}
-            <div
+            <h2
               style={{
                 marginBottom:
                   "20px",
               }}
             >
-              <label
-                style={{
-                  display: "block",
+              Apply Now
+            </h2>
 
-                  marginBottom:
-                    "8px",
-
-                  fontWeight:
-                    "bold",
-                }}
-              >
-                Upload Resume
-              </label>
-
+            <form
+              onSubmit={
+                handleSubmit
+              }
+            >
               <input
-                type="file"
-                accept=".pdf,.doc,.docx"
+                type="text"
+                placeholder="Your Name"
+                value={name}
                 onChange={(e) =>
-                  setResumeFile(
-                    e.target
-                      .files?.[0] ||
-                      null
+                  setName(
+                    e.target.value
                   )
                 }
                 required
                 style={{
-                  width: "100%",
+                  width:
+                    "100%",
 
-                  padding: "10px",
+                  padding:
+                    "12px",
+
+                  marginBottom:
+                    "15px",
 
                   border:
                     "1px solid #ccc",
 
                   borderRadius:
                     "6px",
-
-                  background:
-                    "white",
                 }}
               />
 
-              {resumeFile && (
-                <p
+              <input
+                type="email"
+                placeholder="Your Email"
+                value={email}
+                onChange={(e) =>
+                  setEmail(
+                    e.target.value
+                  )
+                }
+                required
+                style={{
+                  width:
+                    "100%",
+
+                  padding:
+                    "12px",
+
+                  marginBottom:
+                    "20px",
+
+                  border:
+                    "1px solid #ccc",
+
+                  borderRadius:
+                    "6px",
+                }}
+              />
+
+              {/* Screening Questions */}
+
+              {job.screeningQuestions &&
+                job.screeningQuestions
+                  .split("\n")
+                  .filter(
+                    (
+                      q: string
+                    ) =>
+                      q.trim() !==
+                      ""
+                  )
+                  .map(
+                    (
+                      question: string,
+                      index: number
+                    ) => (
+                      <div
+                        key={
+                          index
+                        }
+                        style={{
+                          marginBottom:
+                            "20px",
+                        }}
+                      >
+                        <p
+                          style={{
+                            fontWeight:
+                              "bold",
+
+                            marginBottom:
+                              "8px",
+                          }}
+                        >
+                          {
+                            question
+                          }
+                        </p>
+
+                        <textarea
+                          value={
+                            screeningAnswers[
+                              question
+                            ] ||
+                            ""
+                          }
+                          onChange={(
+                            e
+                          ) =>
+                            handleAnswerChange(
+                              question,
+                              e
+                                .target
+                                .value
+                            )
+                          }
+                          required
+                          style={{
+                            width:
+                              "100%",
+
+                            minHeight:
+                              "100px",
+
+                            padding:
+                              "12px",
+
+                            border:
+                              "1px solid #ccc",
+
+                            borderRadius:
+                              "6px",
+                          }}
+                        />
+                      </div>
+                    )
+                  )}
+
+              {/* Resume Upload */}
+
+              <div
+                style={{
+                  marginBottom:
+                    "20px",
+                }}
+              >
+                <label
                   style={{
-                    marginTop:
+                    display:
+                      "block",
+
+                    marginBottom:
                       "8px",
 
-                    color:
-                      "green",
-
-                    fontSize:
-                      "14px",
+                    fontWeight:
+                      "bold",
                   }}
                 >
-                  Selected:{" "}
-                  {
-                    resumeFile.name
+                  Upload Resume
+                </label>
+
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={(e) =>
+                    setResumeFile(
+                      e.target
+                        .files?.[0] ||
+                        null
+                    )
                   }
-                </p>
-              )}
-            </div>
+                  required
+                  style={{
+                    width:
+                      "100%",
 
-            {/* Cover Letter */}
-            <textarea
-              placeholder="Cover Letter"
-              value={coverLetter}
-              onChange={(e) =>
-                setCoverLetter(
-                  e.target.value
-                )
-              }
-              style={{
-                width: "100%",
+                    padding:
+                      "10px",
 
-                minHeight:
-                  "140px",
+                    border:
+                      "1px solid #ccc",
 
-                padding: "12px",
+                    borderRadius:
+                      "6px",
 
-                marginBottom:
-                  "20px",
+                    background:
+                      "white",
+                  }}
+                />
 
-                border:
-                  "1px solid #ccc",
+                {resumeFile && (
+                  <p
+                    style={{
+                      marginTop:
+                        "8px",
 
-                borderRadius:
-                  "6px",
-              }}
-            />
+                      color:
+                        "green",
 
-            <button
-              type="submit"
-              style={{
-                background:
-                  "#1c4ed8",
+                      fontSize:
+                        "14px",
+                    }}
+                  >
+                    Selected:{" "}
+                    {
+                      resumeFile.name
+                    }
+                  </p>
+                )}
+              </div>
 
-                color: "white",
+              {/* Cover Letter */}
 
-                border: "none",
+              <textarea
+                placeholder="Cover Letter"
+                value={
+                  coverLetter
+                }
+                onChange={(e) =>
+                  setCoverLetter(
+                    e.target.value
+                  )
+                }
+                style={{
+                  width:
+                    "100%",
 
-                padding:
-                  "12px 20px",
+                  minHeight:
+                    "140px",
 
-                borderRadius:
-                  "6px",
+                  padding:
+                    "12px",
 
-                cursor:
-                  "pointer",
+                  marginBottom:
+                    "20px",
 
-                fontWeight:
-                  "bold",
-              }}
-            >
-              Submit Application
-            </button>
-          </form>
-        </div>
+                  border:
+                    "1px solid #ccc",
+
+                  borderRadius:
+                    "6px",
+                }}
+              />
+
+              <button
+                type="submit"
+                style={{
+                  background:
+                    "#1c4ed8",
+
+                  color:
+                    "white",
+
+                  border:
+                    "none",
+
+                  padding:
+                    "12px 20px",
+
+                  borderRadius:
+                    "6px",
+
+                  cursor:
+                    "pointer",
+
+                  fontWeight:
+                    "bold",
+                }}
+              >
+                Submit Application
+              </button>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -4,7 +4,12 @@ import { useState } from "react";
 
 import { supabase } from "../lib/supabase";
 
-export default function SignupPage() {
+import { useRouter } from "next/navigation";
+
+export default function ApplicantLoginPage() {
+  const router =
+    useRouter();
+
   const [email, setEmail] =
     useState("");
 
@@ -13,66 +18,13 @@ export default function SignupPage() {
     setPassword,
   ] = useState("");
 
-  // change this to true
-  // before production launch
-
-  const COMPANY_EMAIL_ONLY =
-    false;
-
-  const blockedDomains = [
-    "gmail.com",
-
-    "yahoo.com",
-
-    "outlook.com",
-
-    "hotmail.com",
-
-    "aol.com",
-
-    "icloud.com",
-
-    "protonmail.com",
-  ];
-
-  const handleSignup =
+  const handleLogin =
     async () => {
-      if (
-        !email ||
-        !password
-      ) {
-        alert(
-          "Please fill all fields"
-        );
-
-        return;
-      }
-
-      const domain =
-        email
-          .split("@")[1]
-          ?.toLowerCase();
-
-      if (
-        COMPANY_EMAIL_ONLY &&
-        blockedDomains.includes(
-          domain
-        )
-      ) {
-        alert(
-          "Please use your official company email address."
-        );
-
-        return;
-      }
-
-      // Signup user
-
       const {
         data,
         error,
       } =
-        await supabase.auth.signUp(
+        await supabase.auth.signInWithPassword(
           {
             email,
 
@@ -88,48 +40,44 @@ export default function SignupPage() {
         return;
       }
 
-      // Create profile row
-
       const userId =
         data.user?.id;
 
+      // Fetch profile
+
       if (userId) {
-        const {
-          error:
-            profileError,
-        } =
-          await supabase
-            .from(
-              "profiles"
-            )
-            .insert([
-              {
-                id: userId,
+        const res =
+          await fetch(
+            `/api/profile?userId=${userId}`
+          );
 
-                email,
+        const profile =
+          await res.json();
 
-                role:
-                  "employer",
-              },
-            ]);
+        console.log(
+          "USER ROLE:",
+          profile.role
+        );
+
+        // Safety check
 
         if (
-          profileError
+          profile.role !==
+          "applicant"
         ) {
-          console.error(
-            "PROFILE ERROR:",
-            profileError
+          alert(
+            "This is not an applicant account."
           );
-        } else {
-          console.log(
-            "PROFILE CREATED SUCCESSFULLY"
-          );
+
+          return;
         }
       }
 
       alert(
-        "Signup successful! Check your email."
+        "Applicant login successful"
       );
+
+      router.replace("/");
     };
 
   return (
@@ -157,18 +105,18 @@ export default function SignupPage() {
       <h1
         style={{
           color:
-            "#1c4ed8",
+            "#16a34a",
 
           marginBottom:
             "20px",
         }}
       >
-        Employer Signup
+        Applicant Login
       </h1>
 
       <input
         type="email"
-        placeholder="Company Email"
+        placeholder="Email"
         value={email}
         onChange={(e) =>
           setEmail(
@@ -210,7 +158,7 @@ export default function SignupPage() {
 
       <button
         onClick={
-          handleSignup
+          handleLogin
         }
         style={{
           width:
@@ -220,7 +168,7 @@ export default function SignupPage() {
             "10px",
 
           background:
-            "#1c4ed8",
+            "#16a34a",
 
           color:
             "white",
@@ -238,25 +186,8 @@ export default function SignupPage() {
             "bold",
         }}
       >
-        Sign Up
+        Login
       </button>
-
-      <p
-        style={{
-          marginTop:
-            "15px",
-
-          fontSize:
-            "14px",
-
-          color:
-            "gray",
-        }}
-      >
-        Employers should use
-        official company
-        email addresses.
-      </p>
     </div>
   );
 }

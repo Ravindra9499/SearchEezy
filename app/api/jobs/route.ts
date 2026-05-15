@@ -7,19 +7,39 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY!
 );
 
-// GET all jobs
-export async function GET() {
+// GET jobs
+export async function GET(
+  req: Request
+) {
   try {
-    const { data, error } =
-      await supabase
+    const { searchParams } =
+      new URL(req.url);
+
+    const userEmail =
+      searchParams.get(
+        "userEmail"
+      );
+
+    let query =
+      supabase
         .from("jobs")
-        .select("*")
-        .order(
-          "created_at",
-          {
-            ascending: false,
-          }
-        );
+        .select("*");
+
+    // Employer-specific filtering
+    if (userEmail) {
+      query = query.eq(
+        "userEmail",
+        userEmail
+      );
+    }
+
+    const { data, error } =
+      await query.order(
+        "created_at",
+        {
+          ascending: false,
+        }
+      );
 
     if (error) {
       console.error(error);
@@ -148,9 +168,11 @@ export async function PUT(
           screeningQuestions:
             body.screeningQuestions,
         })
-        .eq("id", body.id)
-        .select()
-        .single();
+        .eq(
+          "id",
+          Number(body.id)
+        )
+        .select();
 
     if (error) {
       console.error(error);
@@ -191,11 +213,17 @@ export async function DELETE(
     const body =
       await req.json();
 
-    const { error } =
-      await supabase
-        .from("jobs")
-        .delete()
-        .eq("id", body.id);
+    const {
+      data,
+      error,
+    } = await supabase
+      .from("jobs")
+      .delete()
+      .eq(
+        "id",
+        Number(body.id)
+      )
+      .select();
 
     if (error) {
       console.error(error);
@@ -209,9 +237,27 @@ export async function DELETE(
       );
     }
 
+    // Verify actual deletion
+
+    if (
+      !data ||
+      data.length === 0
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "No matching job found to delete",
+        },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json({
       message:
         "Job deleted",
+
+      deletedJob:
+        data[0],
     });
   } catch (error) {
     console.error(

@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { supabase } from "../lib/supabase";
 
-export default function SignupPage() {
+export default function ApplicantSignupPage() {
   const [email, setEmail] =
     useState("");
 
@@ -12,28 +12,6 @@ export default function SignupPage() {
     password,
     setPassword,
   ] = useState("");
-
-  // change this to true
-  // before production launch
-
-  const COMPANY_EMAIL_ONLY =
-    false;
-
-  const blockedDomains = [
-    "gmail.com",
-
-    "yahoo.com",
-
-    "outlook.com",
-
-    "hotmail.com",
-
-    "aol.com",
-
-    "icloud.com",
-
-    "protonmail.com",
-  ];
 
   const handleSignup =
     async () => {
@@ -48,25 +26,7 @@ export default function SignupPage() {
         return;
       }
 
-      const domain =
-        email
-          .split("@")[1]
-          ?.toLowerCase();
-
-      if (
-        COMPANY_EMAIL_ONLY &&
-        blockedDomains.includes(
-          domain
-        )
-      ) {
-        alert(
-          "Please use your official company email address."
-        );
-
-        return;
-      }
-
-      // Signup user
+      // Create auth user
 
       const {
         data,
@@ -88,7 +48,7 @@ export default function SignupPage() {
         return;
       }
 
-      // Create profile row
+      // Create applicant profile
 
       const userId =
         data.user?.id;
@@ -109,7 +69,7 @@ export default function SignupPage() {
                 email,
 
                 role:
-                  "employer",
+                  "applicant",
               },
             ]);
 
@@ -122,13 +82,13 @@ export default function SignupPage() {
           );
         } else {
           console.log(
-            "PROFILE CREATED SUCCESSFULLY"
+            "APPLICANT PROFILE CREATED"
           );
         }
       }
 
       alert(
-        "Signup successful! Check your email."
+        "Applicant signup successful!"
       );
     };
 
@@ -157,18 +117,18 @@ export default function SignupPage() {
       <h1
         style={{
           color:
-            "#1c4ed8",
+            "#16a34a",
 
           marginBottom:
             "20px",
         }}
       >
-        Employer Signup
+        Applicant Signup
       </h1>
 
       <input
         type="email"
-        placeholder="Company Email"
+        placeholder="Email"
         value={email}
         onChange={(e) =>
           setEmail(
@@ -220,7 +180,7 @@ export default function SignupPage() {
             "10px",
 
           background:
-            "#1c4ed8",
+            "#16a34a",
 
           color:
             "white",
@@ -240,23 +200,6 @@ export default function SignupPage() {
       >
         Sign Up
       </button>
-
-      <p
-        style={{
-          marginTop:
-            "15px",
-
-          fontSize:
-            "14px",
-
-          color:
-            "gray",
-        }}
-      >
-        Employers should use
-        official company
-        email addresses.
-      </p>
     </div>
   );
 }
