@@ -18,6 +18,9 @@ export default function HomeClient({
   const [role, setRole] =
     useState("");
 
+  const [displayJobs, setDisplayJobs] =
+    useState<any[]>(jobs);
+
   const [
     searchTitle,
     setSearchTitle,
@@ -52,11 +55,43 @@ export default function HomeClient({
           setRole(
             profile.role
           );
+
+          // IMPORTANT:
+          // Employers should ONLY see their own jobs
+
+          if (
+            profile.role ===
+            "employer"
+          ) {
+            const jobsRes =
+              await fetch(
+                `/api/jobs?userEmail=${user.email}`,
+                {
+                  cache:
+                    "no-store",
+                }
+              );
+
+            const employerJobs =
+              await jobsRes.json();
+
+            setDisplayJobs(
+              employerJobs
+            );
+          } else {
+            // Applicants see all jobs
+
+            setDisplayJobs(jobs);
+          }
+        } else {
+          // Public users see all jobs
+
+          setDisplayJobs(jobs);
         }
       };
 
     getUser();
-  }, []);
+  }, [jobs]);
 
   const getCurrencySymbol =
     (
@@ -83,20 +118,22 @@ export default function HomeClient({
     };
 
   const filteredJobs =
-    jobs.filter((job) => {
-      return (
-        job.title
-          ?.toLowerCase()
-          .includes(
-            searchTitle.toLowerCase()
-          ) &&
-        job.location
-          ?.toLowerCase()
-          .includes(
-            searchLocation.toLowerCase()
-          )
-      );
-    });
+    displayJobs.filter(
+      (job) => {
+        return (
+          job.title
+            ?.toLowerCase()
+            .includes(
+              searchTitle.toLowerCase()
+            ) &&
+          job.location
+            ?.toLowerCase()
+            .includes(
+              searchLocation.toLowerCase()
+            )
+        );
+      }
+    );
 
   return (
     <div
@@ -458,8 +495,6 @@ export default function HomeClient({
                     "0.2s",
                 }}
               >
-                {/* Title */}
-
                 <h3
                   style={{
                     margin:
@@ -474,8 +509,6 @@ export default function HomeClient({
                 >
                   {job.title}
                 </h3>
-
-                {/* Company */}
 
                 <p
                   style={{
@@ -492,8 +525,6 @@ export default function HomeClient({
                   {job.company}
                 </p>
 
-                {/* Location */}
-
                 <p
                   style={{
                     margin:
@@ -506,8 +537,6 @@ export default function HomeClient({
                   📍{" "}
                   {job.location}
                 </p>
-
-                {/* Job Type */}
 
                 {job.jobType && (
                   <p
@@ -526,8 +555,6 @@ export default function HomeClient({
                     {job.jobType}
                   </p>
                 )}
-
-                {/* Salary */}
 
                 {job.salaryMin &&
                   job.salaryMax && (
@@ -679,11 +706,11 @@ export default function HomeClient({
                     border:
                       "none",
 
-                    borderRadius:
-                      "8px",
+                      borderRadius:
+                        "8px",
 
-                    fontWeight:
-                      "bold",
+                      fontWeight:
+                        "bold",
                   }}
                 >
                   Applicant Mode
