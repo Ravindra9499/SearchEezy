@@ -1,29 +1,89 @@
-.job-description ul {
-  padding-left: 25px;
-  margin-top: 10px;
-  margin-bottom: 15px;
-  list-style-type: disc;
+.job-description {
+  width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  color: #222;
 }
 
-.job-description ol {
-  padding-left: 25px;
-  margin-top: 10px;
-  margin-bottom: 15px;
-  list-style-type: decimal;
+/* Paragraphs */
+
+.job-description p {
+  margin-bottom: 18px;
+  line-height: 1.9;
+  font-size: 17px;
 }
 
-.job-description li {
-  margin-bottom: 10px;
-}
+/* Headings */
 
 .job-description h1,
 .job-description h2,
 .job-description h3,
 .job-description h4 {
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  line-height: 1.4;
+  color: #111827;
 }
 
-.job-description p {
+/* Lists */
+
+.job-description ul,
+.job-description ol {
+  padding-left: 28px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.job-description ul {
+  list-style-type: disc;
+}
+
+.job-description ol {
+  list-style-type: decimal;
+}
+
+.job-description li {
   margin-bottom: 12px;
+  line-height: 1.8;
+}
+
+/* Links */
+
+.job-description a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Strong text */
+
+.job-description strong {
+  font-weight: 700;
+}
+
+/* Images */
+
+.job-description img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+/* Code blocks */
+
+.job-description pre {
+  overflow-x: auto;
+  background: #f3f4f6;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* Blockquotes */
+
+.job-description blockquote {
+  border-left: 4px solid #d1d5db;
+  padding-left: 15px;
+  color: #555;
+  margin: 20px 0;
 }

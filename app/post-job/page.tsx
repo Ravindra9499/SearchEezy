@@ -1,6 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import {
+  useState,
+  useEffect,
+} from "react";
 
 import dynamic from "next/dynamic";
 
@@ -14,9 +17,11 @@ const ReactQuill = dynamic(
 );
 
 export default function PostJobPage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] =
+    useState<any>(null);
 
-  const [title, setTitle] = useState("");
+  const [title, setTitle] =
+    useState("");
 
   const [company, setCompany] =
     useState("");
@@ -27,13 +32,37 @@ export default function PostJobPage() {
   const [jobType, setJobType] =
     useState("");
 
+  // Salary fields
+
+  const [
+    salaryMin,
+    setSalaryMin,
+  ] = useState("");
+
+  const [
+    salaryMax,
+    setSalaryMax,
+  ] = useState("");
+
+  const [
+    salaryType,
+    setSalaryType,
+  ] = useState("");
+
+  // Currency
+
+  const [currency, setCurrency] =
+    useState("USD");
+
   const [
     screeningQuestions,
     setScreeningQuestions,
   ] = useState("");
 
-  const [description, setDescription] =
-    useState("");
+  const [
+    description,
+    setDescription,
+  ] = useState("");
 
   const [loading, setLoading] =
     useState(false);
@@ -42,92 +71,132 @@ export default function PostJobPage() {
     getUser();
   }, []);
 
-  const getUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  const getUser =
+    async () => {
+      const {
+        data: { user },
+      } =
+        await supabase.auth.getUser();
 
-    if (!user) {
-      window.location.href =
-        "/login";
+      if (!user) {
+        window.location.href =
+          "/login";
 
-      return;
-    }
-
-    setUser(user);
-  };
-
-  const handleSubmit = async (
-    e: any
-  ) => {
-    e.preventDefault();
-
-    if (
-      !title ||
-      !company ||
-      !location ||
-      !description ||
-      !jobType
-    ) {
-      alert("Please fill all required fields");
-
-      return;
-    }
-
-    setLoading(true);
-
-    const res = await fetch(
-      "/api/jobs",
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-
-        body: JSON.stringify({
-          title,
-          company,
-          location,
-          description,
-          jobType,
-          screeningQuestions,
-          userEmail: user.email,
-        }),
+        return;
       }
-    );
 
-    setLoading(false);
+      setUser(user);
+    };
 
-    if (res.ok) {
-      alert("Job posted successfully");
+  const handleSubmit =
+    async (e: any) => {
+      e.preventDefault();
 
-      window.location.href =
-        "/my-jobs";
-    } else {
-      alert("Failed to post job");
-    }
-  };
+      if (
+        !title ||
+        !company ||
+        !location ||
+        !description ||
+        !jobType ||
+        !salaryMin ||
+        !salaryMax ||
+        !salaryType ||
+        !currency
+      ) {
+        alert(
+          "Please fill all required fields"
+        );
+
+        return;
+      }
+
+      setLoading(true);
+
+      const res =
+        await fetch(
+          "/api/jobs",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+
+            body: JSON.stringify(
+              {
+                title,
+
+                company,
+
+                location,
+
+                description,
+
+                jobType,
+
+                salaryMin,
+
+                salaryMax,
+
+                salaryType,
+
+                currency,
+
+                screeningQuestions,
+
+                userEmail:
+                  user.email,
+              }
+            ),
+          }
+        );
+
+      setLoading(false);
+
+      if (res.ok) {
+        alert(
+          "Job posted successfully"
+        );
+
+        window.location.href =
+          "/my-jobs";
+      } else {
+        alert(
+          "Failed to post job"
+        );
+      }
+    };
 
   return (
     <div
       style={{
-        background: "#f3f2f1",
-        minHeight: "100vh",
-        padding: "40px",
+        background:
+          "#f3f2f1",
+
+        minHeight:
+          "100vh",
+
+        padding:
+          "40px",
       }}
     >
       <div
         style={{
-          maxWidth: "950px",
-          margin: "0 auto",
+          maxWidth:
+            "950px",
 
-          background: "white",
+          margin:
+            "0 auto",
 
-          padding: "35px",
+          background:
+            "white",
 
-          borderRadius: "14px",
+          padding:
+            "35px",
+
+          borderRadius:
+            "14px",
 
           border:
             "1px solid #ddd",
@@ -135,19 +204,24 @@ export default function PostJobPage() {
       >
         <div
           style={{
-            display: "flex",
+            display:
+              "flex",
 
             justifyContent:
               "space-between",
 
-            alignItems: "center",
+            alignItems:
+              "center",
 
-            marginBottom: "20px",
+            marginBottom:
+              "20px",
           }}
         >
           <h1
             style={{
-              color: "#1c4ed8",
+              color:
+                "#1c4ed8",
+
               margin: 0,
             }}
           >
@@ -160,7 +234,8 @@ export default function PostJobPage() {
                 background:
                   "#eee",
 
-                border: "none",
+                border:
+                  "none",
 
                 padding:
                   "10px 15px",
@@ -179,8 +254,11 @@ export default function PostJobPage() {
 
         <p
           style={{
-            marginBottom: "30px",
-            color: "gray",
+            marginBottom:
+              "30px",
+
+            color:
+              "gray",
           }}
         >
           Logged in as:
@@ -197,7 +275,8 @@ export default function PostJobPage() {
 
           <div
             style={{
-              marginBottom: "20px",
+              marginBottom:
+                "20px",
             }}
           >
             <label
@@ -205,7 +284,8 @@ export default function PostJobPage() {
                 fontWeight:
                   "bold",
 
-                display: "block",
+                display:
+                  "block",
 
                 marginBottom:
                   "8px",
@@ -223,7 +303,8 @@ export default function PostJobPage() {
                 )
               }
               style={{
-                width: "100%",
+                width:
+                  "100%",
 
                 padding:
                   "14px",
@@ -244,7 +325,8 @@ export default function PostJobPage() {
 
           <div
             style={{
-              marginBottom: "20px",
+              marginBottom:
+                "20px",
             }}
           >
             <label
@@ -252,7 +334,8 @@ export default function PostJobPage() {
                 fontWeight:
                   "bold",
 
-                display: "block",
+                display:
+                  "block",
 
                 marginBottom:
                   "8px",
@@ -270,7 +353,8 @@ export default function PostJobPage() {
                 )
               }
               style={{
-                width: "100%",
+                width:
+                  "100%",
 
                 padding:
                   "14px",
@@ -291,7 +375,8 @@ export default function PostJobPage() {
 
           <div
             style={{
-              marginBottom: "20px",
+              marginBottom:
+                "20px",
             }}
           >
             <label
@@ -299,7 +384,8 @@ export default function PostJobPage() {
                 fontWeight:
                   "bold",
 
-                display: "block",
+                display:
+                  "block",
 
                 marginBottom:
                   "8px",
@@ -317,7 +403,8 @@ export default function PostJobPage() {
                 )
               }
               style={{
-                width: "100%",
+                width:
+                  "100%",
 
                 padding:
                   "14px",
@@ -338,7 +425,8 @@ export default function PostJobPage() {
 
           <div
             style={{
-              marginBottom: "20px",
+              marginBottom:
+                "20px",
             }}
           >
             <label
@@ -346,7 +434,8 @@ export default function PostJobPage() {
                 fontWeight:
                   "bold",
 
-                display: "block",
+                display:
+                  "block",
 
                 marginBottom:
                   "8px",
@@ -363,7 +452,8 @@ export default function PostJobPage() {
                 )
               }
               style={{
-                width: "100%",
+                width:
+                  "100%",
 
                 padding:
                   "14px",
@@ -408,11 +498,12 @@ export default function PostJobPage() {
             </select>
           </div>
 
-          {/* SCREENING QUESTIONS */}
+          {/* SALARY */}
 
           <div
             style={{
-              marginBottom: "25px",
+              marginBottom:
+                "25px",
             }}
           >
             <label
@@ -420,7 +511,174 @@ export default function PostJobPage() {
                 fontWeight:
                   "bold",
 
-                display: "block",
+                display:
+                  "block",
+
+                marginBottom:
+                  "12px",
+              }}
+            >
+              Salary / Compensation
+            </label>
+
+            <div
+              style={{
+                display:
+                  "flex",
+
+                gap: "10px",
+
+                flexWrap:
+                  "wrap",
+              }}
+            >
+              {/* Currency */}
+
+              <select
+                value={currency}
+                onChange={(e) =>
+                  setCurrency(
+                    e.target.value
+                  )
+                }
+                style={{
+                  flex: 1,
+
+                  padding:
+                    "14px",
+
+                  border:
+                    "1px solid #ccc",
+
+                  borderRadius:
+                    "8px",
+                }}
+              >
+                <option value="USD">
+                  USD ($)
+                </option>
+
+                <option value="INR">
+                  INR (₹)
+                </option>
+
+                <option value="EUR">
+                  EUR (€)
+                </option>
+
+                <option value="GBP">
+                  GBP (£)
+                </option>
+              </select>
+
+              {/* Min */}
+
+              <input
+                type="number"
+                placeholder="Minimum"
+                value={
+                  salaryMin
+                }
+                onChange={(e) =>
+                  setSalaryMin(
+                    e.target.value
+                  )
+                }
+                style={{
+                  flex: 1,
+
+                  padding:
+                    "14px",
+
+                  border:
+                    "1px solid #ccc",
+
+                  borderRadius:
+                    "8px",
+                }}
+              />
+
+              {/* Max */}
+
+              <input
+                type="number"
+                placeholder="Maximum"
+                value={
+                  salaryMax
+                }
+                onChange={(e) =>
+                  setSalaryMax(
+                    e.target.value
+                  )
+                }
+                style={{
+                  flex: 1,
+
+                  padding:
+                    "14px",
+
+                  border:
+                    "1px solid #ccc",
+
+                  borderRadius:
+                    "8px",
+                }}
+              />
+
+              {/* Salary Type */}
+
+              <select
+                value={
+                  salaryType
+                }
+                onChange={(e) =>
+                  setSalaryType(
+                    e.target.value
+                  )
+                }
+                style={{
+                  flex: 1,
+
+                  padding:
+                    "14px",
+
+                  border:
+                    "1px solid #ccc",
+
+                  borderRadius:
+                    "8px",
+                }}
+              >
+                <option value="">
+                  Salary Type
+                </option>
+
+                <option value="yearly">
+                  Yearly
+                </option>
+
+                <option value="hourly">
+                  Hourly
+                </option>
+              </select>
+            </div>
+          </div>
+
+          {/* SCREENING QUESTIONS */}
+
+          <div
+            style={{
+              marginBottom:
+                "25px",
+            }}
+          >
+            <label
+              style={{
+                fontWeight:
+                  "bold",
+
+                display:
+                  "block",
 
                 marginBottom:
                   "8px",
@@ -443,7 +701,8 @@ Are you willing to relocate?`}
                 )
               }
               style={{
-                width: "100%",
+                width:
+                  "100%",
 
                 minHeight:
                   "140px",
@@ -476,7 +735,8 @@ Are you willing to relocate?`}
                 fontWeight:
                   "bold",
 
-                display: "block",
+                display:
+                  "block",
 
                 marginBottom:
                   "10px",
@@ -504,16 +764,20 @@ Are you willing to relocate?`}
           <button
             disabled={loading}
             style={{
-              width: "100%",
+              width:
+                "100%",
 
-              padding: "16px",
+              padding:
+                "16px",
 
               background:
                 "#1c4ed8",
 
-              color: "white",
+              color:
+                "white",
 
-              border: "none",
+              border:
+                "none",
 
               borderRadius:
                 "8px",

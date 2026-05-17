@@ -2,12 +2,14 @@ import { NextResponse } from "next/server";
 
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
-);
+const supabase =
+  createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_ANON_KEY!
+  );
 
 // GET jobs
+
 export async function GET(
   req: Request
 ) {
@@ -26,6 +28,7 @@ export async function GET(
         .select("*");
 
     // Employer-specific filtering
+
     if (userEmail) {
       query = query.eq(
         "userEmail",
@@ -33,11 +36,15 @@ export async function GET(
       );
     }
 
-    const { data, error } =
+    const {
+      data,
+      error,
+    } =
       await query.order(
         "created_at",
         {
-          ascending: false,
+          ascending:
+            false,
         }
       );
 
@@ -63,13 +70,17 @@ export async function GET(
     );
 
     return NextResponse.json(
-      { error: "GET failed" },
+      {
+        error:
+          "GET failed",
+      },
       { status: 500 }
     );
   }
 }
 
 // POST new job
+
 export async function POST(
   req: Request
 ) {
@@ -77,7 +88,17 @@ export async function POST(
     const body =
       await req.json();
 
-    const { data, error } =
+    // DEBUG LOG
+
+    console.log(
+      "POST JOB BODY:",
+      body
+    );
+
+    const {
+      data,
+      error,
+    } =
       await supabase
         .from("jobs")
         .insert([
@@ -96,6 +117,28 @@ export async function POST(
 
             jobType:
               body.jobType,
+
+            // Salary fields
+
+            salaryMin:
+              body.salaryMin
+                ? Number(
+                    body.salaryMin
+                  )
+                : null,
+
+            salaryMax:
+              body.salaryMax
+                ? Number(
+                    body.salaryMax
+                  )
+                : null,
+
+            salaryType:
+              body.salaryType,
+
+            currency:
+              body.currency,
 
             screeningQuestions:
               body.screeningQuestions,
@@ -139,6 +182,7 @@ export async function POST(
 }
 
 // UPDATE job
+
 export async function PUT(
   req: Request
 ) {
@@ -146,7 +190,10 @@ export async function PUT(
     const body =
       await req.json();
 
-    const { data, error } =
+    const {
+      data,
+      error,
+    } =
       await supabase
         .from("jobs")
         .update({
@@ -164,6 +211,28 @@ export async function PUT(
 
           jobType:
             body.jobType,
+
+          // Salary fields
+
+          salaryMin:
+            body.salaryMin
+              ? Number(
+                  body.salaryMin
+                )
+              : null,
+
+          salaryMax:
+            body.salaryMax
+              ? Number(
+                  body.salaryMax
+                )
+              : null,
+
+          salaryType:
+            body.salaryType,
+
+          currency:
+            body.currency,
 
           screeningQuestions:
             body.screeningQuestions,
@@ -206,6 +275,7 @@ export async function PUT(
 }
 
 // DELETE job
+
 export async function DELETE(
   req: Request
 ) {
@@ -216,14 +286,15 @@ export async function DELETE(
     const {
       data,
       error,
-    } = await supabase
-      .from("jobs")
-      .delete()
-      .eq(
-        "id",
-        Number(body.id)
-      )
-      .select();
+    } =
+      await supabase
+        .from("jobs")
+        .delete()
+        .eq(
+          "id",
+          Number(body.id)
+        )
+        .select();
 
     if (error) {
       console.error(error);

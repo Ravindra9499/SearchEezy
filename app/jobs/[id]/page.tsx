@@ -2,22 +2,30 @@
 
 import "./page.css";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import { useParams } from "next/navigation";
 
 import { supabase } from "../../lib/supabase";
 
 export default function JobDetailsPage() {
-  const params = useParams();
+  const params =
+    useParams();
 
-  const jobId = params.id;
+  const jobId =
+    params.id;
 
   const [job, setJob] =
     useState<any>(null);
 
   const [user, setUser] =
     useState<any>(null);
+
+  const [role, setRole] =
+    useState("");
 
   const [name, setName] =
     useState("");
@@ -53,135 +61,199 @@ export default function JobDetailsPage() {
     getUser();
   }, []);
 
-  const getUser = async () => {
-    const {
-      data: { user },
-    } =
-      await supabase.auth.getUser();
+  const getCurrencySymbol =
+    (
+      currency: string
+    ) => {
+      switch (
+        currency
+      ) {
+        case "USD":
+          return "$";
 
-    setUser(user);
-  };
+        case "INR":
+          return "₹";
 
-  const fetchJob = async () => {
-    try {
-      const res = await fetch(
-        `/api/jobs/${jobId}`
-      );
+        case "EUR":
+          return "€";
 
-      const data =
-        await res.json();
+        case "GBP":
+          return "£";
 
-      setJob(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+        default:
+          return "$";
+      }
+    };
 
-  const handleAnswerChange = (
-    question: string,
-    value: string
-  ) => {
-    setScreeningAnswers((prev) => ({
-      ...prev,
-      [question]: value,
-    }));
-  };
+  const getUser =
+    async () => {
+      const {
+        data: { user },
+      } =
+        await supabase.auth.getUser();
 
-  const handleSubmit = async (
-    e: React.FormEvent
-  ) => {
-    e.preventDefault();
+      setUser(user);
 
-    try {
-      let resumeLink = "";
+      // Fetch role
 
-      // Upload Resume
-      if (resumeFile) {
-        const formData =
-          new FormData();
-
-        formData.append(
-          "file",
-          resumeFile
-        );
-
-        const uploadRes =
+      if (user?.id) {
+        const res =
           await fetch(
-            "/api/upload-resume",
+            `/api/profile?userId=${user.id}`
+          );
+
+        const profile =
+          await res.json();
+
+        setRole(
+          profile.role
+        );
+      }
+    };
+
+  const fetchJob =
+    async () => {
+      try {
+        const res =
+          await fetch(
+            `/api/jobs/${jobId}`
+          );
+
+        const data =
+          await res.json();
+
+        setJob(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+  const handleAnswerChange =
+    (
+      question: string,
+      value: string
+    ) => {
+      setScreeningAnswers(
+        (prev) => ({
+          ...prev,
+
+          [question]:
+            value,
+        })
+      );
+    };
+
+  const handleSubmit =
+    async (
+      e: React.FormEvent
+    ) => {
+      e.preventDefault();
+
+      try {
+        let resumeLink = "";
+
+        // Upload Resume
+
+        if (resumeFile) {
+          const formData =
+            new FormData();
+
+          formData.append(
+            "file",
+            resumeFile
+          );
+
+          const uploadRes =
+            await fetch(
+              "/api/upload-resume",
+              {
+                method:
+                  "POST",
+
+                body:
+                  formData,
+              }
+            );
+
+          const uploadData =
+            await uploadRes.json();
+
+          resumeLink =
+            uploadData.fileUrl;
+        }
+
+        // Submit Application
+
+        const res =
+          await fetch(
+            "/api/applications",
             {
-              method: "POST",
-              body: formData,
+              method:
+                "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+              },
+
+              body: JSON.stringify(
+                {
+                  name,
+
+                  email,
+
+                  coverLetter,
+
+                  resumeLink,
+
+                  screeningAnswers:
+                    JSON.stringify(
+                      screeningAnswers
+                    ),
+
+                  jobId,
+                }
+              ),
             }
           );
 
-        const uploadData =
-          await uploadRes.json();
+        if (res.ok) {
+          alert(
+            "Application submitted successfully!"
+          );
 
-        resumeLink =
-          uploadData.fileUrl;
-      }
+          setName("");
+          setEmail("");
+          setCoverLetter("");
+          setResumeFile(
+            null
+          );
 
-      // Submit Application
-      const res = await fetch(
-        "/api/applications",
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-
-          body: JSON.stringify({
-            name,
-            email,
-            coverLetter,
-            resumeLink,
-
-            screeningAnswers:
-              JSON.stringify(
-                screeningAnswers
-              ),
-
-            jobId,
-          }),
+          setScreeningAnswers(
+            {}
+          );
+        } else {
+          alert(
+            "Failed to submit application"
+          );
         }
-      );
+      } catch (error) {
+        console.error(error);
 
-      if (res.ok) {
         alert(
-          "Application submitted successfully!"
-        );
-
-        setName("");
-        setEmail("");
-        setCoverLetter("");
-        setResumeFile(null);
-
-        setScreeningAnswers(
-          {}
-        );
-      } else {
-        alert(
-          "Failed to submit application"
+          "Something went wrong"
         );
       }
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        "Something went wrong"
-      );
-    }
-  };
+    };
 
   if (loading) {
     return (
       <div
         style={{
-          padding: "20px",
+          padding:
+            "20px",
         }}
       >
         Loading...
@@ -193,7 +265,8 @@ export default function JobDetailsPage() {
     return (
       <div
         style={{
-          padding: "20px",
+          padding:
+            "20px",
         }}
       >
         Job not found
@@ -201,18 +274,20 @@ export default function JobDetailsPage() {
     );
   }
 
-  // Employer owns this job?
+  // Applicants only
 
-  const isOwner =
-    user?.email ===
-    job?.userEmail;
+  const canApply =
+    role ===
+    "applicant";
 
   return (
     <div
       style={{
-        background: "#f3f2f1",
+        background:
+          "#f3f2f1",
 
-        minHeight: "100vh",
+        minHeight:
+          "100vh",
 
         padding:
           "30px 20px",
@@ -220,16 +295,19 @@ export default function JobDetailsPage() {
     >
       <div
         style={{
-          maxWidth: "900px",
+          maxWidth:
+            "850px",
 
-          margin: "0 auto",
+          margin:
+            "0 auto",
         }}
       >
         {/* Header */}
 
         <div
           style={{
-            display: "flex",
+            display:
+              "flex",
 
             justifyContent:
               "space-between",
@@ -240,14 +318,16 @@ export default function JobDetailsPage() {
             marginBottom:
               "20px",
 
-            flexWrap: "wrap",
+            flexWrap:
+              "wrap",
 
             gap: "10px",
           }}
         >
           <h1
             style={{
-              color: "#1c4ed8",
+              color:
+                "#1c4ed8",
             }}
           >
             Job Details
@@ -290,10 +370,11 @@ export default function JobDetailsPage() {
             background:
               "white",
 
-            padding: "30px",
+            padding:
+              "35px",
 
             borderRadius:
-              "12px",
+              "14px",
 
             border:
               "1px solid #ddd",
@@ -309,37 +390,109 @@ export default function JobDetailsPage() {
 
               marginBottom:
                 "10px",
+
+              fontSize:
+                "32px",
             }}
           >
             {job.title}
           </h1>
 
-          <h3
+          <h2
             style={{
               marginBottom:
-                "10px",
+                "15px",
+
+              fontSize:
+                "24px",
             }}
           >
             {job.company}
-          </h3>
+          </h2>
 
-          <p
+          <div
             style={{
+              display:
+                "flex",
+
+              flexWrap:
+                "wrap",
+
+              gap: "20px",
+
               marginBottom:
-                "20px",
+                "25px",
+
+              color:
+                "#444",
+
+              fontSize:
+                "16px",
             }}
           >
-            📍 {job.location}
-          </p>
+            <p>
+              📍{" "}
+              {job.location}
+            </p>
+
+            {job.jobType && (
+              <p>
+                💼{" "}
+                {job.jobType}
+              </p>
+            )}
+
+            {job.salaryMin &&
+              job.salaryMax && (
+                <p>
+                  💰{" "}
+                  {getCurrencySymbol(
+                    job.currency
+                  )}
+                  {Number(
+                    job.salaryMin
+                  ).toLocaleString("en-US")}
+                  {" - "}
+                  {
+                    getCurrencySymbol(
+                      job.currency
+                    )
+                  }
+                  {Number(
+                    job.salaryMax
+                  ).toLocaleString("en-US")}
+                  {" "}
+                  {
+                    job.salaryType
+                  }
+                </p>
+              )}
+          </div>
+
+          <hr
+            style={{
+              marginBottom:
+                "30px",
+
+              border:
+                "none",
+
+              borderTop:
+                "1px solid #eee",
+            }}
+          />
 
           <div
             className="job-description"
             style={{
               lineHeight:
-                "1.8",
+                "1.9",
 
               fontSize:
-                "16px",
+                "17px",
+
+              color:
+                "#222",
             }}
             dangerouslySetInnerHTML={{
               __html:
@@ -348,15 +501,16 @@ export default function JobDetailsPage() {
           />
         </div>
 
-        {/* Hide Apply UI for employer */}
+        {/* Applicant Only */}
 
-        {!isOwner && (
+        {canApply && (
           <div
             style={{
               background:
                 "white",
 
-              padding: "30px",
+              padding:
+                "30px",
 
               borderRadius:
                 "12px",

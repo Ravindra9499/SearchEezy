@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { useParams } from "next/navigation";
 
 export default function ApplicationsPage() {
@@ -33,6 +34,59 @@ export default function ApplicationsPage() {
         console.error(error);
       } finally {
         setLoading(false);
+      }
+    };
+
+  const updateStatus =
+    async (
+      applicationId: number,
+      status: string
+    ) => {
+      try {
+        const res = await fetch(
+          "/api/applications/status",
+          {
+            method: "PUT",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+
+            body: JSON.stringify({
+              id: applicationId,
+
+              status,
+            }),
+          }
+        );
+
+        if (!res.ok) {
+          alert(
+            "Failed to update status"
+          );
+
+          return;
+        }
+
+        setApplications(
+          applications.map(
+            (app) =>
+              app.id ===
+              applicationId
+                ? {
+                    ...app,
+                    status,
+                  }
+                : app
+          )
+        );
+      } catch (error) {
+        console.error(error);
+
+        alert(
+          "Status update failed"
+        );
       }
     };
 
@@ -140,6 +194,7 @@ export default function ApplicationsPage() {
         }}
       >
         {/* Header */}
+
         <div
           style={{
             display: "flex",
@@ -221,21 +276,111 @@ export default function ApplicationsPage() {
                     "1px solid #ddd",
                 }}
               >
-                <h2>
-                  {app.name}
-                </h2>
+                {/* Applicant Header */}
 
-                <p>
-                  <strong>
-                    Email:
-                  </strong>{" "}
-                  {app.email}
-                </p>
+                <div
+                  style={{
+                    display:
+                      "flex",
+
+                    justifyContent:
+                      "space-between",
+
+                    alignItems:
+                      "center",
+
+                    flexWrap:
+                      "wrap",
+
+                    gap: "15px",
+                  }}
+                >
+                  <div>
+                    <h2>
+                      {app.name}
+                    </h2>
+
+                    <p>
+                      <strong>
+                        Email:
+                      </strong>{" "}
+                      {app.email}
+                    </p>
+                  </div>
+
+                  {/* Status Dropdown */}
+
+                  <div>
+                    <label
+                      style={{
+                        display:
+                          "block",
+
+                        marginBottom:
+                          "6px",
+
+                        fontWeight:
+                          "bold",
+                      }}
+                    >
+                      Application
+                      Status
+                    </label>
+
+                    <select
+                      value={
+                        app.status ||
+                        "Applied"
+                      }
+                      onChange={(e) =>
+                        updateStatus(
+                          app.id,
+                          e.target.value
+                        )
+                      }
+                      style={{
+                        padding:
+                          "10px",
+
+                        borderRadius:
+                          "8px",
+
+                        border:
+                          "1px solid #ccc",
+
+                        fontWeight:
+                          "bold",
+                      }}
+                    >
+                      <option>
+                        Applied
+                      </option>
+
+                      <option>
+                        Reviewing
+                      </option>
+
+                      <option>
+                        Interview
+                      </option>
+
+                      <option>
+                        Rejected
+                      </option>
+
+                      <option>
+                        Hired
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Resume */}
 
                 <div
                   style={{
                     marginTop:
-                      "15px",
+                      "20px",
                   }}
                 >
                   <strong>
@@ -256,6 +401,8 @@ export default function ApplicationsPage() {
                     "No resume uploaded"
                   )}
                 </div>
+
+                {/* Cover Letter */}
 
                 <div
                   style={{
@@ -293,6 +440,8 @@ export default function ApplicationsPage() {
                   </div>
                 </div>
 
+                {/* Screening Answers */}
+
                 <div
                   style={{
                     marginTop:
@@ -300,7 +449,8 @@ export default function ApplicationsPage() {
                   }}
                 >
                   <h3>
-                    Screening Answers
+                    Screening
+                    Answers
                   </h3>
 
                   <div

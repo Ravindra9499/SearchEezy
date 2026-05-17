@@ -58,6 +58,30 @@ export default function HomeClient({
     getUser();
   }, []);
 
+  const getCurrencySymbol =
+    (
+      currency: string
+    ) => {
+      switch (
+        currency
+      ) {
+        case "USD":
+          return "$";
+
+        case "INR":
+          return "₹";
+
+        case "EUR":
+          return "€";
+
+        case "GBP":
+          return "£";
+
+        default:
+          return "$";
+      }
+    };
+
   const filteredJobs =
     jobs.filter((job) => {
       return (
@@ -264,8 +288,18 @@ export default function HomeClient({
                 Applicant Login
               </a>
 
-              <a href="/signup">
+              <a
+                href="/signup"
+                style={{
+                  marginRight:
+                    "10px",
+                }}
+              >
                 Employer Signup
+              </a>
+
+              <a href="/applicant-signup">
+                Applicant Signup
               </a>
             </>
           )}
@@ -406,7 +440,7 @@ export default function HomeClient({
                     "white",
 
                   padding:
-                    "20px",
+                    "22px",
 
                   marginBottom:
                     "15px",
@@ -415,39 +449,55 @@ export default function HomeClient({
                     "1px solid #ddd",
 
                   borderRadius:
-                    "10px",
+                    "12px",
 
                   cursor:
                     "pointer",
+
+                  transition:
+                    "0.2s",
                 }}
               >
+                {/* Title */}
+
                 <h3
                   style={{
                     margin:
-                      "0 0 5px",
+                      "0 0 8px",
 
                     color:
                       "#1c4ed8",
+
+                    fontSize:
+                      "22px",
                   }}
                 >
                   {job.title}
                 </h3>
 
+                {/* Company */}
+
                 <p
                   style={{
-                    margin: 0,
+                    margin:
+                      "0 0 12px",
 
                     fontWeight:
                       "bold",
+
+                    fontSize:
+                      "16px",
                   }}
                 >
                   {job.company}
                 </p>
 
+                {/* Location */}
+
                 <p
                   style={{
                     margin:
-                      "5px 0",
+                      "6px 0",
 
                     color:
                       "gray",
@@ -456,6 +506,70 @@ export default function HomeClient({
                   📍{" "}
                   {job.location}
                 </p>
+
+                {/* Job Type */}
+
+                {job.jobType && (
+                  <p
+                    style={{
+                      margin:
+                        "6px 0",
+
+                      color:
+                        "#444",
+
+                      fontWeight:
+                        "500",
+                    }}
+                  >
+                    💼{" "}
+                    {job.jobType}
+                  </p>
+                )}
+
+                {/* Salary */}
+
+                {job.salaryMin &&
+                  job.salaryMax && (
+                    <p
+                      style={{
+                        margin:
+                          "8px 0 0",
+
+                        color:
+                          "#166534",
+
+                        fontWeight:
+                          "bold",
+
+                        fontSize:
+                          "16px",
+                      }}
+                    >
+                      💰{" "}
+                      {getCurrencySymbol(
+                        job.currency
+                      )}
+                      {Number(
+                        job.salaryMin
+                      ).toLocaleString(
+                        "en-US"
+                      )}
+                      {" - "}
+                      {getCurrencySymbol(
+                        job.currency
+                      )}
+                      {Number(
+                        job.salaryMax
+                      ).toLocaleString(
+                        "en-US"
+                      )}
+                      {" "}
+                      {
+                        job.salaryType
+                      }
+                    </p>
+                  )}
               </div>
             )
           )}
