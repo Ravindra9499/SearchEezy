@@ -18,8 +18,12 @@ export default function HomeClient({
   const [role, setRole] =
     useState("");
 
+  // FIXED:
+  // start with empty jobs
+  // to avoid employer flicker
+
   const [displayJobs, setDisplayJobs] =
-    useState<any[]>(jobs);
+    useState<any[]>([]);
 
   const [
     searchTitle,
@@ -56,8 +60,7 @@ export default function HomeClient({
             profile.role
           );
 
-          // IMPORTANT:
-          // Employers should ONLY see their own jobs
+          // Employers see ONLY their jobs
 
           if (
             profile.role ===
@@ -600,164 +603,6 @@ export default function HomeClient({
               </div>
             )
           )}
-        </div>
-
-        {/* RIGHT PANEL */}
-
-        <div
-          style={{
-            width:
-              "300px",
-
-            marginLeft:
-              "20px",
-          }}
-        >
-          <div
-            style={{
-              background:
-                "white",
-
-              padding:
-                "20px",
-
-              borderRadius:
-                "10px",
-
-              border:
-                "1px solid #ddd",
-            }}
-          >
-            <h3
-              style={{
-                marginTop: 0,
-              }}
-            >
-              Actions
-            </h3>
-
-            {/* Employer Actions */}
-
-            {role ===
-              "employer" && (
-              <>
-                <p>
-                  Ready to hire?
-                </p>
-
-                <a href="/post-job">
-                  <button
-                    style={{
-                      width:
-                        "100%",
-
-                      padding:
-                        "14px",
-
-                      background:
-                        "#1c4ed8",
-
-                      color:
-                        "white",
-
-                      border:
-                        "none",
-
-                      borderRadius:
-                        "8px",
-
-                      fontWeight:
-                        "bold",
-
-                      cursor:
-                        "pointer",
-                    }}
-                  >
-                    + Post a Job
-                  </button>
-                </a>
-              </>
-            )}
-
-            {/* Applicant Actions */}
-
-            {role ===
-              "applicant" && (
-              <>
-                <p>
-                  Apply to jobs
-                  easily.
-                </p>
-
-                <button
-                  style={{
-                    width:
-                      "100%",
-
-                    padding:
-                      "14px",
-
-                    background:
-                      "#16a34a",
-
-                    color:
-                      "white",
-
-                    border:
-                      "none",
-
-                      borderRadius:
-                        "8px",
-
-                      fontWeight:
-                        "bold",
-                  }}
-                >
-                  Applicant Mode
-                </button>
-              </>
-            )}
-
-            {/* Logged Out */}
-
-            {!user && (
-              <>
-                <p>
-                  Login to
-                  continue.
-                </p>
-
-                <a href="/login">
-                  <button
-                    style={{
-                      width:
-                        "100%",
-
-                      padding:
-                        "12px",
-
-                      background:
-                        "#1c4ed8",
-
-                      color:
-                        "white",
-
-                      border:
-                        "none",
-
-                      borderRadius:
-                        "8px",
-
-                      cursor:
-                        "pointer",
-                    }}
-                  >
-                    Login
-                  </button>
-                </a>
-              </>
-            )}
-          </div>
         </div>
       </div>
     </div>
