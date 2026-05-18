@@ -25,6 +25,39 @@ export async function POST(
     const body =
       await req.json();
 
+    // Fetch job details FIRST
+
+    const {
+      data: job,
+      error: jobError,
+    } =
+      await supabase
+        .from("jobs")
+        .select("*")
+        .eq(
+          "id",
+          body.jobId
+        )
+        .single();
+
+    if (
+      jobError ||
+      !job
+    ) {
+      console.error(
+        "Job fetch failed:",
+        jobError
+      );
+
+      return NextResponse.json(
+        {
+          error:
+            "Job not found",
+        },
+        { status: 404 }
+      );
+    }
+
     // Save application
 
     const {
@@ -54,6 +87,15 @@ export async function POST(
 
             jobId:
               body.jobId,
+
+            // IMPORTANT:
+            // Save employer owner
+
+            employerEmail:
+              job.userEmail,
+
+            status:
+              "Applied",
           },
         ])
         .select()
@@ -70,35 +112,6 @@ export async function POST(
             error.message,
         },
         { status: 500 }
-      );
-    }
-
-    // Fetch job details
-
-    const {
-      data: job,
-      error: jobError,
-    } =
-      await supabase
-        .from("jobs")
-        .select("*")
-        .eq(
-          "id",
-          body.jobId
-        )
-        .single();
-
-    if (
-      jobError ||
-      !job
-    ) {
-      console.error(
-        "Job fetch failed:",
-        jobError
-      );
-
-      return NextResponse.json(
-        data
       );
     }
 
@@ -154,7 +167,7 @@ export async function POST(
               </p>
 
               <a
-                href="http://localhost:3000/my-jobs"
+                href="https://searcheezy.com/my-jobs"
                 style="
                   display: inline-block;
                   padding: 12px 18px;
