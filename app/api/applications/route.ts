@@ -118,83 +118,99 @@ export async function POST(
     // Send employer email notification
 
     try {
-      await resend.emails.send(
-        {
-          from:
-            "SearchEezy <onboarding@resend.dev>",
+      const emailResult =
+        await resend.emails.send(
+          {
+            from:
+              "SearchEezy <onboarding@resend.dev>",
 
-          to: job.userEmail,
+            to: job.userEmail,
 
-          subject: `New Applicant for ${job.title}`,
+            subject: `New Applicant for ${job.title}`,
 
-          html: `
-            <div style="font-family: Arial, sans-serif; padding: 20px;">
-              
-              <h2 style="color: #1c4ed8;">
-                New Application Received
-              </h2>
+            html: `
+              <div style="font-family: Arial, sans-serif; padding: 20px;">
+                
+                <h2 style="color: #1c4ed8;">
+                  New Application Received
+                </h2>
 
-              <p>
-                You received a new applicant on SearchEezy.
-              </p>
+                <p>
+                  You received a new applicant on SearchEezy.
+                </p>
 
-              <hr />
+                <hr />
 
-              <p>
-                <strong>Job:</strong>
-                ${job.title}
-              </p>
+                <p>
+                  <strong>Job:</strong>
+                  ${job.title}
+                </p>
 
-              <p>
-                <strong>Company:</strong>
-                ${job.company}
-              </p>
+                <p>
+                  <strong>Company:</strong>
+                  ${job.company}
+                </p>
 
-              <p>
-                <strong>Applicant Name:</strong>
-                ${body.name}
-              </p>
+                <p>
+                  <strong>Applicant Name:</strong>
+                  ${body.name}
+                </p>
 
-              <p>
-                <strong>Applicant Email:</strong>
-                ${body.email}
-              </p>
+                <p>
+                  <strong>Applicant Email:</strong>
+                  ${body.email}
+                </p>
 
-              <hr />
+                <hr />
 
-              <p>
-                Login to review the application and resume.
-              </p>
+                <p>
+                  Login to review the application and resume.
+                </p>
 
-              <a
-                href="https://searcheezy.com/my-jobs"
-                style="
-                  display: inline-block;
-                  padding: 12px 18px;
-                  background: #1c4ed8;
-                  color: white;
-                  text-decoration: none;
-                  border-radius: 6px;
-                  margin-top: 10px;
-                "
-              >
-                Open My Jobs
-              </a>
+                <a
+                  href="https://searcheezy.com/my-jobs"
+                  style="
+                    display: inline-block;
+                    padding: 12px 18px;
+                    background: #1c4ed8;
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 6px;
+                    margin-top: 10px;
+                  "
+                >
+                  Open My Jobs
+                </a>
 
-            </div>
-          `,
-        }
+              </div>
+            `,
+          }
+        );
+
+      console.log(
+        "EMAIL SENT SUCCESSFULLY:"
       );
 
       console.log(
-        "Employer notification sent"
+        JSON.stringify(
+          emailResult,
+          null,
+          2
+        )
       );
     } catch (
       emailError
     ) {
       console.error(
-        "Email send failed:",
-        emailError
+        "EMAIL SEND FAILED FULL ERROR:"
+      );
+
+      console.error(
+        JSON.stringify(
+          emailError,
+          null,
+          2
+        )
       );
     }
 
