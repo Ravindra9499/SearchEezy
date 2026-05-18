@@ -219,6 +219,9 @@ export default function JobDetailsPage() {
             }
           );
 
+        const result =
+          await res.json();
+
         if (res.ok) {
           alert(
             "Application submitted successfully!"
@@ -235,8 +238,14 @@ export default function JobDetailsPage() {
             {}
           );
         } else {
+          console.error(
+            "APPLICATION ERROR:",
+            result
+          );
+
           alert(
-            "Failed to submit application"
+            result.error ||
+              "Failed to submit application"
           );
         }
       } catch (error) {
@@ -431,14 +440,12 @@ export default function JobDetailsPage() {
             }}
           >
             <p>
-              📍{" "}
-              {job.location}
+              📍 {job.location}
             </p>
 
             {job.jobType && (
               <p>
-                💼{" "}
-                {job.jobType}
+                💼 {job.jobType}
               </p>
             )}
 
@@ -453,18 +460,14 @@ export default function JobDetailsPage() {
                     job.salaryMin
                   ).toLocaleString("en-US")}
                   {" - "}
-                  {
-                    getCurrencySymbol(
-                      job.currency
-                    )
-                  }
+                  {getCurrencySymbol(
+                    job.currency
+                  )}
                   {Number(
                     job.salaryMax
                   ).toLocaleString("en-US")}
                   {" "}
-                  {
-                    job.salaryType
-                  }
+                  {job.salaryType}
                 </p>
               )}
           </div>
