@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 
-import { writeFile } from "fs/promises";
+import { createClient } from "@supabase/supabase-js";
 
-import path from "path";
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export async function POST(
   req: Request
@@ -24,33 +27,68 @@ export async function POST(
       );
     }
 
+    // Convert file
+
     const bytes =
       await file.arrayBuffer();
 
     const buffer =
       Buffer.from(bytes);
 
+    // Unique filename
+
     const fileName =
       `${Date.now()}-${file.name}`;
 
-    const uploadPath =
-      path.join(
-        process.cwd(),
-        "public/uploads/resumes",
-        fileName
+    // Upload to Supabase Storage
+
+    const { error } =
+      await supabase.storage
+        .from("resumes")
+        .upload(
+          fileName,
+          buffer,
+          {
+            contentType:
+              file.type,
+          }
+        );
+
+    if (error) {
+      console.error(
+        "SUPABASE STORAGE ERROR:",
+        error
       );
 
-    await writeFile(
-      uploadPath,
-      buffer
-    );
+      return NextResponse.json(
+        {
+          error:
+            error.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    // Generate public URL
+
+    const {
+      data: publicUrlData,
+    } =
+      supabase.storage
+        .from("resumes")
+        .getPublicUrl(
+          fileName
+        );
 
     return NextResponse.json({
       fileUrl:
-        `/uploads/resumes/${fileName}`,
+        publicUrlData.publicUrl,
     });
   } catch (error) {
-    console.error(error);
+    console.error(
+      "UPLOAD ERROR:",
+      error
+    );
 
     return NextResponse.json(
       {
