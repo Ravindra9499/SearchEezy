@@ -18,14 +18,10 @@ export default function HomeClient({
   const [role, setRole] =
     useState("");
 
-  // FIXED:
-  // start empty to avoid
-  // employer flicker
+  // Prevent employer flicker
 
   const [displayJobs, setDisplayJobs] =
     useState<any[]>([]);
-
-  // Loading state
 
   const [loading, setLoading] =
     useState(true);
@@ -50,7 +46,7 @@ export default function HomeClient({
 
         setUser(user);
 
-        // Fetch profile role
+        // Logged in user
 
         if (user?.id) {
           const res =
@@ -96,7 +92,7 @@ export default function HomeClient({
             setLoading(false);
           }
         } else {
-          // Public users see all jobs
+          // Public users
 
           setDisplayJobs(jobs);
 
@@ -234,14 +230,76 @@ export default function HomeClient({
 
                 {role ===
                   "employer" && (
-                  <a href="/my-jobs">
+                  <>
+                    <a href="/post-job">
+                      <button
+                        style={{
+                          padding:
+                            "6px 10px",
+
+                          background:
+                            "#16a34a",
+
+                          color:
+                            "white",
+
+                          border:
+                            "none",
+
+                          borderRadius:
+                            "5px",
+
+                          cursor:
+                            "pointer",
+
+                          fontWeight:
+                            "bold",
+                        }}
+                      >
+                        Post Job
+                      </button>
+                    </a>
+
+                    <a href="/my-jobs">
+                      <button
+                        style={{
+                          padding:
+                            "6px 10px",
+
+                          background:
+                            "#1c4ed8",
+
+                          color:
+                            "white",
+
+                          border:
+                            "none",
+
+                          borderRadius:
+                            "5px",
+
+                          cursor:
+                            "pointer",
+                        }}
+                      >
+                        My Jobs
+                      </button>
+                    </a>
+                  </>
+                )}
+
+                {/* Applicant UI */}
+
+                {role ===
+                  "applicant" && (
+                  <a href="/my-applications">
                     <button
                       style={{
                         padding:
                           "6px 10px",
 
                         background:
-                          "#1c4ed8",
+                          "#16a34a",
 
                         color:
                           "white",
@@ -254,37 +312,14 @@ export default function HomeClient({
 
                         cursor:
                           "pointer",
+
+                        fontWeight:
+                          "bold",
                       }}
                     >
-                      My Jobs
+                      My Applications
                     </button>
                   </a>
-                )}
-
-                {/* Applicant UI */}
-
-                {role ===
-                  "applicant" && (
-                  <button
-                    style={{
-                      padding:
-                        "6px 10px",
-
-                      background:
-                        "#16a34a",
-
-                      color:
-                        "white",
-
-                      border:
-                        "none",
-
-                      borderRadius:
-                        "5px",
-                    }}
-                  >
-                    Applicant
-                  </button>
                 )}
 
                 <button
@@ -459,8 +494,6 @@ export default function HomeClient({
             "20px auto",
         }}
       >
-        {/* JOB LIST */}
-
         <div
           style={{
             flex: 1,
@@ -557,8 +590,7 @@ export default function HomeClient({
                       "gray",
                   }}
                 >
-                  📍{" "}
-                  {job.location}
+                  📍 {job.location}
                 </p>
 
                 {job.jobType && (
@@ -574,8 +606,7 @@ export default function HomeClient({
                         "500",
                     }}
                   >
-                    💼{" "}
-                    {job.jobType}
+                    💼 {job.jobType}
                   </p>
                 )}
 
@@ -596,7 +627,8 @@ export default function HomeClient({
                           "16px",
                       }}
                     >
-                      💰{" "}
+                      💰
+                      {" "}
                       {getCurrencySymbol(
                         job.currency
                       )}
