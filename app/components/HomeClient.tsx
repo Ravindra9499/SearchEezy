@@ -19,11 +19,16 @@ export default function HomeClient({
     useState("");
 
   // FIXED:
-  // start with empty jobs
-  // to avoid employer flicker
+  // start empty to avoid
+  // employer flicker
 
   const [displayJobs, setDisplayJobs] =
     useState<any[]>([]);
+
+  // Loading state
+
+  const [loading, setLoading] =
+    useState(true);
 
   const [
     searchTitle,
@@ -81,15 +86,21 @@ export default function HomeClient({
             setDisplayJobs(
               employerJobs
             );
+
+            setLoading(false);
           } else {
             // Applicants see all jobs
 
             setDisplayJobs(jobs);
+
+            setLoading(false);
           }
         } else {
           // Public users see all jobs
 
           setDisplayJobs(jobs);
+
+          setLoading(false);
         }
       };
 
@@ -455,8 +466,17 @@ export default function HomeClient({
             flex: 1,
           }}
         >
-          {filteredJobs.length ===
-            0 && (
+          {loading ? (
+            <p
+              style={{
+                color:
+                  "gray",
+              }}
+            >
+              Loading jobs...
+            </p>
+          ) : filteredJobs.length ===
+            0 ? (
             <p
               style={{
                 color:
@@ -465,7 +485,7 @@ export default function HomeClient({
             >
               No jobs found.
             </p>
-          )}
+          ) : null}
 
           {filteredJobs.map(
             (job) => (
