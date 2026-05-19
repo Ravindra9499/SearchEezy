@@ -18,8 +18,6 @@ export default function HomeClient({
   const [role, setRole] =
     useState("");
 
-  // Prevent employer flicker
-
   const [displayJobs, setDisplayJobs] =
     useState<any[]>([]);
 
@@ -46,8 +44,6 @@ export default function HomeClient({
 
         setUser(user);
 
-        // Logged in user
-
         if (user?.id) {
           const res =
             await fetch(
@@ -61,7 +57,7 @@ export default function HomeClient({
             profile.role
           );
 
-          // Employers see ONLY their jobs
+          // Employers see only their jobs
 
           if (
             profile.role ===
@@ -85,15 +81,11 @@ export default function HomeClient({
 
             setLoading(false);
           } else {
-            // Applicants see all jobs
-
             setDisplayJobs(jobs);
 
             setLoading(false);
           }
         } else {
-          // Public users
-
           setDisplayJobs(jobs);
 
           setLoading(false);
@@ -149,10 +141,13 @@ export default function HomeClient({
     <div
       style={{
         background:
-          "#f3f2f1",
+          "#f5f7fb",
 
         minHeight:
           "100vh",
+
+        fontFamily:
+          "Arial, sans-serif",
       }}
     >
       {/* HEADER */}
@@ -163,10 +158,10 @@ export default function HomeClient({
             "white",
 
           padding:
-            "15px 30px",
+            "18px 40px",
 
           borderBottom:
-            "1px solid #ddd",
+            "1px solid #e5e7eb",
 
           display:
             "flex",
@@ -176,21 +171,47 @@ export default function HomeClient({
 
           alignItems:
             "center",
+
+          position:
+            "sticky",
+
+          top: 0,
+
+          zIndex: 100,
         }}
       >
-        <h2
-          style={{
-            margin: 0,
+        <div>
+          <h1
+            style={{
+              margin: 0,
 
-            color:
-              "#1c4ed8",
+              color:
+                "#1c4ed8",
 
-            fontWeight:
-              "bold",
-          }}
-        >
-          SearchEezy Jobs
-        </h2>
+              fontSize:
+                "30px",
+
+              fontWeight:
+                "bold",
+            }}
+          >
+            SearchEezy
+          </h1>
+
+          <p
+            style={{
+              margin: 0,
+
+              color:
+                "gray",
+
+              fontSize:
+                "14px",
+            }}
+          >
+            Modern Hiring Platform
+          </p>
+        </div>
 
         <div>
           {user ? (
@@ -198,24 +219,13 @@ export default function HomeClient({
               <p
                 style={{
                   marginBottom:
-                    "10px",
+                    "6px",
+
+                  fontSize:
+                    "14px",
                 }}
               >
-                Logged in as:
-                {" "}
                 {user.email}
-              </p>
-
-              <p
-                style={{
-                  color:
-                    "gray",
-
-                  marginBottom:
-                    "10px",
-                }}
-              >
-                Role: {role}
               </p>
 
               <div
@@ -224,19 +234,17 @@ export default function HomeClient({
                     "flex",
 
                   gap: "10px",
+
+                  flexWrap:
+                    "wrap",
                 }}
               >
-                {/* Employer UI */}
-
                 {role ===
                   "employer" && (
                   <>
                     <a href="/post-job">
                       <button
                         style={{
-                          padding:
-                            "6px 10px",
-
                           background:
                             "#16a34a",
 
@@ -246,8 +254,11 @@ export default function HomeClient({
                           border:
                             "none",
 
+                          padding:
+                            "10px 16px",
+
                           borderRadius:
-                            "5px",
+                            "8px",
 
                           cursor:
                             "pointer",
@@ -263,9 +274,6 @@ export default function HomeClient({
                     <a href="/my-jobs">
                       <button
                         style={{
-                          padding:
-                            "6px 10px",
-
                           background:
                             "#1c4ed8",
 
@@ -275,11 +283,17 @@ export default function HomeClient({
                           border:
                             "none",
 
+                          padding:
+                            "10px 16px",
+
                           borderRadius:
-                            "5px",
+                            "8px",
 
                           cursor:
                             "pointer",
+
+                          fontWeight:
+                            "bold",
                         }}
                       >
                         My Jobs
@@ -288,16 +302,11 @@ export default function HomeClient({
                   </>
                 )}
 
-                {/* Applicant UI */}
-
                 {role ===
                   "applicant" && (
                   <a href="/my-applications">
                     <button
                       style={{
-                        padding:
-                          "6px 10px",
-
                         background:
                           "#16a34a",
 
@@ -307,8 +316,11 @@ export default function HomeClient({
                         border:
                           "none",
 
+                        padding:
+                          "10px 16px",
+
                         borderRadius:
-                          "5px",
+                          "8px",
 
                         cursor:
                           "pointer",
@@ -329,11 +341,8 @@ export default function HomeClient({
                     window.location.reload();
                   }}
                   style={{
-                    padding:
-                      "6px 10px",
-
                     background:
-                      "red",
+                      "#ef4444",
 
                     color:
                       "white",
@@ -341,11 +350,17 @@ export default function HomeClient({
                     border:
                       "none",
 
+                    padding:
+                      "10px 16px",
+
                     borderRadius:
-                      "5px",
+                      "8px",
 
                     cursor:
                       "pointer",
+
+                    fontWeight:
+                      "bold",
                   }}
                 >
                   Logout
@@ -353,75 +368,218 @@ export default function HomeClient({
               </div>
             </div>
           ) : (
-            <>
-              <a
-                href="/login"
-                style={{
-                  marginRight:
-                    "10px",
-                }}
-              >
-                Employer Login
+            <div
+              style={{
+                display:
+                  "flex",
+
+                gap: "12px",
+
+                flexWrap:
+                  "wrap",
+              }}
+            >
+              <a href="/login">
+                <button
+                  style={{
+                    background:
+                      "#1c4ed8",
+
+                    color:
+                      "white",
+
+                    border:
+                      "none",
+
+                    padding:
+                      "10px 16px",
+
+                    borderRadius:
+                      "8px",
+
+                    cursor:
+                      "pointer",
+
+                    fontWeight:
+                      "bold",
+                  }}
+                >
+                  Employer Login
+                </button>
               </a>
 
-              <a
-                href="/applicant-login"
-                style={{
-                  marginRight:
-                    "10px",
-                }}
-              >
-                Applicant Login
+              <a href="/signup">
+                <button
+                  style={{
+                    background:
+                      "#16a34a",
+
+                    color:
+                      "white",
+
+                    border:
+                      "none",
+
+                    padding:
+                      "10px 16px",
+
+                    borderRadius:
+                      "8px",
+
+                    cursor:
+                      "pointer",
+
+                    fontWeight:
+                      "bold",
+                  }}
+                >
+                  Employer Signup
+                </button>
               </a>
 
-              <a
-                href="/signup"
-                style={{
-                  marginRight:
-                    "10px",
-                }}
-              >
-                Employer Signup
-              </a>
+              <a href="/applicant-login">
+                <button
+                  style={{
+                    background:
+                      "white",
 
-              <a href="/applicant-signup">
-                Applicant Signup
+                    color:
+                      "#1c4ed8",
+
+                    border:
+                      "1px solid #1c4ed8",
+
+                    padding:
+                      "10px 16px",
+
+                    borderRadius:
+                      "8px",
+
+                    cursor:
+                      "pointer",
+
+                    fontWeight:
+                      "bold",
+                  }}
+                >
+                  Applicant Login
+                </button>
               </a>
-            </>
+            </div>
           )}
         </div>
       </div>
 
-      {/* SEARCH BAR */}
+      {/* HERO */}
 
       <div
         style={{
-          background:
-            "white",
+          maxWidth:
+            "1200px",
+
+          margin:
+            "50px auto 30px",
 
           padding:
-            "20px",
-
-          borderBottom:
-            "1px solid #ddd",
+            "0 20px",
         }}
       >
         <div
           style={{
-            maxWidth:
-              "900px",
+            background:
+              "linear-gradient(to right, #1c4ed8, #2563eb)",
 
-            margin:
-              "0 auto",
+            borderRadius:
+              "24px",
+
+            padding:
+              "60px 40px",
+
+            color:
+              "white",
+
+            boxShadow:
+              "0 10px 30px rgba(0,0,0,0.1)",
+          }}
+        >
+          <h1
+            style={{
+              fontSize:
+                "48px",
+
+              marginBottom:
+                "15px",
+
+              fontWeight:
+                "bold",
+            }}
+          >
+            Find Your Next Opportunity
+          </h1>
+
+          <p
+            style={{
+              fontSize:
+                "20px",
+
+              opacity: 0.95,
+
+              maxWidth:
+                "700px",
+
+              lineHeight:
+                "1.7",
+            }}
+          >
+            SearchEezy helps
+            employers connect
+            with top talent and
+            helps candidates
+            discover meaningful
+            careers.
+          </p>
+        </div>
+      </div>
+
+      {/* SEARCH */}
+
+      <div
+        style={{
+          maxWidth:
+            "1200px",
+
+          margin:
+            "0 auto 30px",
+
+          padding:
+            "0 20px",
+        }}
+      >
+        <div
+          style={{
+            background:
+              "white",
+
+            padding:
+              "25px",
+
+            borderRadius:
+              "20px",
+
+            boxShadow:
+              "0 4px 20px rgba(0,0,0,0.05)",
 
             display:
               "flex",
 
-            gap: "10px",
+            gap: "15px",
+
+            flexWrap:
+              "wrap",
           }}
         >
           <input
-            placeholder="Job title, keywords"
+            placeholder="Job title or keyword"
             value={searchTitle}
             onChange={(e) =>
               setSearchTitle(
@@ -431,8 +589,20 @@ export default function HomeClient({
             style={{
               flex: 1,
 
+              minWidth:
+                "250px",
+
               padding:
+                "15px",
+
+              borderRadius:
                 "10px",
+
+              border:
+                "1px solid #ddd",
+
+              fontSize:
+                "16px",
             }}
           />
 
@@ -449,8 +619,20 @@ export default function HomeClient({
             style={{
               flex: 1,
 
+              minWidth:
+                "250px",
+
               padding:
+                "15px",
+
+              borderRadius:
                 "10px",
+
+              border:
+                "1px solid #ddd",
+
+              fontSize:
+                "16px",
             }}
           />
 
@@ -462,64 +644,76 @@ export default function HomeClient({
               color:
                 "white",
 
-              padding:
-                "10px 20px",
-
               border:
                 "none",
 
+              padding:
+                "15px 24px",
+
               borderRadius:
-                "5px",
+                "10px",
+
+              cursor:
+                "pointer",
 
               fontWeight:
                 "bold",
+
+              fontSize:
+                "16px",
             }}
           >
-            Search
+            Search Jobs
           </button>
         </div>
       </div>
 
-      {/* MAIN CONTENT */}
+      {/* JOB LIST */}
 
       <div
         style={{
-          display:
-            "flex",
-
           maxWidth:
-            "1100px",
+            "1200px",
 
           margin:
-            "20px auto",
+            "0 auto",
+
+          padding:
+            "0 20px 50px",
         }}
       >
+        {loading ? (
+          <p
+            style={{
+              color:
+                "gray",
+            }}
+          >
+            Loading jobs...
+          </p>
+        ) : filteredJobs.length ===
+          0 ? (
+          <p
+            style={{
+              color:
+                "gray",
+            }}
+          >
+            No jobs found.
+          </p>
+        ) : null}
+
         <div
           style={{
-            flex: 1,
+            display:
+              "grid",
+
+            gridTemplateColumns:
+              "repeat(auto-fit, minmax(320px, 1fr))",
+
+            gap: "22px",
           }}
         >
-          {loading ? (
-            <p
-              style={{
-                color:
-                  "gray",
-              }}
-            >
-              Loading jobs...
-            </p>
-          ) : filteredJobs.length ===
-            0 ? (
-            <p
-              style={{
-                color:
-                  "gray",
-              }}
-            >
-              No jobs found.
-            </p>
-          ) : null}
-
           {filteredJobs.map(
             (job) => (
               <div
@@ -532,125 +726,212 @@ export default function HomeClient({
                   background:
                     "white",
 
-                  padding:
-                    "22px",
-
-                  marginBottom:
-                    "15px",
-
-                  border:
-                    "1px solid #ddd",
-
                   borderRadius:
-                    "12px",
+                    "18px",
+
+                  padding:
+                    "28px",
 
                   cursor:
                     "pointer",
+
+                  boxShadow:
+                    "0 4px 18px rgba(0,0,0,0.05)",
+
+                  border:
+                    "1px solid #edf2f7",
 
                   transition:
                     "0.2s",
                 }}
               >
-                <h3
+                <div
                   style={{
-                    margin:
-                      "0 0 8px",
+                    display:
+                      "flex",
 
-                    color:
-                      "#1c4ed8",
+                    justifyContent:
+                      "space-between",
+
+                    alignItems:
+                      "center",
+
+                    marginBottom:
+                      "18px",
+                  }}
+                >
+                  <div
+                    style={{
+                      width:
+                        "55px",
+
+                      height:
+                        "55px",
+
+                      borderRadius:
+                        "14px",
+
+                      background:
+                        "#dbeafe",
+
+                      display:
+                        "flex",
+
+                      justifyContent:
+                        "center",
+
+                      alignItems:
+                        "center",
+
+                      fontWeight:
+                        "bold",
+
+                      color:
+                        "#1c4ed8",
+
+                      fontSize:
+                        "22px",
+                    }}
+                  >
+                    {job.company?.charAt(
+                      0
+                    )}
+                  </div>
+
+                  <div
+                    style={{
+                      background:
+                        "#dcfce7",
+
+                      color:
+                        "#166534",
+
+                      padding:
+                        "6px 12px",
+
+                      borderRadius:
+                        "20px",
+
+                      fontSize:
+                        "13px",
+
+                      fontWeight:
+                        "bold",
+                    }}
+                  >
+                    Active
+                  </div>
+                </div>
+
+                <h2
+                  style={{
+                    marginBottom:
+                      "10px",
 
                     fontSize:
-                      "22px",
+                      "24px",
+
+                    color:
+                      "#111827",
                   }}
                 >
                   {job.title}
-                </h3>
+                </h2>
 
                 <p
                   style={{
-                    margin:
-                      "0 0 12px",
+                    marginBottom:
+                      "18px",
+
+                    color:
+                      "#4b5563",
 
                     fontWeight:
                       "bold",
-
-                    fontSize:
-                      "16px",
                   }}
                 >
                   {job.company}
                 </p>
 
-                <p
+                <div
                   style={{
-                    margin:
-                      "6px 0",
+                    display:
+                      "flex",
+
+                    flexDirection:
+                      "column",
+
+                    gap: "10px",
 
                     color:
-                      "gray",
+                      "#6b7280",
+
+                    marginBottom:
+                      "20px",
                   }}
                 >
-                  📍 {job.location}
-                </p>
-
-                {job.jobType && (
-                  <p
-                    style={{
-                      margin:
-                        "6px 0",
-
-                      color:
-                        "#444",
-
-                      fontWeight:
-                        "500",
-                    }}
-                  >
-                    💼 {job.jobType}
+                  <p>
+                    📍 {job.location}
                   </p>
-                )}
+
+                  {job.jobType && (
+                    <p>
+                      💼{" "}
+                      {job.jobType}
+                    </p>
+                  )}
+                </div>
 
                 {job.salaryMin &&
                   job.salaryMax && (
-                    <p
+                    <div
                       style={{
-                        margin:
-                          "8px 0 0",
+                        marginTop:
+                          "20px",
 
-                        color:
-                          "#166534",
+                        paddingTop:
+                          "18px",
 
-                        fontWeight:
-                          "bold",
-
-                        fontSize:
-                          "16px",
+                        borderTop:
+                          "1px solid #eee",
                       }}
                     >
-                      💰
-                      {" "}
-                      {getCurrencySymbol(
-                        job.currency
-                      )}
-                      {Number(
-                        job.salaryMin
-                      ).toLocaleString(
-                        "en-US"
-                      )}
-                      {" - "}
-                      {getCurrencySymbol(
-                        job.currency
-                      )}
-                      {Number(
-                        job.salaryMax
-                      ).toLocaleString(
-                        "en-US"
-                      )}
-                      {" "}
-                      {
-                        job.salaryType
-                      }
-                    </p>
+                      <p
+                        style={{
+                          color:
+                            "#16a34a",
+
+                          fontWeight:
+                            "bold",
+
+                          fontSize:
+                            "18px",
+                        }}
+                      >
+                        💰{" "}
+                        {getCurrencySymbol(
+                          job.currency
+                        )}
+                        {Number(
+                          job.salaryMin
+                        ).toLocaleString(
+                          "en-US"
+                        )}
+                        {" - "}
+                        {getCurrencySymbol(
+                          job.currency
+                        )}
+                        {Number(
+                          job.salaryMax
+                        ).toLocaleString(
+                          "en-US"
+                        )}
+                        {" "}
+                        {
+                          job.salaryType
+                        }
+                      </p>
+                    </div>
                   )}
               </div>
             )
