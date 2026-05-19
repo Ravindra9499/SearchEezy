@@ -167,20 +167,23 @@ export async function POST(
                   Login to review the application and resume.
                 </p>
 
-                <a
-                  href="https://searcheezy.com/my-jobs"
-                  style="
-                    display: inline-block;
-                    padding: 12px 18px;
-                    background: #1c4ed8;
-                    color: white;
-                    text-decoration: none;
-                    border-radius: 6px;
-                    margin-top: 10px;
-                  "
-                >
-                  Open My Jobs
-                </a>
+                <div style="margin-top:20px;">
+                  <a
+                    href="https://www.searcheezy.com/my-jobs"
+                    target="_blank"
+                    style="
+                      background-color:#1c4ed8;
+                      color:white;
+                      padding:12px 20px;
+                      text-decoration:none;
+                      border-radius:6px;
+                      display:inline-block;
+                      font-weight:bold;
+                    "
+                  >
+                    Open My Jobs
+                  </a>
+                </div>
 
               </div>
             `,
