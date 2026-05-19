@@ -94,8 +94,6 @@ export default function JobDetailsPage() {
 
       setUser(user);
 
-      // Fetch role
-
       if (user?.id) {
         const res =
           await fetch(
@@ -154,8 +152,6 @@ export default function JobDetailsPage() {
       try {
         let resumeLink = "";
 
-        // Upload Resume
-
         if (resumeFile) {
           const formData =
             new FormData();
@@ -183,8 +179,6 @@ export default function JobDetailsPage() {
           resumeLink =
             uploadData.fileUrl;
         }
-
-        // Submit Application
 
         const res =
           await fetch(
@@ -238,11 +232,6 @@ export default function JobDetailsPage() {
             {}
           );
         } else {
-          console.error(
-            "APPLICATION ERROR:",
-            result
-          );
-
           alert(
             result.error ||
               "Failed to submit application"
@@ -262,7 +251,10 @@ export default function JobDetailsPage() {
       <div
         style={{
           padding:
-            "20px",
+            "40px",
+
+          textAlign:
+            "center",
         }}
       >
         Loading...
@@ -275,15 +267,16 @@ export default function JobDetailsPage() {
       <div
         style={{
           padding:
-            "20px",
+            "40px",
+
+          textAlign:
+            "center",
         }}
       >
         Job not found
       </div>
     );
   }
-
-  // Applicants only
 
   const canApply =
     role ===
@@ -293,25 +286,28 @@ export default function JobDetailsPage() {
     <div
       style={{
         background:
-          "#f3f2f1",
+          "#f5f7fb",
 
         minHeight:
           "100vh",
 
         padding:
-          "30px 20px",
+          "40px 20px",
+
+        fontFamily:
+          "Arial, sans-serif",
       }}
     >
       <div
         style={{
           maxWidth:
-            "850px",
+            "1200px",
 
           margin:
             "0 auto",
         }}
       >
-        {/* Header */}
+        {/* TOP BAR */}
 
         <div
           style={{
@@ -325,7 +321,7 @@ export default function JobDetailsPage() {
               "center",
 
             marginBottom:
-              "20px",
+              "25px",
 
             flexWrap:
               "wrap",
@@ -333,32 +329,20 @@ export default function JobDetailsPage() {
             gap: "10px",
           }}
         >
-          <h1
-            style={{
-              color:
-                "#1c4ed8",
-            }}
-          >
-            Job Details
-          </h1>
-
           <a href="/">
             <button
               style={{
                 background:
-                  "#1c4ed8",
-
-                color:
                   "white",
 
                 border:
-                  "none",
+                  "1px solid #d1d5db",
 
                 padding:
-                  "10px 15px",
+                  "10px 16px",
 
                 borderRadius:
-                  "5px",
+                  "10px",
 
                 cursor:
                   "pointer",
@@ -367,446 +351,604 @@ export default function JobDetailsPage() {
                   "bold",
               }}
             >
-              Back to Home
+              ← Back to Jobs
             </button>
           </a>
+
+          <div
+            style={{
+              color:
+                "#6b7280",
+
+              fontSize:
+                "14px",
+            }}
+          >
+            SearchEezy Jobs
+          </div>
         </div>
 
-        {/* Job Details */}
+        {/* HERO CARD */}
 
         <div
           style={{
             background:
-              "white",
-
-            padding:
-              "35px",
+              "linear-gradient(to right, #1c4ed8, #2563eb)",
 
             borderRadius:
-              "14px",
+              "24px",
 
-            border:
-              "1px solid #ddd",
+            padding:
+              "45px",
+
+            color:
+              "white",
 
             marginBottom:
-              "25px",
+              "30px",
+
+            boxShadow:
+              "0 10px 30px rgba(0,0,0,0.08)",
           }}
         >
-          <h1
-            style={{
-              color:
-                "#1c4ed8",
-
-              marginBottom:
-                "10px",
-
-              fontSize:
-                "32px",
-            }}
-          >
-            {job.title}
-          </h1>
-
-          <h2
-            style={{
-              marginBottom:
-                "15px",
-
-              fontSize:
-                "24px",
-            }}
-          >
-            {job.company}
-          </h2>
-
           <div
             style={{
               display:
                 "flex",
 
+              justifyContent:
+                "space-between",
+
+              alignItems:
+                "flex-start",
+
               flexWrap:
                 "wrap",
 
               gap: "20px",
-
-              marginBottom:
-                "25px",
-
-              color:
-                "#444",
-
-              fontSize:
-                "16px",
             }}
           >
-            <p>
-              📍 {job.location}
-            </p>
-
-            {job.jobType && (
-              <p>
-                💼 {job.jobType}
-              </p>
-            )}
-
-            {job.salaryMin &&
-              job.salaryMax && (
-                <p>
-                  💰{" "}
-                  {getCurrencySymbol(
-                    job.currency
-                  )}
-                  {Number(
-                    job.salaryMin
-                  ).toLocaleString("en-US")}
-                  {" - "}
-                  {getCurrencySymbol(
-                    job.currency
-                  )}
-                  {Number(
-                    job.salaryMax
-                  ).toLocaleString("en-US")}
-                  {" "}
-                  {job.salaryType}
-                </p>
-              )}
-          </div>
-
-          <hr
-            style={{
-              marginBottom:
-                "30px",
-
-              border:
-                "none",
-
-              borderTop:
-                "1px solid #eee",
-            }}
-          />
-
-          <div
-            className="job-description"
-            style={{
-              lineHeight:
-                "1.9",
-
-              fontSize:
-                "17px",
-
-              color:
-                "#222",
-            }}
-            dangerouslySetInnerHTML={{
-              __html:
-                job.description,
-            }}
-          />
-        </div>
-
-        {/* Applicant Only */}
-
-        {canApply && (
-          <div
-            style={{
-              background:
-                "white",
-
-              padding:
-                "30px",
-
-              borderRadius:
-                "12px",
-
-              border:
-                "1px solid #ddd",
-            }}
-          >
-            <h2
-              style={{
-                marginBottom:
-                  "20px",
-              }}
-            >
-              Apply Now
-            </h2>
-
-            <form
-              onSubmit={
-                handleSubmit
-              }
-            >
-              <input
-                type="text"
-                placeholder="Your Name"
-                value={name}
-                onChange={(e) =>
-                  setName(
-                    e.target.value
-                  )
-                }
-                required
-                style={{
-                  width:
-                    "100%",
-
-                  padding:
-                    "12px",
-
-                  marginBottom:
-                    "15px",
-
-                  border:
-                    "1px solid #ccc",
-
-                  borderRadius:
-                    "6px",
-                }}
-              />
-
-              <input
-                type="email"
-                placeholder="Your Email"
-                value={email}
-                onChange={(e) =>
-                  setEmail(
-                    e.target.value
-                  )
-                }
-                required
-                style={{
-                  width:
-                    "100%",
-
-                  padding:
-                    "12px",
-
-                  marginBottom:
-                    "20px",
-
-                  border:
-                    "1px solid #ccc",
-
-                  borderRadius:
-                    "6px",
-                }}
-              />
-
-              {/* Screening Questions */}
-
-              {job.screeningQuestions &&
-                job.screeningQuestions
-                  .split("\n")
-                  .filter(
-                    (
-                      q: string
-                    ) =>
-                      q.trim() !==
-                      ""
-                  )
-                  .map(
-                    (
-                      question: string,
-                      index: number
-                    ) => (
-                      <div
-                        key={
-                          index
-                        }
-                        style={{
-                          marginBottom:
-                            "20px",
-                        }}
-                      >
-                        <p
-                          style={{
-                            fontWeight:
-                              "bold",
-
-                            marginBottom:
-                              "8px",
-                          }}
-                        >
-                          {
-                            question
-                          }
-                        </p>
-
-                        <textarea
-                          value={
-                            screeningAnswers[
-                              question
-                            ] ||
-                            ""
-                          }
-                          onChange={(
-                            e
-                          ) =>
-                            handleAnswerChange(
-                              question,
-                              e
-                                .target
-                                .value
-                            )
-                          }
-                          required
-                          style={{
-                            width:
-                              "100%",
-
-                            minHeight:
-                              "100px",
-
-                            padding:
-                              "12px",
-
-                            border:
-                              "1px solid #ccc",
-
-                            borderRadius:
-                              "6px",
-                          }}
-                        />
-                      </div>
-                    )
-                  )}
-
-              {/* Resume Upload */}
-
+            <div>
               <div
                 style={{
+                  width:
+                    "70px",
+
+                  height:
+                    "70px",
+
+                  borderRadius:
+                    "18px",
+
+                  background:
+                    "rgba(255,255,255,0.2)",
+
+                  display:
+                    "flex",
+
+                  justifyContent:
+                    "center",
+
+                  alignItems:
+                    "center",
+
+                  fontSize:
+                    "28px",
+
+                  fontWeight:
+                    "bold",
+
                   marginBottom:
                     "20px",
                 }}
               >
-                <label
-                  style={{
-                    display:
-                      "block",
-
-                    marginBottom:
-                      "8px",
-
-                    fontWeight:
-                      "bold",
-                  }}
-                >
-                  Upload Resume
-                </label>
-
-                <input
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  onChange={(e) =>
-                    setResumeFile(
-                      e.target
-                        .files?.[0] ||
-                        null
-                    )
-                  }
-                  required
-                  style={{
-                    width:
-                      "100%",
-
-                    padding:
-                      "10px",
-
-                    border:
-                      "1px solid #ccc",
-
-                    borderRadius:
-                      "6px",
-
-                    background:
-                      "white",
-                  }}
-                />
-
-                {resumeFile && (
-                  <p
-                    style={{
-                      marginTop:
-                        "8px",
-
-                      color:
-                        "green",
-
-                      fontSize:
-                        "14px",
-                    }}
-                  >
-                    Selected:{" "}
-                    {
-                      resumeFile.name
-                    }
-                  </p>
+                {job.company?.charAt(
+                  0
                 )}
               </div>
 
-              {/* Cover Letter */}
-
-              <textarea
-                placeholder="Cover Letter"
-                value={
-                  coverLetter
-                }
-                onChange={(e) =>
-                  setCoverLetter(
-                    e.target.value
-                  )
-                }
+              <h1
                 style={{
-                  width:
-                    "100%",
-
-                  minHeight:
-                    "140px",
-
-                  padding:
-                    "12px",
+                  fontSize:
+                    "42px",
 
                   marginBottom:
-                    "20px",
-
-                  border:
-                    "1px solid #ccc",
-
-                  borderRadius:
-                    "6px",
-                }}
-              />
-
-              <button
-                type="submit"
-                style={{
-                  background:
-                    "#1c4ed8",
-
-                  color:
-                    "white",
-
-                  border:
-                    "none",
-
-                  padding:
-                    "12px 20px",
-
-                  borderRadius:
-                    "6px",
-
-                  cursor:
-                    "pointer",
+                    "12px",
 
                   fontWeight:
                     "bold",
                 }}
               >
-                Submit Application
-              </button>
-            </form>
+                {job.title}
+              </h1>
+
+              <h2
+                style={{
+                  fontSize:
+                    "24px",
+
+                  opacity: 0.95,
+
+                  marginBottom:
+                    "25px",
+                }}
+              >
+                {job.company}
+              </h2>
+
+              <div
+                style={{
+                  display:
+                    "flex",
+
+                  flexWrap:
+                    "wrap",
+
+                  gap: "12px",
+                }}
+              >
+                <div
+                  style={{
+                    background:
+                      "rgba(255,255,255,0.15)",
+
+                    padding:
+                      "10px 14px",
+
+                    borderRadius:
+                      "999px",
+                  }}
+                >
+                  📍 {job.location}
+                </div>
+
+                {job.jobType && (
+                  <div
+                    style={{
+                      background:
+                        "rgba(255,255,255,0.15)",
+
+                      padding:
+                        "10px 14px",
+
+                      borderRadius:
+                        "999px",
+                    }}
+                  >
+                    💼 {job.jobType}
+                  </div>
+                )}
+
+                {job.salaryMin &&
+                  job.salaryMax && (
+                    <div
+                      style={{
+                        background:
+                          "rgba(255,255,255,0.15)",
+
+                        padding:
+                          "10px 14px",
+
+                        borderRadius:
+                          "999px",
+                      }}
+                    >
+                      💰{" "}
+                      {getCurrencySymbol(
+                        job.currency
+                      )}
+                      {Number(
+                        job.salaryMin
+                      ).toLocaleString(
+                        "en-US"
+                      )}
+                      {" - "}
+                      {getCurrencySymbol(
+                        job.currency
+                      )}
+                      {Number(
+                        job.salaryMax
+                      ).toLocaleString(
+                        "en-US"
+                      )}
+                      {" "}
+                      {
+                        job.salaryType
+                      }
+                    </div>
+                  )}
+              </div>
+            </div>
+
+            <div
+              style={{
+                background:
+                  "rgba(255,255,255,0.12)",
+
+                padding:
+                  "14px 18px",
+
+                borderRadius:
+                  "16px",
+
+                fontWeight:
+                  "bold",
+              }}
+            >
+              Active Job
+            </div>
           </div>
-        )}
+        </div>
+
+        {/* MAIN GRID */}
+
+        <div
+          style={{
+            display:
+              "grid",
+
+            gridTemplateColumns:
+              "2fr 1fr",
+
+            gap: "28px",
+          }}
+        >
+          {/* LEFT */}
+
+          <div>
+            <div
+              style={{
+                background:
+                  "white",
+
+                borderRadius:
+                  "22px",
+
+                padding:
+                  "35px",
+
+                boxShadow:
+                  "0 4px 20px rgba(0,0,0,0.05)",
+              }}
+            >
+              <h2
+                style={{
+                  marginBottom:
+                    "25px",
+
+                  fontSize:
+                    "28px",
+
+                  color:
+                    "#111827",
+                }}
+              >
+                Job Description
+              </h2>
+
+              <div
+                className="job-description"
+                style={{
+                  lineHeight:
+                    "1.9",
+
+                  fontSize:
+                    "17px",
+
+                  color:
+                    "#374151",
+                }}
+                dangerouslySetInnerHTML={{
+                  __html:
+                    job.description,
+                }}
+              />
+            </div>
+          </div>
+
+          {/* RIGHT */}
+
+          <div>
+            {canApply && (
+              <div
+                style={{
+                  background:
+                    "white",
+
+                  borderRadius:
+                    "22px",
+
+                  padding:
+                    "30px",
+
+                  boxShadow:
+                    "0 4px 20px rgba(0,0,0,0.05)",
+
+                  position:
+                    "sticky",
+
+                  top: "100px",
+                }}
+              >
+                <h2
+                  style={{
+                    marginBottom:
+                      "22px",
+
+                    fontSize:
+                      "26px",
+                  }}
+                >
+                  Apply Now
+                </h2>
+
+                <form
+                  onSubmit={
+                    handleSubmit
+                  }
+                >
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    value={name}
+                    onChange={(e) =>
+                      setName(
+                        e.target.value
+                      )
+                    }
+                    required
+                    style={{
+                      width:
+                        "100%",
+
+                      padding:
+                        "14px",
+
+                      marginBottom:
+                        "16px",
+
+                      borderRadius:
+                        "12px",
+
+                      border:
+                        "1px solid #d1d5db",
+
+                      fontSize:
+                        "15px",
+                    }}
+                  />
+
+                  <input
+                    type="email"
+                    placeholder="Email Address"
+                    value={email}
+                    onChange={(e) =>
+                      setEmail(
+                        e.target.value
+                      )
+                    }
+                    required
+                    style={{
+                      width:
+                        "100%",
+
+                      padding:
+                        "14px",
+
+                      marginBottom:
+                        "16px",
+
+                      borderRadius:
+                        "12px",
+
+                      border:
+                        "1px solid #d1d5db",
+
+                      fontSize:
+                        "15px",
+                    }}
+                  />
+
+                  {job.screeningQuestions &&
+                    job.screeningQuestions
+                      .split("\n")
+                      .filter(
+                        (
+                          q: string
+                        ) =>
+                          q.trim() !==
+                          ""
+                      )
+                      .map(
+                        (
+                          question: string,
+                          index: number
+                        ) => (
+                          <div
+                            key={
+                              index
+                            }
+                            style={{
+                              marginBottom:
+                                "18px",
+                            }}
+                          >
+                            <p
+                              style={{
+                                fontWeight:
+                                  "bold",
+
+                                marginBottom:
+                                  "8px",
+                              }}
+                            >
+                              {
+                                question
+                              }
+                            </p>
+
+                            <textarea
+                              value={
+                                screeningAnswers[
+                                  question
+                                ] ||
+                                ""
+                              }
+                              onChange={(
+                                e
+                              ) =>
+                                handleAnswerChange(
+                                  question,
+                                  e
+                                    .target
+                                    .value
+                                )
+                              }
+                              required
+                              style={{
+                                width:
+                                  "100%",
+
+                                minHeight:
+                                  "110px",
+
+                                padding:
+                                  "12px",
+
+                                borderRadius:
+                                  "12px",
+
+                                border:
+                                  "1px solid #d1d5db",
+                              }}
+                            />
+                          </div>
+                        )
+                      )}
+
+                  <div
+                    style={{
+                      marginBottom:
+                        "18px",
+                    }}
+                  >
+                    <label
+                      style={{
+                        display:
+                          "block",
+
+                        marginBottom:
+                          "8px",
+
+                        fontWeight:
+                          "bold",
+                      }}
+                    >
+                      Upload Resume
+                    </label>
+
+                    <input
+                      type="file"
+                      accept=".pdf,.doc,.docx"
+                      onChange={(e) =>
+                        setResumeFile(
+                          e.target
+                            .files?.[0] ||
+                            null
+                        )
+                      }
+                      required
+                      style={{
+                        width:
+                          "100%",
+
+                        padding:
+                          "12px",
+
+                        border:
+                          "1px solid #d1d5db",
+
+                        borderRadius:
+                          "12px",
+
+                        background:
+                          "white",
+                      }}
+                    />
+                  </div>
+
+                  <textarea
+                    placeholder="Cover Letter"
+                    value={
+                      coverLetter
+                    }
+                    onChange={(e) =>
+                      setCoverLetter(
+                        e.target.value
+                      )
+                    }
+                    style={{
+                      width:
+                        "100%",
+
+                      minHeight:
+                        "150px",
+
+                      padding:
+                        "14px",
+
+                      marginBottom:
+                        "20px",
+
+                      borderRadius:
+                        "12px",
+
+                      border:
+                        "1px solid #d1d5db",
+
+                      fontSize:
+                        "15px",
+                    }}
+                  />
+
+                  <button
+                    type="submit"
+                    style={{
+                      width:
+                        "100%",
+
+                      background:
+                        "#1c4ed8",
+
+                      color:
+                        "white",
+
+                      border:
+                        "none",
+
+                      padding:
+                        "16px",
+
+                      borderRadius:
+                        "14px",
+
+                      cursor:
+                        "pointer",
+
+                      fontWeight:
+                        "bold",
+
+                      fontSize:
+                        "16px",
+                    }}
+                  >
+                    Submit Application
+                  </button>
+                </form>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
