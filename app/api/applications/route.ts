@@ -122,7 +122,7 @@ export async function POST(
         await resend.emails.send(
           {
             from:
-              "SearchEezy <onboarding@resend.dev>",
+              "SearchEezy <notifications@searcheezy.com>",
 
             to: job.userEmail,
 
