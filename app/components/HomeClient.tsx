@@ -57,8 +57,6 @@ export default function HomeClient({
             profile.role
           );
 
-          // Employers see only their jobs
-
           if (
             profile.role ===
             "employer"
@@ -465,6 +463,35 @@ export default function HomeClient({
                   Applicant Login
                 </button>
               </a>
+
+              <a href="/applicant-signup">
+                <button
+                  style={{
+                    background:
+                      "white",
+
+                    color:
+                      "#16a34a",
+
+                    border:
+                      "1px solid #16a34a",
+
+                    padding:
+                      "10px 16px",
+
+                    borderRadius:
+                      "8px",
+
+                    cursor:
+                      "pointer",
+
+                    fontWeight:
+                      "bold",
+                  }}
+                >
+                  Applicant Signup
+                </button>
+              </a>
             </div>
           )}
         </div>
@@ -740,9 +767,6 @@ export default function HomeClient({
 
                   border:
                     "1px solid #edf2f7",
-
-                  transition:
-                    "0.2s",
                 }}
               >
                 <div
