@@ -24,6 +24,9 @@ export default function HomeClient({
   const [loading, setLoading] =
     useState(true);
 
+  const [authChecked, setAuthChecked] =
+    useState(false);
+
   const [
     searchTitle,
     setSearchTitle,
@@ -78,15 +81,21 @@ export default function HomeClient({
             );
 
             setLoading(false);
+
+            setAuthChecked(true);
           } else {
             setDisplayJobs(jobs);
 
             setLoading(false);
+
+            setAuthChecked(true);
           }
         } else {
           setDisplayJobs(jobs);
 
           setLoading(false);
+
+          setAuthChecked(true);
         }
       };
 
@@ -311,20 +320,20 @@ export default function HomeClient({
                         color:
                           "white",
 
-                        border:
-                          "none",
+                          border:
+                            "none",
 
-                        padding:
-                          "10px 16px",
+                          padding:
+                            "10px 16px",
 
-                        borderRadius:
-                          "8px",
+                          borderRadius:
+                            "8px",
 
-                        cursor:
-                          "pointer",
+                          cursor:
+                            "pointer",
 
-                        fontWeight:
-                          "bold",
+                          fontWeight:
+                            "bold",
                       }}
                     >
                       My Applications
@@ -499,7 +508,7 @@ export default function HomeClient({
 
       {/* HERO ONLY FOR LOGGED OUT USERS */}
 
-      {!user && (
+      {authChecked && !user && (
         <div
           style={{
             maxWidth:
