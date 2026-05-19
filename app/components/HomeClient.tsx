@@ -497,76 +497,78 @@ export default function HomeClient({
         </div>
       </div>
 
-      {/* HERO */}
+      {/* HERO ONLY FOR LOGGED OUT USERS */}
 
-      <div
-        style={{
-          maxWidth:
-            "1200px",
-
-          margin:
-            "50px auto 30px",
-
-          padding:
-            "0 20px",
-        }}
-      >
+      {!user && (
         <div
           style={{
-            background:
-              "linear-gradient(to right, #1c4ed8, #2563eb)",
+            maxWidth:
+              "1200px",
 
-            borderRadius:
-              "24px",
+            margin:
+              "50px auto 30px",
 
             padding:
-              "60px 40px",
-
-            color:
-              "white",
-
-            boxShadow:
-              "0 10px 30px rgba(0,0,0,0.1)",
+              "0 20px",
           }}
         >
-          <h1
+          <div
             style={{
-              fontSize:
-                "48px",
+              background:
+                "linear-gradient(to right, #1c4ed8, #2563eb)",
 
-              marginBottom:
-                "15px",
+              borderRadius:
+                "24px",
 
-              fontWeight:
-                "bold",
+              padding:
+                "60px 40px",
+
+              color:
+                "white",
+
+              boxShadow:
+                "0 10px 30px rgba(0,0,0,0.1)",
             }}
           >
-            Find Your Next Opportunity
-          </h1>
+            <h1
+              style={{
+                fontSize:
+                  "48px",
 
-          <p
-            style={{
-              fontSize:
-                "20px",
+                marginBottom:
+                  "15px",
 
-              opacity: 0.95,
+                fontWeight:
+                  "bold",
+              }}
+            >
+              Find Your Next Opportunity
+            </h1>
 
-              maxWidth:
-                "700px",
+            <p
+              style={{
+                fontSize:
+                  "20px",
 
-              lineHeight:
-                "1.7",
-            }}
-          >
-            SearchEezy helps
-            employers connect
-            with top talent and
-            helps candidates
-            discover meaningful
-            careers.
-          </p>
+                opacity: 0.95,
+
+                maxWidth:
+                  "700px",
+
+                lineHeight:
+                  "1.7",
+              }}
+            >
+              SearchEezy helps
+              employers connect
+              with top talent and
+              helps candidates
+              discover meaningful
+              careers.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* SEARCH */}
 
@@ -576,7 +578,9 @@ export default function HomeClient({
             "1200px",
 
           margin:
-            "0 auto 30px",
+            user
+              ? "30px auto"
+              : "0 auto 30px",
 
           padding:
             "0 20px",
