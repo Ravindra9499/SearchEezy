@@ -1,13 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import { useRouter } from "next/navigation";
 
 import { supabase } from "../lib/supabase";
 
 export default function MyJobsPage() {
-  const router = useRouter();
+  const router =
+    useRouter();
 
   const [jobs, setJobs] =
     useState<any[]>([]);
@@ -29,7 +33,6 @@ export default function MyJobsPage() {
       } =
         await supabase.auth.getUser();
 
-      // Redirect if not logged in
       if (!user) {
         router.push("/login");
 
@@ -38,7 +41,6 @@ export default function MyJobsPage() {
 
       setUser(user);
 
-      // Fetch ONLY employer jobs
       const res = await fetch(
         `/api/jobs?userEmail=${user.email}`,
         {
@@ -50,7 +52,6 @@ export default function MyJobsPage() {
       const myJobs =
         await res.json();
 
-      // Add applicant counts
       const jobsWithCounts =
         await Promise.all(
           myJobs.map(
@@ -96,14 +97,6 @@ export default function MyJobsPage() {
       if (!confirmDelete)
         return;
 
-      // DEBUG LOG
-
-      console.log(
-        "Deleting ID:",
-        id,
-        typeof id
-      );
-
       const res = await fetch(
         "/api/jobs",
         {
@@ -137,15 +130,30 @@ export default function MyJobsPage() {
       }
     };
 
+  const totalApplicants =
+    jobs.reduce(
+      (
+        total,
+        job
+      ) =>
+        total +
+        job.applicantCount,
+      0
+    );
+
   if (loading) {
     return (
-      <p
+      <div
         style={{
-          padding: "20px",
+          padding:
+            "40px",
+
+          textAlign:
+            "center",
         }}
       >
         Loading...
-      </p>
+      </div>
     );
   }
 
@@ -153,25 +161,28 @@ export default function MyJobsPage() {
     <div
       style={{
         background:
-          "#f3f2f1",
+          "#f5f7fb",
 
         minHeight:
           "100vh",
 
         padding:
-          "20px",
+          "40px 20px",
+
+        fontFamily:
+          "Arial, sans-serif",
       }}
     >
       <div
         style={{
           maxWidth:
-            "900px",
+            "1200px",
 
           margin:
             "0 auto",
         }}
       >
-        {/* Header */}
+        {/* TOP BAR */}
 
         <div
           style={{
@@ -185,236 +196,648 @@ export default function MyJobsPage() {
               "center",
 
             marginBottom:
-              "20px",
+              "30px",
+
+            flexWrap:
+              "wrap",
+
+            gap: "15px",
           }}
         >
-          <h1
-            style={{
-              color:
-                "#1c4ed8",
-            }}
-          >
-            My Jobs
-          </h1>
-
-          <button
-            onClick={() => {
-              window.location.href =
-                "/";
-            }}
-            style={{
-              background:
-                "#1c4ed8",
-
-              color:
-                "white",
-
-              border:
-                "none",
-
-              padding:
-                "10px 15px",
-
-              borderRadius:
-                "5px",
-
-              cursor:
-                "pointer",
-            }}
-          >
-            Back to Home
-          </button>
-        </div>
-
-        {/* User */}
-
-        <p
-          style={{
-            marginBottom:
-              "20px",
-          }}
-        >
-          Logged in as:
-          {" "}
-          {user?.email}
-        </p>
-
-        {/* No Jobs */}
-
-        {jobs.length === 0 ? (
-          <p>
-            You have not
-            posted any jobs
-            yet.
-          </p>
-        ) : (
-          jobs.map((job) => (
-            <div
-              key={job.id}
+          <div>
+            <h1
               style={{
-                background:
-                  "white",
+                margin: 0,
 
-                padding:
-                  "15px",
+                fontSize:
+                  "38px",
 
-                borderRadius:
-                  "10px",
-
-                marginBottom:
-                  "15px",
-
-                border:
-                  "1px solid #ddd",
+                color:
+                  "#111827",
               }}
             >
-              <h2
+              Employer Dashboard
+            </h1>
+
+            <p
+              style={{
+                color:
+                  "#6b7280",
+
+                marginTop:
+                  "8px",
+              }}
+            >
+              Manage jobs,
+              applicants, and
+              hiring workflows.
+            </p>
+          </div>
+
+          <div
+            style={{
+              display:
+                "flex",
+
+              gap: "12px",
+
+              flexWrap:
+                "wrap",
+            }}
+          >
+            <a href="/">
+              <button
                 style={{
-                  color:
-                    "#1c4ed8",
+                  background:
+                    "white",
 
-                  marginBottom:
-                    "5px",
-                }}
-              >
-                {job.title}
-              </h2>
+                  border:
+                    "1px solid #d1d5db",
 
-              <p>
-                <strong>
-                  {
-                    job.company
-                  }
-                </strong>
-              </p>
+                  padding:
+                    "12px 18px",
 
-              <p>
-                📍{" "}
-                {
-                  job.location
-                }
-              </p>
+                  borderRadius:
+                    "12px",
 
-              <p
-                style={{
-                  marginTop:
-                    "10px",
+                  cursor:
+                    "pointer",
 
                   fontWeight:
                     "bold",
                 }}
               >
-                Applicants:
-                {" "}
-                {
-                  job.applicantCount
-                }
-              </p>
+                Back Home
+              </button>
+            </a>
 
-              {/* Actions */}
-
-              <div
+            <a href="/post-job">
+              <button
                 style={{
-                  display:
-                    "flex",
+                  background:
+                    "#1c4ed8",
 
-                  gap: "10px",
+                  color:
+                    "white",
 
-                  marginTop:
-                    "10px",
+                  border:
+                    "none",
 
-                  flexWrap:
-                    "wrap",
+                  padding:
+                    "12px 18px",
+
+                  borderRadius:
+                    "12px",
+
+                  cursor:
+                    "pointer",
+
+                  fontWeight:
+                    "bold",
                 }}
               >
-                <a
-                  href={`/edit-job/${job.id}`}
-                >
-                  <button
-                    style={{
-                      background:
-                        "#1c4ed8",
+                + Post New Job
+              </button>
+            </a>
+          </div>
+        </div>
 
-                      color:
-                        "white",
+        {/* USER */}
 
-                      border:
-                        "none",
+        <div
+          style={{
+            background:
+              "white",
 
-                      padding:
-                        "8px 12px",
+            padding:
+              "20px",
 
-                      borderRadius:
-                        "5px",
+            borderRadius:
+              "18px",
 
-                      cursor:
-                        "pointer",
-                    }}
-                  >
-                    Edit Job
-                  </button>
-                </a>
+            marginBottom:
+              "25px",
 
-                <a
-                  href={`/applications/${job.id}`}
-                >
-                  <button
-                    style={{
-                      background:
-                        "green",
+            boxShadow:
+              "0 4px 20px rgba(0,0,0,0.05)",
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
 
-                      color:
-                        "white",
+              color:
+                "#374151",
+            }}
+          >
+            Logged in as:
+            {" "}
+            <strong>
+              {user?.email}
+            </strong>
+          </p>
+        </div>
 
-                      border:
-                        "none",
+        {/* ANALYTICS */}
 
-                      padding:
-                        "8px 12px",
+        <div
+          style={{
+            display:
+              "grid",
 
-                      borderRadius:
-                        "5px",
+            gridTemplateColumns:
+              "repeat(auto-fit, minmax(220px, 1fr))",
 
-                      cursor:
-                        "pointer",
-                    }}
-                  >
-                    View
-                    Applicants
-                  </button>
-                </a>
+            gap: "20px",
 
-                <button
-                  onClick={() =>
-                    deleteJob(
-                      job.id
-                    )
-                  }
+            marginBottom:
+              "35px",
+          }}
+        >
+          <div
+            style={{
+              background:
+                "white",
+
+              padding:
+                "28px",
+
+              borderRadius:
+                "20px",
+
+              boxShadow:
+                "0 4px 20px rgba(0,0,0,0.05)",
+            }}
+          >
+            <p
+              style={{
+                color:
+                  "#6b7280",
+
+                marginBottom:
+                  "10px",
+              }}
+            >
+              Total Jobs
+            </p>
+
+            <h2
+              style={{
+                margin: 0,
+
+                fontSize:
+                  "38px",
+
+                color:
+                  "#1c4ed8",
+              }}
+            >
+              {jobs.length}
+            </h2>
+          </div>
+
+          <div
+            style={{
+              background:
+                "white",
+
+              padding:
+                "28px",
+
+              borderRadius:
+                "20px",
+
+              boxShadow:
+                "0 4px 20px rgba(0,0,0,0.05)",
+            }}
+          >
+            <p
+              style={{
+                color:
+                  "#6b7280",
+
+                marginBottom:
+                  "10px",
+              }}
+            >
+              Total Applicants
+            </p>
+
+            <h2
+              style={{
+                margin: 0,
+
+                fontSize:
+                  "38px",
+
+                color:
+                  "#16a34a",
+              }}
+            >
+              {
+                totalApplicants
+              }
+            </h2>
+          </div>
+        </div>
+
+        {/* EMPTY */}
+
+        {jobs.length === 0 ? (
+          <div
+            style={{
+              background:
+                "white",
+
+              padding:
+                "50px",
+
+              borderRadius:
+                "22px",
+
+              textAlign:
+                "center",
+
+              boxShadow:
+                "0 4px 20px rgba(0,0,0,0.05)",
+            }}
+          >
+            <h2
+              style={{
+                marginBottom:
+                  "15px",
+              }}
+            >
+              No Jobs Posted
+            </h2>
+
+            <p
+              style={{
+                color:
+                  "#6b7280",
+
+                marginBottom:
+                  "25px",
+              }}
+            >
+              Start posting jobs
+              to attract
+              applicants.
+            </p>
+
+            <a href="/post-job">
+              <button
+                style={{
+                  background:
+                    "#1c4ed8",
+
+                  color:
+                    "white",
+
+                  border:
+                    "none",
+
+                  padding:
+                    "14px 22px",
+
+                  borderRadius:
+                    "12px",
+
+                  cursor:
+                    "pointer",
+
+                  fontWeight:
+                    "bold",
+                }}
+              >
+                Post Your First Job
+              </button>
+            </a>
+          </div>
+        ) : (
+          <div
+            style={{
+              display:
+                "grid",
+
+              gap: "24px",
+            }}
+          >
+            {jobs.map(
+              (job) => (
+                <div
+                  key={job.id}
                   style={{
                     background:
-                      "red",
-
-                    color:
                       "white",
 
-                    border:
-                      "none",
-
                     padding:
-                      "8px 12px",
+                      "30px",
 
                     borderRadius:
-                      "5px",
+                      "22px",
 
-                    cursor:
-                      "pointer",
+                    boxShadow:
+                      "0 4px 20px rgba(0,0,0,0.05)",
                   }}
                 >
-                  Delete Job
-                </button>
-              </div>
-            </div>
-          ))
+                  <div
+                    style={{
+                      display:
+                        "flex",
+
+                      justifyContent:
+                        "space-between",
+
+                      alignItems:
+                        "flex-start",
+
+                      flexWrap:
+                        "wrap",
+
+                      gap: "20px",
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          display:
+                            "flex",
+
+                          alignItems:
+                            "center",
+
+                          gap: "12px",
+
+                          marginBottom:
+                            "14px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width:
+                              "55px",
+
+                            height:
+                              "55px",
+
+                            borderRadius:
+                              "14px",
+
+                            background:
+                              "#dbeafe",
+
+                            display:
+                              "flex",
+
+                            justifyContent:
+                              "center",
+
+                            alignItems:
+                              "center",
+
+                            fontWeight:
+                              "bold",
+
+                            fontSize:
+                              "22px",
+
+                            color:
+                              "#1c4ed8",
+                          }}
+                        >
+                          {job.company?.charAt(
+                            0
+                          )}
+                        </div>
+
+                        <div>
+                          <h2
+                            style={{
+                              margin: 0,
+
+                              color:
+                                "#111827",
+
+                              fontSize:
+                                "28px",
+                            }}
+                          >
+                            {
+                              job.title
+                            }
+                          </h2>
+
+                          <p
+                            style={{
+                              margin:
+                                "4px 0 0 0",
+
+                              color:
+                                "#6b7280",
+                            }}
+                          >
+                            {
+                              job.company
+                            }
+                          </p>
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          display:
+                            "flex",
+
+                          gap: "14px",
+
+                          flexWrap:
+                            "wrap",
+
+                          marginTop:
+                            "15px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            background:
+                              "#f3f4f6",
+
+                            padding:
+                              "8px 14px",
+
+                            borderRadius:
+                              "999px",
+                          }}
+                        >
+                          📍{" "}
+                          {
+                            job.location
+                          }
+                        </div>
+
+                        <div
+                          style={{
+                            background:
+                              "#dcfce7",
+
+                            color:
+                              "#166534",
+
+                            padding:
+                              "8px 14px",
+
+                            borderRadius:
+                              "999px",
+
+                            fontWeight:
+                              "bold",
+                          }}
+                        >
+                          👥{" "}
+                          {
+                            job.applicantCount
+                          } Applicants
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      style={{
+                        background:
+                          "#dbeafe",
+
+                        color:
+                          "#1c4ed8",
+
+                        padding:
+                          "10px 16px",
+
+                        borderRadius:
+                          "999px",
+
+                        fontWeight:
+                          "bold",
+                      }}
+                    >
+                      Active
+                    </div>
+                  </div>
+
+                  {/* ACTIONS */}
+
+                  <div
+                    style={{
+                      display:
+                        "flex",
+
+                      gap: "12px",
+
+                      flexWrap:
+                        "wrap",
+
+                      marginTop:
+                        "28px",
+                    }}
+                  >
+                    <a
+                      href={`/edit-job/${job.id}`}
+                    >
+                      <button
+                        style={{
+                          background:
+                            "#1c4ed8",
+
+                          color:
+                            "white",
+
+                          border:
+                            "none",
+
+                          padding:
+                            "12px 18px",
+
+                          borderRadius:
+                            "12px",
+
+                          cursor:
+                            "pointer",
+
+                          fontWeight:
+                            "bold",
+                        }}
+                      >
+                        Edit Job
+                      </button>
+                    </a>
+
+                    <a
+                      href={`/applications/${job.id}`}
+                    >
+                      <button
+                        style={{
+                          background:
+                            "#16a34a",
+
+                          color:
+                            "white",
+
+                          border:
+                            "none",
+
+                          padding:
+                            "12px 18px",
+
+                          borderRadius:
+                            "12px",
+
+                          cursor:
+                            "pointer",
+
+                          fontWeight:
+                            "bold",
+                        }}
+                      >
+                        View Applicants
+                      </button>
+                    </a>
+
+                    <button
+                      onClick={() =>
+                        deleteJob(
+                          job.id
+                        )
+                      }
+                      style={{
+                        background:
+                          "#ef4444",
+
+                        color:
+                          "white",
+
+                        border:
+                          "none",
+
+                        padding:
+                          "12px 18px",
+
+                        borderRadius:
+                          "12px",
+
+                        cursor:
+                          "pointer",
+
+                        fontWeight:
+                          "bold",
+                      }}
+                    >
+                      Delete Job
+                    </button>
+                  </div>
+                </div>
+              )
+            )}
+          </div>
         )}
       </div>
     </div>
