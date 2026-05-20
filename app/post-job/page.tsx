@@ -652,6 +652,14 @@ export default function PostJobPage() {
                 <option value="INR">
                   INR (₹)
                 </option>
+
+                <option value="EUR">
+                  EUR (€)
+                </option>
+
+                <option value="GBP">
+                  GBP (£)
+                </option>
               </select>
 
               <input
@@ -759,6 +767,10 @@ export default function PostJobPage() {
             </label>
 
             <textarea
+              placeholder={`Example:
+How many years of React experience do you have?
+Do you have Node.js experience?
+Are you willing to relocate?`}
               value={
                 screeningQuestions
               }
@@ -815,6 +827,7 @@ export default function PostJobPage() {
               onChange={
                 setDescription
               }
+              placeholder="Write detailed job description..."
               style={{
                 height:
                   "350px",
