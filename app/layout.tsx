@@ -7,6 +7,8 @@ import {
 
 import "./globals.css";
 
+import GoogleAnalytics from "./components/GoogleAnalytics";
+
 const geistSans =
   Geist({
     variable:
@@ -138,6 +140,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <GoogleAnalytics />
+
         {children}
       </body>
     </html>
