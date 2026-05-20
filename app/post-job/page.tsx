@@ -32,6 +32,11 @@ export default function PostJobPage() {
   const [jobType, setJobType] =
     useState("");
 
+  // CATEGORY
+
+  const [category, setCategory] =
+    useState("");
+
   // Salary fields
 
   const [
@@ -98,6 +103,7 @@ export default function PostJobPage() {
         !location ||
         !description ||
         !jobType ||
+        !category ||
         !salaryMin ||
         !salaryMax ||
         !salaryType ||
@@ -134,6 +140,8 @@ export default function PostJobPage() {
                 description,
 
                 jobType,
+
+                category,
 
                 salaryMin,
 
@@ -498,6 +506,91 @@ export default function PostJobPage() {
             </select>
           </div>
 
+          {/* CATEGORY */}
+
+          <div
+            style={{
+              marginBottom:
+                "20px",
+            }}
+          >
+            <label
+              style={{
+                fontWeight:
+                  "bold",
+
+                display:
+                  "block",
+
+                marginBottom:
+                  "8px",
+              }}
+            >
+              Job Category
+            </label>
+
+            <select
+              value={category}
+              onChange={(e) =>
+                setCategory(
+                  e.target.value
+                )
+              }
+              style={{
+                width:
+                  "100%",
+
+                padding:
+                  "14px",
+
+                border:
+                  "1px solid #ccc",
+
+                borderRadius:
+                  "8px",
+
+                fontSize:
+                  "16px",
+              }}
+            >
+              <option value="">
+                Select Category
+              </option>
+
+              <option value="Software Engineering">
+                Software Engineering
+              </option>
+
+              <option value="Marketing">
+                Marketing
+              </option>
+
+              <option value="Sales">
+                Sales
+              </option>
+
+              <option value="Healthcare">
+                Healthcare
+              </option>
+
+              <option value="Finance">
+                Finance
+              </option>
+
+              <option value="Human Resources">
+                Human Resources
+              </option>
+
+              <option value="Design">
+                Design
+              </option>
+
+              <option value="Customer Support">
+                Customer Support
+              </option>
+            </select>
+          </div>
+
           {/* SALARY */}
 
           <div
@@ -532,8 +625,6 @@ export default function PostJobPage() {
                   "wrap",
               }}
             >
-              {/* Currency */}
-
               <select
                 value={currency}
                 onChange={(e) =>
@@ -561,24 +652,12 @@ export default function PostJobPage() {
                 <option value="INR">
                   INR (₹)
                 </option>
-
-                <option value="EUR">
-                  EUR (€)
-                </option>
-
-                <option value="GBP">
-                  GBP (£)
-                </option>
               </select>
-
-              {/* Min */}
 
               <input
                 type="number"
                 placeholder="Minimum"
-                value={
-                  salaryMin
-                }
+                value={salaryMin}
                 onChange={(e) =>
                   setSalaryMin(
                     e.target.value
@@ -598,14 +677,10 @@ export default function PostJobPage() {
                 }}
               />
 
-              {/* Max */}
-
               <input
                 type="number"
                 placeholder="Maximum"
-                value={
-                  salaryMax
-                }
+                value={salaryMax}
                 onChange={(e) =>
                   setSalaryMax(
                     e.target.value
@@ -625,12 +700,8 @@ export default function PostJobPage() {
                 }}
               />
 
-              {/* Salary Type */}
-
               <select
-                value={
-                  salaryType
-                }
+                value={salaryType}
                 onChange={(e) =>
                   setSalaryType(
                     e.target.value
@@ -688,10 +759,6 @@ export default function PostJobPage() {
             </label>
 
             <textarea
-              placeholder={`Example:
-How many years of React experience do you have?
-Do you have Node.js experience?
-Are you willing to relocate?`}
               value={
                 screeningQuestions
               }
@@ -705,7 +772,7 @@ Are you willing to relocate?`}
                   "100%",
 
                 minHeight:
-                  "140px",
+                  "120px",
 
                 padding:
                   "14px",
@@ -715,9 +782,6 @@ Are you willing to relocate?`}
 
                 borderRadius:
                   "8px",
-
-                fontSize:
-                  "15px",
               }}
             />
           </div>
@@ -747,13 +811,10 @@ Are you willing to relocate?`}
 
             <ReactQuill
               theme="snow"
-              value={
-                description
-              }
+              value={description}
               onChange={
                 setDescription
               }
-              placeholder="Write detailed job description..."
               style={{
                 height:
                   "350px",

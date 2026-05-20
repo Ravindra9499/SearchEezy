@@ -320,20 +320,20 @@ export default function HomeClient({
                         color:
                           "white",
 
-                          border:
-                            "none",
+                        border:
+                          "none",
 
-                          padding:
-                            "10px 16px",
+                        padding:
+                          "10px 16px",
 
-                          borderRadius:
-                            "8px",
+                        borderRadius:
+                          "8px",
 
-                          cursor:
-                            "pointer",
+                        cursor:
+                          "pointer",
 
-                          fontWeight:
-                            "bold",
+                        fontWeight:
+                          "bold",
                       }}
                     >
                       My Applications
@@ -917,9 +917,40 @@ export default function HomeClient({
                       {job.jobType}
                     </p>
                   )}
-                </div>
 
-                {job.salaryMin &&
+                  {job.category && (
+                    <div
+                      style={{
+                        display:
+                          "inline-block",
+
+                        background:
+                          "#eff6ff",
+
+                        color:
+                          "#1d4ed8",
+
+                        padding:
+                          "6px 12px",
+
+                        borderRadius:
+                          "20px",
+
+                        fontSize:
+                          "13px",
+
+                        fontWeight:
+                          "bold",
+
+                        width:
+                          "fit-content",
+                      }}
+                    >
+                      {job.category}
+                    </div>
+                  )}
+                </div>
+                                {job.salaryMin &&
                   job.salaryMax && (
                     <div
                       style={{

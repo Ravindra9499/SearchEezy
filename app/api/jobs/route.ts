@@ -118,6 +118,11 @@ export async function POST(
             jobType:
               body.jobType,
 
+            // NEW CATEGORY
+
+            category:
+              body.category,
+
             salaryMin:
               body.salaryMin
                 ? Number(
@@ -204,6 +209,11 @@ export async function PUT(
 
           jobType:
             body.jobType,
+
+          // NEW CATEGORY
+
+          category:
+            body.category,
 
           salaryMin:
             body.salaryMin
