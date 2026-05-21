@@ -24,9 +24,6 @@ export default function HomeClient({
   const [loading, setLoading] =
     useState(true);
 
-  const [authChecked, setAuthChecked] =
-    useState(false);
-
   const [
     searchTitle,
     setSearchTitle,
@@ -36,8 +33,6 @@ export default function HomeClient({
     searchLocation,
     setSearchLocation,
   ] = useState("");
-
-  // NEW CATEGORY FILTER
 
   const [
     selectedCategory,
@@ -86,24 +81,14 @@ export default function HomeClient({
             setDisplayJobs(
               employerJobs
             );
-
-            setLoading(false);
-
-            setAuthChecked(true);
           } else {
             setDisplayJobs(jobs);
-
-            setLoading(false);
-
-            setAuthChecked(true);
           }
         } else {
           setDisplayJobs(jobs);
-
-          setLoading(false);
-
-          setAuthChecked(true);
         }
+
+        setLoading(false);
       };
 
     getUser();
@@ -133,8 +118,6 @@ export default function HomeClient({
       }
     };
 
-  // UNIQUE CATEGORIES
-
   const categories = [
     "All",
 
@@ -149,8 +132,6 @@ export default function HomeClient({
       )
     ),
   ];
-
-  // FILTERED JOBS
 
   const filteredJobs =
     displayJobs.filter(
@@ -414,7 +395,133 @@ export default function HomeClient({
               </div>
             </div>
           ) : (
-            <div />
+            <div
+              style={{
+                display:
+                  "flex",
+
+                gap: "10px",
+
+                flexWrap:
+                  "wrap",
+              }}
+            >
+              <a href="/signup">
+                <button
+                  style={{
+                    background:
+                      "#1c4ed8",
+
+                    color:
+                      "white",
+
+                    border:
+                      "none",
+
+                    padding:
+                      "10px 16px",
+
+                    borderRadius:
+                      "8px",
+
+                    cursor:
+                      "pointer",
+
+                    fontWeight:
+                      "bold",
+                  }}
+                >
+                  Employer Signup
+                </button>
+              </a>
+
+              <a href="/login">
+                <button
+                  style={{
+                    background:
+                      "#2563eb",
+
+                    color:
+                      "white",
+
+                    border:
+                      "none",
+
+                    padding:
+                      "10px 16px",
+
+                    borderRadius:
+                      "8px",
+
+                    cursor:
+                      "pointer",
+
+                    fontWeight:
+                      "bold",
+                  }}
+                >
+                  Employer Login
+                </button>
+              </a>
+
+              <a href="/applicant-signup">
+                <button
+                  style={{
+                    background:
+                      "#16a34a",
+
+                    color:
+                      "white",
+
+                    border:
+                      "none",
+
+                    padding:
+                      "10px 16px",
+
+                    borderRadius:
+                      "8px",
+
+                    cursor:
+                      "pointer",
+
+                    fontWeight:
+                      "bold",
+                  }}
+                >
+                  Applicant Signup
+                </button>
+              </a>
+
+              <a href="/applicant-login">
+                <button
+                  style={{
+                    background:
+                      "#059669",
+
+                    color:
+                      "white",
+
+                    border:
+                      "none",
+
+                    padding:
+                      "10px 16px",
+
+                    borderRadius:
+                      "8px",
+
+                    cursor:
+                      "pointer",
+
+                    fontWeight:
+                      "bold",
+                  }}
+                >
+                  Applicant Login
+                </button>
+              </a>
+            </div>
           )}
         </div>
       </div>
