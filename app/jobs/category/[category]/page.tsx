@@ -51,159 +51,344 @@ export default async function CategoryJobsPage({
         }
       );
 
+  const getCurrencySymbol =
+    (
+      currency: string
+    ) => {
+      switch (
+        currency
+      ) {
+        case "USD":
+          return "$";
+
+        case "INR":
+          return "₹";
+
+        case "EUR":
+          return "€";
+
+        case "GBP":
+          return "£";
+
+        default:
+          return "$";
+      }
+    };
+
   return (
     <div
       style={{
-        maxWidth:
-          "1200px",
+        background:
+          "#f5f7fb",
 
-        margin:
-          "40px auto",
+        minHeight:
+          "100vh",
 
         padding:
-          "20px",
+          "40px 20px",
       }}
     >
-      <Link href="/">
-        <button
-          style={{
-            marginBottom:
-              "20px",
-
-            padding:
-              "10px 16px",
-
-            border:
-              "none",
-
-            background:
-              "#1c4ed8",
-
-            color:
-              "white",
-
-            borderRadius:
-              "8px",
-
-            cursor:
-              "pointer",
-          }}
-        >
-          ← Back Home
-        </button>
-      </Link>
-
-      <h1
+      <div
         style={{
-          fontSize:
-            "36px",
+          maxWidth:
+            "1200px",
 
-          marginBottom:
-            "30px",
-
-          color:
-            "#1c4ed8",
+          margin:
+            "0 auto",
         }}
       >
-        {category} Jobs
-      </h1>
+        <Link href="/">
+          <button
+            style={{
+              marginBottom:
+                "25px",
 
-      {!jobs ||
-      jobs.length === 0 ? (
-        <p>
-          No jobs found in
-          this category.
-        </p>
-      ) : (
+              padding:
+                "12px 18px",
+
+              border:
+                "none",
+
+              background:
+                "#1d4ed8",
+
+              color:
+                "white",
+
+              borderRadius:
+                "10px",
+
+              cursor:
+                "pointer",
+
+              fontWeight:
+                "bold",
+
+              fontSize:
+                "14px",
+            }}
+          >
+            ← Back Home
+          </button>
+        </Link>
+
         <div
           style={{
-            display:
-              "grid",
-
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(320px, 1fr))",
-
-            gap: "20px",
+            marginBottom:
+              "35px",
           }}
         >
-          {jobs.map(
-            (job: any) => (
-              <Link
-                key={job.id}
-                href={`/jobs/${job.id}`}
-                style={{
-                  textDecoration:
-                    "none",
-                }}
-              >
-                <div
+          <h1
+            style={{
+              fontSize:
+                "42px",
+
+              color:
+                "#1d4ed8",
+
+              marginBottom:
+                "10px",
+
+              textTransform:
+                "capitalize",
+            }}
+          >
+            {category} Jobs
+          </h1>
+
+          <p
+            style={{
+              color:
+                "#6b7280",
+
+              fontSize:
+                "18px",
+            }}
+          >
+            Explore latest{" "}
+            {category} opportunities
+            on SearchEezy.
+          </p>
+        </div>
+
+        {!jobs ||
+        jobs.length === 0 ? (
+          <div
+            style={{
+              background:
+                "white",
+
+              padding:
+                "40px",
+
+              borderRadius:
+                "16px",
+
+              textAlign:
+                "center",
+
+              border:
+                "1px solid #e5e7eb",
+            }}
+          >
+            <h2>
+              No jobs found
+            </h2>
+
+            <p>
+              Try checking back
+              later for new
+              openings.
+            </p>
+          </div>
+        ) : (
+          <div
+            style={{
+              display:
+                "grid",
+
+              gridTemplateColumns:
+                "repeat(auto-fit, minmax(340px, 1fr))",
+
+              gap: "24px",
+            }}
+          >
+            {jobs.map(
+              (job: any) => (
+                <Link
+                  key={job.id}
+                  href={`/jobs/${job.id}`}
                   style={{
-                    background:
-                      "white",
-
-                    border:
-                      "1px solid #ddd",
-
-                    borderRadius:
-                      "14px",
-
-                    padding:
-                      "24px",
-
-                    boxShadow:
-                      "0 4px 12px rgba(0,0,0,0.05)",
+                    textDecoration:
+                      "none",
                   }}
                 >
-                  <h2
+                  <div
                     style={{
-                      color:
-                        "#111827",
+                      background:
+                        "white",
+
+                      border:
+                        "1px solid #e5e7eb",
+
+                      borderRadius:
+                        "20px",
+
+                      padding:
+                        "28px",
+
+                      boxShadow:
+                        "0 4px 18px rgba(0,0,0,0.05)",
+
+                      transition:
+                        "all 0.2s ease",
+
+                      cursor:
+                        "pointer",
+
+                      height:
+                        "100%",
                     }}
                   >
-                    {job.title}
-                  </h2>
+                    <h2
+                      style={{
+                        color:
+                          "#111827",
 
-                  <p>
-                    {job.company}
-                  </p>
+                        marginBottom:
+                          "10px",
 
-                  <p>
-                    📍{" "}
-                    {job.location}
-                  </p>
+                        fontSize:
+                          "24px",
+                      }}
+                    >
+                      {job.title}
+                    </h2>
 
-                  {job.jobType && (
-                    <p>
-                      💼{" "}
-                      {job.jobType}
+                    <p
+                      style={{
+                        color:
+                          "#374151",
+
+                        fontSize:
+                          "18px",
+
+                        marginBottom:
+                          "14px",
+                      }}
+                    >
+                      {job.company}
                     </p>
-                  )}
 
-                  {job.salaryMin &&
-                    job.salaryMax && (
-                      <p
+                    <div
+                      style={{
+                        display:
+                          "flex",
+
+                        flexDirection:
+                          "column",
+
+                        gap: "10px",
+
+                        color:
+                          "#4b5563",
+
+                        marginBottom:
+                          "20px",
+                      }}
+                    >
+                      <p>
+                        📍{" "}
+                        {job.location}
+                      </p>
+
+                      {job.jobType && (
+                        <p>
+                          💼{" "}
+                          {
+                            job.jobType
+                          }
+                        </p>
+                      )}
+                    </div>
+
+                    {job.category && (
+                      <div
                         style={{
+                          display:
+                            "inline-block",
+
+                          background:
+                            "#dbeafe",
+
                           color:
-                            "#16a34a",
+                            "#1d4ed8",
+
+                          padding:
+                            "8px 14px",
+
+                          borderRadius:
+                            "999px",
 
                           fontWeight:
                             "bold",
+
+                          fontSize:
+                            "13px",
+
+                          marginBottom:
+                            "20px",
                         }}
                       >
-                        💰{" "}
-                        {job.salaryMin}
-                        {" - "}
                         {
-                          job.salaryMax
+                          job.category
                         }
-                      </p>
+                      </div>
                     )}
-                </div>
-              </Link>
-            )
-          )}
-        </div>
-      )}
+
+                    {job.salaryMin &&
+                      job.salaryMax && (
+                        <div>
+                          <p
+                            style={{
+                              color:
+                                "#16a34a",
+
+                              fontWeight:
+                                "bold",
+
+                              fontSize:
+                                "20px",
+                            }}
+                          >
+                            💰{" "}
+                            {getCurrencySymbol(
+                              job.currency
+                            )}
+                            {Number(
+                              job.salaryMin
+                            ).toLocaleString(
+                              "en-US"
+                            )}
+                            {" - "}
+                            {getCurrencySymbol(
+                              job.currency
+                            )}
+                            {Number(
+                              job.salaryMax
+                            ).toLocaleString(
+                              "en-US"
+                            )}
+                          </p>
+                        </div>
+                      )}
+                  </div>
+                </Link>
+              )
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
