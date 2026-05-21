@@ -628,8 +628,6 @@ export default function HomeClient({
             />
           </div>
 
-          {/* RESULTS COUNT */}
-
           <div
             style={{
               marginBottom:
@@ -823,9 +821,35 @@ export default function HomeClient({
                     {job.title}
                   </h2>
 
-                  <p>
+                  <a
+                    href={`/company/${job.company
+                      .toLowerCase()
+                      .replace(
+                        /\s+/g,
+                        "-"
+                      )}`}
+                    onClick={(e) =>
+                      e.stopPropagation()
+                    }
+                    style={{
+                      textDecoration:
+                        "none",
+
+                      color:
+                        "#1d4ed8",
+
+                      fontWeight:
+                        "bold",
+
+                      display:
+                        "inline-block",
+
+                      marginBottom:
+                        "10px",
+                    }}
+                  >
                     {job.company}
-                  </p>
+                  </a>
 
                   <p>
                     📍{" "}
