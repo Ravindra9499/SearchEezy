@@ -136,11 +136,19 @@ export default function HomeClient({
   const filteredJobs =
     displayJobs.filter(
       (job) => {
+        const searchValue =
+          searchTitle.toLowerCase();
+
         const matchesTitle =
           job.title
             ?.toLowerCase()
             .includes(
-              searchTitle.toLowerCase()
+              searchValue
+            ) ||
+          job.company
+            ?.toLowerCase()
+            .includes(
+              searchValue
             );
 
         const matchesLocation =
