@@ -772,35 +772,54 @@ export default function HomeClient({
                 )}
 
                 {job.category && (
-                  <div
+                  <a
+                    href={`/jobs/category/${job.category
+                      .toLowerCase()
+                      .replace(
+                        /\s+/g,
+                        "-"
+                      )}`}
+                    onClick={(e) =>
+                      e.stopPropagation()
+                    }
                     style={{
-                      display:
-                        "inline-block",
-
-                      background:
-                        "#eff6ff",
-
-                      color:
-                        "#1d4ed8",
-
-                      padding:
-                        "6px 12px",
-
-                      borderRadius:
-                        "20px",
-
-                      fontSize:
-                        "13px",
-
-                      fontWeight:
-                        "bold",
-
-                      marginTop:
-                        "10px",
+                      textDecoration:
+                        "none",
                     }}
                   >
-                    {job.category}
-                  </div>
+                    <div
+                      style={{
+                        display:
+                          "inline-block",
+
+                        background:
+                          "#eff6ff",
+
+                        color:
+                          "#1d4ed8",
+
+                        padding:
+                          "6px 12px",
+
+                        borderRadius:
+                          "20px",
+
+                        fontSize:
+                          "13px",
+
+                        fontWeight:
+                          "bold",
+
+                        marginTop:
+                          "10px",
+
+                        cursor:
+                          "pointer",
+                      }}
+                    >
+                      {job.category}
+                    </div>
+                  </a>
                 )}
 
                 {job.salaryMin &&
