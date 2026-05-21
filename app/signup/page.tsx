@@ -13,8 +13,11 @@ export default function SignupPage() {
     setPassword,
   ] = useState("");
 
-  // change this to true
-  // before production launch
+  const [loading, setLoading] =
+    useState(false);
+
+  // CHANGE TO TRUE
+  // BEFORE PRODUCTION LAUNCH
 
   const COMPANY_EMAIL_ONLY =
     false;
@@ -42,7 +45,7 @@ export default function SignupPage() {
         !password
       ) {
         alert(
-          "Please fill all fields"
+          "Please fill all fields."
         );
 
         return;
@@ -66,92 +69,105 @@ export default function SignupPage() {
         return;
       }
 
-      // Signup user
+      try {
+        setLoading(true);
 
-      const {
-        data,
-        error,
-      } =
-        await supabase.auth.signUp(
-          {
-            email,
-
-            password,
-          }
-        );
-
-      if (error) {
-        alert(
-          error.message
-        );
-
-        return;
-      }
-
-      // Create profile row
-
-      const userId =
-        data.user?.id;
-
-      if (userId) {
         const {
-          error:
-            profileError,
+          data,
+          error,
         } =
-          await supabase
-            .from(
-              "profiles"
-            )
-            .insert([
-              {
-                id: userId,
+          await supabase.auth.signUp(
+            {
+              email,
 
-                email,
-
-                role:
-                  "employer",
-              },
-            ]);
-
-        if (
-          profileError
-        ) {
-          console.error(
-            "PROFILE ERROR:",
-            profileError
+              password,
+            }
           );
-        } else {
-          console.log(
-            "PROFILE CREATED SUCCESSFULLY"
+
+        if (error) {
+          alert(
+            error.message
           );
+
+          setLoading(false);
+
+          return;
         }
-      }
 
-      alert(
-        "Signup successful! Check your email."
-      );
+        const userId =
+          data.user?.id;
+
+        if (userId) {
+          const {
+            error:
+              profileError,
+          } =
+            await supabase
+              .from(
+                "profiles"
+              )
+              .upsert([
+                {
+                  id: userId,
+
+                  email,
+
+                  role:
+                    "employer",
+                },
+              ]);
+
+          if (
+            profileError
+          ) {
+            console.error(
+              "PROFILE ERROR:",
+              profileError
+            );
+          }
+        }
+
+        alert(
+          "Signup successful! Please check your email inbox."
+        );
+
+        setEmail("");
+
+        setPassword("");
+      } catch (err) {
+        console.error(err);
+
+        alert(
+          "Something went wrong during signup."
+        );
+      } finally {
+        setLoading(false);
+      }
     };
 
   return (
     <div
       style={{
         maxWidth:
-          "400px",
+          "420px",
 
         margin:
           "100px auto",
 
         padding:
-          "20px",
+          "30px",
 
         border:
-          "1px solid #ddd",
+          "1px solid #e5e7eb",
 
         borderRadius:
-          "10px",
+          "16px",
 
         background:
           "white",
+
+        boxShadow:
+          "0 4px 18px rgba(0,0,0,0.05)",
       }}
     >
       <h1
@@ -160,11 +176,27 @@ export default function SignupPage() {
             "#1c4ed8",
 
           marginBottom:
-            "20px",
+            "10px",
+
+          fontSize:
+            "32px",
         }}
       >
         Employer Signup
       </h1>
+
+      <p
+        style={{
+          color:
+            "#6b7280",
+
+          marginBottom:
+            "24px",
+        }}
+      >
+        Create your employer
+        account on SearchEezy.
+      </p>
 
       <input
         type="email"
@@ -180,10 +212,19 @@ export default function SignupPage() {
             "100%",
 
           padding:
-            "10px",
+            "14px",
 
           marginBottom:
+            "14px",
+
+          border:
+            "1px solid #d1d5db",
+
+          borderRadius:
             "10px",
+
+          fontSize:
+            "15px",
         }}
       />
 
@@ -201,10 +242,19 @@ export default function SignupPage() {
             "100%",
 
           padding:
-            "10px",
+            "14px",
 
           marginBottom:
+            "18px",
+
+          border:
+            "1px solid #d1d5db",
+
+          borderRadius:
             "10px",
+
+          fontSize:
+            "15px",
         }}
       />
 
@@ -212,15 +262,18 @@ export default function SignupPage() {
         onClick={
           handleSignup
         }
+        disabled={loading}
         style={{
           width:
             "100%",
 
           padding:
-            "10px",
+            "14px",
 
           background:
-            "#1c4ed8",
+            loading
+              ? "#93c5fd"
+              : "#1c4ed8",
 
           color:
             "white",
@@ -229,33 +282,45 @@ export default function SignupPage() {
             "none",
 
           borderRadius:
-            "5px",
+            "10px",
 
           cursor:
-            "pointer",
+            loading
+              ? "not-allowed"
+              : "pointer",
 
           fontWeight:
             "bold",
+
+          fontSize:
+            "15px",
         }}
       >
-        Sign Up
+        {loading
+          ? "Creating Account..."
+          : "Sign Up"}
       </button>
 
       <p
         style={{
           marginTop:
-            "15px",
+            "18px",
 
           fontSize:
             "14px",
 
           color:
-            "gray",
+            "#6b7280",
+
+          lineHeight:
+            "22px",
         }}
       >
-        Employers should use
-        official company
-        email addresses.
+        Employers should
+        eventually use official
+        company email
+        addresses for verified
+        hiring access.
       </p>
     </div>
   );

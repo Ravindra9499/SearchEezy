@@ -570,7 +570,7 @@ export default function HomeClient({
             }}
           >
             <input
-              placeholder="Job title or keyword"
+              placeholder="Search jobs, skills, companies..."
               value={searchTitle}
               onChange={(e) =>
                 setSearchTitle(
@@ -598,7 +598,7 @@ export default function HomeClient({
             />
 
             <input
-              placeholder="Location"
+              placeholder="Search by location"
               value={
                 searchLocation
               }
@@ -626,6 +626,25 @@ export default function HomeClient({
                   "16px",
               }}
             />
+          </div>
+
+          {/* RESULTS COUNT */}
+
+          <div
+            style={{
+              marginBottom:
+                "18px",
+
+              color:
+                "#6b7280",
+
+              fontWeight:
+                "bold",
+            }}
+          >
+            {filteredJobs.length}
+            {" "}
+            jobs found
           </div>
 
           {/* CATEGORY FILTERS */}
@@ -702,168 +721,223 @@ export default function HomeClient({
         }}
       >
         {loading ? (
-          <p>
+          <div
+            style={{
+              textAlign:
+                "center",
+
+              padding:
+                "60px",
+
+              color:
+                "#6b7280",
+            }}
+          >
             Loading jobs...
-          </p>
+          </div>
         ) : filteredJobs.length ===
           0 ? (
-          <p>
-            No jobs found.
-          </p>
-        ) : null}
+          <div
+            style={{
+              background:
+                "white",
 
-        <div
-          style={{
-            display:
-              "grid",
+              padding:
+                "50px",
 
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(320px, 1fr))",
+              borderRadius:
+                "20px",
 
-            gap: "22px",
-          }}
-        >
-          {filteredJobs.map(
-            (job) => (
-              <div
-                key={job.id}
-                onClick={() =>
-                  (window.location.href =
-                    `/jobs/${job.id}`)
-                }
-                style={{
-                  background:
-                    "white",
+              textAlign:
+                "center",
 
-                  borderRadius:
-                    "18px",
+              border:
+                "1px solid #e5e7eb",
+            }}
+          >
+            <h2
+              style={{
+                marginBottom:
+                  "10px",
+              }}
+            >
+              No jobs found
+            </h2>
 
-                  padding:
-                    "28px",
+            <p
+              style={{
+                color:
+                  "#6b7280",
+              }}
+            >
+              Try adjusting your
+              search keywords,
+              category, or
+              location filters.
+            </p>
+          </div>
+        ) : (
+          <div
+            style={{
+              display:
+                "grid",
 
-                  cursor:
-                    "pointer",
+              gridTemplateColumns:
+                "repeat(auto-fit, minmax(320px, 1fr))",
 
-                  boxShadow:
-                    "0 4px 18px rgba(0,0,0,0.05)",
+              gap: "22px",
+            }}
+          >
+            {filteredJobs.map(
+              (job) => (
+                <div
+                  key={job.id}
+                  onClick={() =>
+                    (window.location.href =
+                      `/jobs/${job.id}`)
+                  }
+                  style={{
+                    background:
+                      "white",
 
-                  border:
-                    "1px solid #edf2f7",
-                }}
-              >
-                <h2>
-                  {job.title}
-                </h2>
+                    borderRadius:
+                      "18px",
 
-                <p>
-                  {job.company}
-                </p>
+                    padding:
+                      "28px",
 
-                <p>
-                  📍{" "}
-                  {job.location}
-                </p>
+                    cursor:
+                      "pointer",
 
-                {job.jobType && (
+                    boxShadow:
+                      "0 4px 18px rgba(0,0,0,0.05)",
+
+                    border:
+                      "1px solid #edf2f7",
+
+                    transition:
+                      "all 0.2s ease",
+                  }}
+                >
+                  <h2>
+                    {job.title}
+                  </h2>
+
                   <p>
-                    💼{" "}
-                    {job.jobType}
+                    {job.company}
                   </p>
-                )}
 
-                {job.category && (
-                  <a
-                    href={`/jobs/category/${job.category
-                      .toLowerCase()
-                      .replace(
-                        /\s+/g,
-                        "-"
-                      )}`}
-                    onClick={(e) =>
-                      e.stopPropagation()
-                    }
-                    style={{
-                      textDecoration:
-                        "none",
-                    }}
-                  >
-                    <div
+                  <p>
+                    📍{" "}
+                    {job.location}
+                  </p>
+
+                  {job.jobType && (
+                    <p>
+                      💼{" "}
+                      {job.jobType}
+                    </p>
+                  )}
+
+                  {job.category && (
+                    <a
+                      href={`/jobs/category/${job.category
+                        .toLowerCase()
+                        .replace(
+                          /\s+/g,
+                          "-"
+                        )}`}
+                      onClick={(e) =>
+                        e.stopPropagation()
+                      }
                       style={{
-                        display:
-                          "inline-block",
-
-                        background:
-                          "#eff6ff",
-
-                        color:
-                          "#1d4ed8",
-
-                        padding:
-                          "6px 12px",
-
-                        borderRadius:
-                          "20px",
-
-                        fontSize:
-                          "13px",
-
-                        fontWeight:
-                          "bold",
-
-                        marginTop:
-                          "10px",
-
-                        cursor:
-                          "pointer",
+                        textDecoration:
+                          "none",
                       }}
                     >
-                      {job.category}
-                    </div>
-                  </a>
-                )}
-
-                {job.salaryMin &&
-                  job.salaryMax && (
-                    <div
-                      style={{
-                        marginTop:
-                          "20px",
-                      }}
-                    >
-                      <p
+                      <div
                         style={{
+                          display:
+                            "inline-block",
+
+                          background:
+                            "#eff6ff",
+
                           color:
-                            "#16a34a",
+                            "#1d4ed8",
+
+                          padding:
+                            "6px 12px",
+
+                          borderRadius:
+                            "20px",
+
+                          fontSize:
+                            "13px",
 
                           fontWeight:
                             "bold",
+
+                          marginTop:
+                            "10px",
+
+                          cursor:
+                            "pointer",
                         }}
                       >
-                        💰{" "}
-                        {getCurrencySymbol(
-                          job.currency
-                        )}
-                        {Number(
-                          job.salaryMin
-                        ).toLocaleString(
-                          "en-US"
-                        )}
-                        {" - "}
-                        {getCurrencySymbol(
-                          job.currency
-                        )}
-                        {Number(
-                          job.salaryMax
-                        ).toLocaleString(
-                          "en-US"
-                        )}
-                      </p>
-                    </div>
+                        {
+                          job.category
+                        }
+                      </div>
+                    </a>
                   )}
-              </div>
-            )
-          )}
-        </div>
+
+                  {job.salaryMin &&
+                    job.salaryMax && (
+                      <div
+                        style={{
+                          marginTop:
+                            "20px",
+                        }}
+                      >
+                        <p
+                          style={{
+                            color:
+                              "#16a34a",
+
+                            fontWeight:
+                              "bold",
+
+                            fontSize:
+                              "18px",
+                          }}
+                        >
+                          💰{" "}
+                          {getCurrencySymbol(
+                            job.currency
+                          )}
+                          {Number(
+                            job.salaryMin
+                          ).toLocaleString(
+                            "en-US"
+                          )}
+                          {" - "}
+                          {getCurrencySymbol(
+                            job.currency
+                          )}
+                          {Number(
+                            job.salaryMax
+                          ).toLocaleString(
+                            "en-US"
+                          )}
+                        </p>
+                      </div>
+                    )}
+                </div>
+              )
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
