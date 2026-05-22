@@ -251,17 +251,69 @@ export default function HomeClient({
         <div>
           {user ? (
             <div>
-              <p
+              <div
                 style={{
                   marginBottom:
-                    "6px",
+                    "8px",
 
-                  fontSize:
-                    "14px",
+                  display:
+                    "flex",
+
+                  alignItems:
+                    "center",
+
+                  gap: "10px",
+
+                  flexWrap:
+                    "wrap",
                 }}
               >
-                {user.email}
-              </p>
+                <p
+                  style={{
+                    margin: 0,
+
+                    fontSize:
+                      "14px",
+                  }}
+                >
+                  {user.email}
+                </p>
+
+                {role && (
+                  <div
+                    style={{
+                      background:
+                        role ===
+                        "employer"
+                          ? "#dbeafe"
+                          : "#dcfce7",
+
+                      color:
+                        role ===
+                        "employer"
+                          ? "#1d4ed8"
+                          : "#15803d",
+
+                      padding:
+                        "4px 10px",
+
+                      borderRadius:
+                        "999px",
+
+                      fontSize:
+                        "12px",
+
+                      fontWeight:
+                        "bold",
+
+                      textTransform:
+                        "capitalize",
+                    }}
+                  >
+                    {role}
+                  </div>
+                )}
+              </div>
 
               <div
                 style={{
@@ -348,20 +400,20 @@ export default function HomeClient({
                         color:
                           "white",
 
-                        border:
-                          "none",
+                          border:
+                            "none",
 
-                        padding:
-                          "10px 16px",
+                          padding:
+                            "10px 16px",
 
-                        borderRadius:
-                          "8px",
+                          borderRadius:
+                            "8px",
 
-                        cursor:
-                          "pointer",
+                          cursor:
+                            "pointer",
 
-                        fontWeight:
-                          "bold",
+                          fontWeight:
+                            "bold",
                       }}
                     >
                       My Applications
