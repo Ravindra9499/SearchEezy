@@ -602,8 +602,7 @@ export default function HomeClient({
                 "bold",
             }}
           >
-            {filteredJobs.length} jobs
-            found
+            {filteredJobs.length} jobs found
           </div>
 
           <div
@@ -692,9 +691,7 @@ export default function HomeClient({
                 "center",
             }}
           >
-            <h2>
-              No jobs found
-            </h2>
+            <h2>No jobs found</h2>
 
             <p>
               Try different search
@@ -734,65 +731,105 @@ export default function HomeClient({
                       "1px solid #edf2f7",
                   }}
                 >
-                  <h2>
-                    {job.title}
-                  </h2>
-
                   <div
                     style={{
                       display:
                         "flex",
                       alignItems:
                         "center",
-                      gap: "8px",
-                      flexWrap:
-                        "wrap",
+                      gap: "15px",
                       marginBottom:
-                        "10px",
+                        "15px",
                     }}
                   >
-                    <a
-                      href={`/company/${job.company
-                        .toLowerCase()
-                        .replace(
-                          /\s+/g,
-                          "-"
-                        )}`}
-                      onClick={(e) =>
-                        e.stopPropagation()
-                      }
-                      style={{
-                        textDecoration:
-                          "none",
-                        color:
-                          "#1d4ed8",
-                        fontWeight:
-                          "bold",
-                      }}
-                    >
-                      {job.company}
-                    </a>
-
-                    {job.verified && (
-                      <div
+                    {job.companyLogo && (
+                      <img
+                        src={job.companyLogo}
+                        alt={job.company}
                         style={{
-                          background:
-                            "#dcfce7",
-                          color:
-                            "#15803d",
-                          padding:
-                            "4px 10px",
+                          width: "55px",
+                          height:
+                            "55px",
+                          objectFit:
+                            "contain",
                           borderRadius:
-                            "999px",
-                          fontSize:
-                            "11px",
-                          fontWeight:
-                            "bold",
+                            "12px",
+                          background:
+                            "white",
+                          border:
+                            "1px solid #e5e7eb",
+                          padding:
+                            "6px",
+                        }}
+                      />
+                    )}
+
+                    <div>
+                      <h2
+                        style={{
+                          margin: 0,
                         }}
                       >
-                        ✔ Verified
+                        {job.title}
+                      </h2>
+
+                      <div
+                        style={{
+                          display:
+                            "flex",
+                          alignItems:
+                            "center",
+                          gap: "8px",
+                          flexWrap:
+                            "wrap",
+                          marginTop:
+                            "8px",
+                        }}
+                      >
+                        <a
+                          href={`/company/${job.company
+                            .toLowerCase()
+                            .replace(
+                              /\s+/g,
+                              "-"
+                            )}`}
+                          onClick={(e) =>
+                            e.stopPropagation()
+                          }
+                          style={{
+                            textDecoration:
+                              "none",
+                            color:
+                              "#1d4ed8",
+                            fontWeight:
+                              "bold",
+                          }}
+                        >
+                          {job.company}
+                        </a>
+
+                        {job.verified && (
+                          <div
+                            style={{
+                              background:
+                                "#dcfce7",
+                              color:
+                                "#15803d",
+                              padding:
+                                "4px 10px",
+                              borderRadius:
+                                "999px",
+                              fontSize:
+                                "11px",
+                              fontWeight:
+                                "bold",
+                            }}
+                          >
+                            ✔ Verified
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </div>
 
                   <p>
