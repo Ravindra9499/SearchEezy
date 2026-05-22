@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  useState,
   useEffect,
+  useState,
 } from "react";
 
 import { supabase } from "../lib/supabase";
@@ -177,10 +177,8 @@ export default function HomeClient({
       style={{
         background:
           "#f5f7fb",
-
         minHeight:
           "100vh",
-
         fontFamily:
           "Arial, sans-serif",
       }}
@@ -191,27 +189,19 @@ export default function HomeClient({
         style={{
           background:
             "white",
-
           padding:
             "18px 40px",
-
           borderBottom:
             "1px solid #e5e7eb",
-
           display:
             "flex",
-
           justifyContent:
             "space-between",
-
           alignItems:
             "center",
-
           position:
             "sticky",
-
           top: 0,
-
           zIndex: 100,
         }}
       >
@@ -219,13 +209,10 @@ export default function HomeClient({
           <h1
             style={{
               margin: 0,
-
               color:
                 "#1c4ed8",
-
               fontSize:
                 "30px",
-
               fontWeight:
                 "bold",
             }}
@@ -236,10 +223,8 @@ export default function HomeClient({
           <p
             style={{
               margin: 0,
-
               color:
                 "gray",
-
               fontSize:
                 "14px",
             }}
@@ -255,15 +240,11 @@ export default function HomeClient({
                 style={{
                   marginBottom:
                     "8px",
-
                   display:
                     "flex",
-
                   alignItems:
                     "center",
-
                   gap: "10px",
-
                   flexWrap:
                     "wrap",
                 }}
@@ -271,7 +252,6 @@ export default function HomeClient({
                 <p
                   style={{
                     margin: 0,
-
                     fontSize:
                       "14px",
                   }}
@@ -287,25 +267,19 @@ export default function HomeClient({
                         "employer"
                           ? "#dbeafe"
                           : "#dcfce7",
-
                       color:
                         role ===
                         "employer"
                           ? "#1d4ed8"
                           : "#15803d",
-
                       padding:
                         "4px 10px",
-
                       borderRadius:
                         "999px",
-
                       fontSize:
                         "12px",
-
                       fontWeight:
                         "bold",
-
                       textTransform:
                         "capitalize",
                     }}
@@ -319,9 +293,7 @@ export default function HomeClient({
                 style={{
                   display:
                     "flex",
-
                   gap: "10px",
-
                   flexWrap:
                     "wrap",
                 }}
@@ -334,22 +306,16 @@ export default function HomeClient({
                         style={{
                           background:
                             "#16a34a",
-
                           color:
                             "white",
-
                           border:
                             "none",
-
                           padding:
                             "10px 16px",
-
                           borderRadius:
                             "8px",
-
                           cursor:
                             "pointer",
-
                           fontWeight:
                             "bold",
                         }}
@@ -363,22 +329,16 @@ export default function HomeClient({
                         style={{
                           background:
                             "#1c4ed8",
-
                           color:
                             "white",
-
                           border:
                             "none",
-
                           padding:
                             "10px 16px",
-
                           borderRadius:
                             "8px",
-
                           cursor:
                             "pointer",
-
                           fontWeight:
                             "bold",
                         }}
@@ -396,24 +356,18 @@ export default function HomeClient({
                       style={{
                         background:
                           "#16a34a",
-
                         color:
                           "white",
-
-                          border:
-                            "none",
-
-                          padding:
-                            "10px 16px",
-
-                          borderRadius:
-                            "8px",
-
-                          cursor:
-                            "pointer",
-
-                          fontWeight:
-                            "bold",
+                        border:
+                          "none",
+                        padding:
+                          "10px 16px",
+                        borderRadius:
+                          "8px",
+                        cursor:
+                          "pointer",
+                        fontWeight:
+                          "bold",
                       }}
                     >
                       My Applications
@@ -430,22 +384,16 @@ export default function HomeClient({
                   style={{
                     background:
                       "#ef4444",
-
                     color:
                       "white",
-
                     border:
                       "none",
-
                     padding:
                       "10px 16px",
-
                     borderRadius:
                       "8px",
-
                     cursor:
                       "pointer",
-
                     fontWeight:
                       "bold",
                   }}
@@ -459,9 +407,7 @@ export default function HomeClient({
               style={{
                 display:
                   "flex",
-
                 gap: "10px",
-
                 flexWrap:
                   "wrap",
               }}
@@ -471,22 +417,16 @@ export default function HomeClient({
                   style={{
                     background:
                       "#1c4ed8",
-
                     color:
                       "white",
-
                     border:
                       "none",
-
                     padding:
                       "10px 16px",
-
                     borderRadius:
                       "8px",
-
                     cursor:
                       "pointer",
-
                     fontWeight:
                       "bold",
                   }}
@@ -500,22 +440,16 @@ export default function HomeClient({
                   style={{
                     background:
                       "#2563eb",
-
                     color:
                       "white",
-
                     border:
                       "none",
-
                     padding:
                       "10px 16px",
-
                     borderRadius:
                       "8px",
-
                     cursor:
                       "pointer",
-
                     fontWeight:
                       "bold",
                   }}
@@ -529,22 +463,16 @@ export default function HomeClient({
                   style={{
                     background:
                       "#16a34a",
-
                     color:
                       "white",
-
                     border:
                       "none",
-
                     padding:
                       "10px 16px",
-
                     borderRadius:
                       "8px",
-
                     cursor:
                       "pointer",
-
                     fontWeight:
                       "bold",
                   }}
@@ -558,22 +486,16 @@ export default function HomeClient({
                   style={{
                     background:
                       "#059669",
-
                     color:
                       "white",
-
                     border:
                       "none",
-
                     padding:
                       "10px 16px",
-
                     borderRadius:
                       "8px",
-
                     cursor:
                       "pointer",
-
                     fontWeight:
                       "bold",
                   }}
@@ -592,10 +514,8 @@ export default function HomeClient({
         style={{
           maxWidth:
             "1200px",
-
           margin:
             "30px auto",
-
           padding:
             "0 20px",
         }}
@@ -604,13 +524,10 @@ export default function HomeClient({
           style={{
             background:
               "white",
-
             padding:
               "25px",
-
             borderRadius:
               "20px",
-
             boxShadow:
               "0 4px 20px rgba(0,0,0,0.05)",
           }}
@@ -619,12 +536,9 @@ export default function HomeClient({
             style={{
               display:
                 "flex",
-
               gap: "15px",
-
               flexWrap:
                 "wrap",
-
               marginBottom:
                 "20px",
             }}
@@ -639,19 +553,14 @@ export default function HomeClient({
               }
               style={{
                 flex: 1,
-
                 minWidth:
                   "250px",
-
                 padding:
                   "15px",
-
                 borderRadius:
                   "10px",
-
                 border:
                   "1px solid #ddd",
-
                 fontSize:
                   "16px",
               }}
@@ -669,19 +578,14 @@ export default function HomeClient({
               }
               style={{
                 flex: 1,
-
                 minWidth:
                   "250px",
-
                 padding:
                   "15px",
-
                 borderRadius:
                   "10px",
-
                 border:
                   "1px solid #ddd",
-
                 fontSize:
                   "16px",
               }}
@@ -692,28 +596,21 @@ export default function HomeClient({
             style={{
               marginBottom:
                 "18px",
-
               color:
                 "#6b7280",
-
               fontWeight:
                 "bold",
             }}
           >
-            {filteredJobs.length}
-            {" "}
-            jobs found
+            {filteredJobs.length} jobs
+            found
           </div>
-
-          {/* CATEGORY FILTERS */}
 
           <div
             style={{
               display:
                 "flex",
-
               gap: "10px",
-
               flexWrap:
                 "wrap",
             }}
@@ -733,25 +630,19 @@ export default function HomeClient({
                       category
                         ? "#1c4ed8"
                         : "white",
-
                     color:
                       selectedCategory ===
                       category
                         ? "white"
                         : "#1c4ed8",
-
                     border:
                       "1px solid #1c4ed8",
-
                     padding:
                       "10px 16px",
-
                     borderRadius:
                       "999px",
-
                     cursor:
                       "pointer",
-
                     fontWeight:
                       "bold",
                   }}
@@ -764,16 +655,14 @@ export default function HomeClient({
         </div>
       </div>
 
-      {/* JOB LIST */}
+      {/* JOBS */}
 
       <div
         style={{
           maxWidth:
             "1200px",
-
           margin:
             "0 auto",
-
           padding:
             "0 20px 50px",
         }}
@@ -783,12 +672,8 @@ export default function HomeClient({
             style={{
               textAlign:
                 "center",
-
               padding:
                 "60px",
-
-              color:
-                "#6b7280",
             }}
           >
             Loading jobs...
@@ -799,39 +684,21 @@ export default function HomeClient({
             style={{
               background:
                 "white",
-
               padding:
                 "50px",
-
               borderRadius:
                 "20px",
-
               textAlign:
                 "center",
-
-              border:
-                "1px solid #e5e7eb",
             }}
           >
-            <h2
-              style={{
-                marginBottom:
-                  "10px",
-              }}
-            >
+            <h2>
               No jobs found
             </h2>
 
-            <p
-              style={{
-                color:
-                  "#6b7280",
-              }}
-            >
-              Try adjusting your
-              search keywords,
-              category, or
-              location filters.
+            <p>
+              Try different search
+              filters.
             </p>
           </div>
         ) : (
@@ -839,10 +706,8 @@ export default function HomeClient({
             style={{
               display:
                 "grid",
-
               gridTemplateColumns:
                 "repeat(auto-fit, minmax(320px, 1fr))",
-
               gap: "22px",
             }}
           >
@@ -857,59 +722,78 @@ export default function HomeClient({
                   style={{
                     background:
                       "white",
-
                     borderRadius:
                       "18px",
-
                     padding:
                       "28px",
-
                     cursor:
                       "pointer",
-
                     boxShadow:
                       "0 4px 18px rgba(0,0,0,0.05)",
-
                     border:
                       "1px solid #edf2f7",
-
-                    transition:
-                      "all 0.2s ease",
                   }}
                 >
                   <h2>
                     {job.title}
                   </h2>
 
-                  <a
-                    href={`/company/${job.company
-                      .toLowerCase()
-                      .replace(
-                        /\s+/g,
-                        "-"
-                      )}`}
-                    onClick={(e) =>
-                      e.stopPropagation()
-                    }
+                  <div
                     style={{
-                      textDecoration:
-                        "none",
-
-                      color:
-                        "#1d4ed8",
-
-                      fontWeight:
-                        "bold",
-
                       display:
-                        "inline-block",
-
+                        "flex",
+                      alignItems:
+                        "center",
+                      gap: "8px",
+                      flexWrap:
+                        "wrap",
                       marginBottom:
                         "10px",
                     }}
                   >
-                    {job.company}
-                  </a>
+                    <a
+                      href={`/company/${job.company
+                        .toLowerCase()
+                        .replace(
+                          /\s+/g,
+                          "-"
+                        )}`}
+                      onClick={(e) =>
+                        e.stopPropagation()
+                      }
+                      style={{
+                        textDecoration:
+                          "none",
+                        color:
+                          "#1d4ed8",
+                        fontWeight:
+                          "bold",
+                      }}
+                    >
+                      {job.company}
+                    </a>
+
+                    {job.verified && (
+                      <div
+                        style={{
+                          background:
+                            "#dcfce7",
+                          color:
+                            "#15803d",
+                          padding:
+                            "4px 10px",
+                          borderRadius:
+                            "999px",
+                          fontSize:
+                            "11px",
+                          fontWeight:
+                            "bold",
+                        }}
+                      >
+                        ✔ Verified
+                      </div>
+                    )}
+                  </div>
 
                   <p>
                     📍{" "}
@@ -943,30 +827,20 @@ export default function HomeClient({
                         style={{
                           display:
                             "inline-block",
-
                           background:
                             "#eff6ff",
-
                           color:
                             "#1d4ed8",
-
                           padding:
                             "6px 12px",
-
                           borderRadius:
                             "20px",
-
                           fontSize:
                             "13px",
-
                           fontWeight:
                             "bold",
-
                           marginTop:
                             "10px",
-
-                          cursor:
-                            "pointer",
                         }}
                       >
                         {
@@ -978,44 +852,37 @@ export default function HomeClient({
 
                   {job.salaryMin &&
                     job.salaryMax && (
-                      <div
+                      <p
                         style={{
                           marginTop:
                             "20px",
+                          color:
+                            "#16a34a",
+                          fontWeight:
+                            "bold",
+                          fontSize:
+                            "18px",
                         }}
                       >
-                        <p
-                          style={{
-                            color:
-                              "#16a34a",
-
-                            fontWeight:
-                              "bold",
-
-                            fontSize:
-                              "18px",
-                          }}
-                        >
-                          💰{" "}
-                          {getCurrencySymbol(
-                            job.currency
-                          )}
-                          {Number(
-                            job.salaryMin
-                          ).toLocaleString(
-                            "en-US"
-                          )}
-                          {" - "}
-                          {getCurrencySymbol(
-                            job.currency
-                          )}
-                          {Number(
-                            job.salaryMax
-                          ).toLocaleString(
-                            "en-US"
-                          )}
-                        </p>
-                      </div>
+                        💰{" "}
+                        {getCurrencySymbol(
+                          job.currency
+                        )}
+                        {Number(
+                          job.salaryMin
+                        ).toLocaleString(
+                          "en-US"
+                        )}
+                        {" - "}
+                        {getCurrencySymbol(
+                          job.currency
+                        )}
+                        {Number(
+                          job.salaryMax
+                        ).toLocaleString(
+                          "en-US"
+                        )}
+                      </p>
                     )}
                 </div>
               )
