@@ -88,8 +88,15 @@ export async function POST(
             jobId:
               body.jobId,
 
-            // IMPORTANT:
-            // Save employer owner
+            // SAVE JOB DETAILS
+
+            jobTitle:
+              job.title,
+
+            company:
+              job.company,
+
+            // Employer owner
 
             employerEmail:
               job.userEmail,
@@ -118,102 +125,81 @@ export async function POST(
     // Send employer email notification
 
     try {
-      const emailResult =
-        await resend.emails.send(
-          {
-            from:
-              "SearchEezy <notifications@searcheezy.com>",
+      await resend.emails.send(
+        {
+          from:
+            "SearchEezy <notifications@searcheezy.com>",
 
-            to: job.userEmail,
+          to: job.userEmail,
 
-            subject: `New Applicant for ${job.title}`,
+          subject: `New Applicant for ${job.title}`,
 
-            html: `
-              <div style="font-family: Arial, sans-serif; padding: 20px;">
-                
-                <h2 style="color: #1c4ed8;">
-                  New Application Received
-                </h2>
+          html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px;">
+              
+              <h2 style="color: #1c4ed8;">
+                New Application Received
+              </h2>
 
-                <p>
-                  You received a new applicant on SearchEezy.
-                </p>
+              <p>
+                You received a new applicant on SearchEezy.
+              </p>
 
-                <hr />
+              <hr />
 
-                <p>
-                  <strong>Job:</strong>
-                  ${job.title}
-                </p>
+              <p>
+                <strong>Job:</strong>
+                ${job.title}
+              </p>
 
-                <p>
-                  <strong>Company:</strong>
-                  ${job.company}
-                </p>
+              <p>
+                <strong>Company:</strong>
+                ${job.company}
+              </p>
 
-                <p>
-                  <strong>Applicant Name:</strong>
-                  ${body.name}
-                </p>
+              <p>
+                <strong>Applicant Name:</strong>
+                ${body.name}
+              </p>
 
-                <p>
-                  <strong>Applicant Email:</strong>
-                  ${body.email}
-                </p>
+              <p>
+                <strong>Applicant Email:</strong>
+                ${body.email}
+              </p>
 
-                <hr />
+              <hr />
 
-                <p>
-                  Login to review the application and resume.
-                </p>
-
-                <div style="margin-top:20px;">
-                  <a
-                    href="https://www.searcheezy.com/my-jobs"
-                    target="_blank"
-                    style="
-                      background-color:#1c4ed8;
-                      color:white;
-                      padding:12px 20px;
-                      text-decoration:none;
-                      border-radius:6px;
-                      display:inline-block;
-                      font-weight:bold;
-                    "
-                  >
-                    Open My Jobs
-                  </a>
-                </div>
-
+              <div style="margin-top:20px;">
+                <a
+                  href="https://www.searcheezy.com/my-jobs"
+                  target="_blank"
+                  style="
+                    background-color:#1c4ed8;
+                    color:white;
+                    padding:12px 20px;
+                    text-decoration:none;
+                    border-radius:6px;
+                    display:inline-block;
+                    font-weight:bold;
+                  "
+                >
+                  Open My Jobs
+                </a>
               </div>
-            `,
-          }
-        );
 
-      console.log(
-        "EMAIL SENT SUCCESSFULLY:"
-      );
-
-      console.log(
-        JSON.stringify(
-          emailResult,
-          null,
-          2
-        )
+            </div>
+          `,
+        }
       );
     } catch (
       emailError
     ) {
       console.error(
-        "EMAIL SEND FAILED FULL ERROR:"
+        "EMAIL SEND FAILED:"
       );
 
       console.error(
-        JSON.stringify(
-          emailError,
-          null,
-          2
-        )
+        emailError
       );
     }
 

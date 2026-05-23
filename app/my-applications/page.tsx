@@ -64,12 +64,65 @@ export default function MyApplicationsPage() {
       }
     };
 
+  const getStatusStyle =
+    (status: string) => {
+      switch (status) {
+        case "Applied":
+          return {
+            background:
+              "#dbeafe",
+            color:
+              "#1d4ed8",
+          };
+
+        case "Reviewing":
+          return {
+            background:
+              "#fef3c7",
+            color:
+              "#b45309",
+          };
+
+        case "Interview":
+          return {
+            background:
+              "#ede9fe",
+            color:
+              "#7c3aed",
+          };
+
+        case "Rejected":
+          return {
+            background:
+              "#fee2e2",
+            color:
+              "#dc2626",
+          };
+
+        case "Hired":
+          return {
+            background:
+              "#dcfce7",
+            color:
+              "#15803d",
+          };
+
+        default:
+          return {
+            background:
+              "#f3f4f6",
+            color:
+              "#374151",
+          };
+      }
+    };
+
   if (loading) {
     return (
       <div
         style={{
           padding:
-            "20px",
+            "30px",
         }}
       >
         Loading...
@@ -81,7 +134,7 @@ export default function MyApplicationsPage() {
     <div
       style={{
         background:
-          "#f3f2f1",
+          "#f3f4f6",
 
         minHeight:
           "100vh",
@@ -113,22 +166,38 @@ export default function MyApplicationsPage() {
               "center",
 
             marginBottom:
-              "25px",
+              "30px",
 
             flexWrap:
               "wrap",
 
-            gap: "10px",
+            gap: "15px",
           }}
         >
-          <h1
-            style={{
-              color:
-                "#16a34a",
-            }}
-          >
-            My Applications
-          </h1>
+          <div>
+            <h1
+              style={{
+                color:
+                  "#16a34a",
+
+                marginBottom:
+                  "6px",
+              }}
+            >
+              My Applications
+            </h1>
+
+            <p
+              style={{
+                color:
+                  "#6b7280",
+              }}
+            >
+              Track your hiring
+              progress and
+              application status.
+            </p>
+          </div>
 
           <a href="/">
             <button
@@ -143,10 +212,10 @@ export default function MyApplicationsPage() {
                   "none",
 
                 padding:
-                  "10px 15px",
+                  "12px 18px",
 
                 borderRadius:
-                  "5px",
+                  "10px",
 
                 cursor:
                   "pointer",
@@ -155,7 +224,7 @@ export default function MyApplicationsPage() {
                   "bold",
               }}
             >
-              Back to Home
+              ← Back to Home
             </button>
           </a>
         </div>
@@ -169,10 +238,10 @@ export default function MyApplicationsPage() {
                 "white",
 
               padding:
-                "30px",
+                "35px",
 
               borderRadius:
-                "10px",
+                "18px",
 
               border:
                 "1px solid #ddd",
@@ -204,10 +273,10 @@ export default function MyApplicationsPage() {
                   "white",
 
                 padding:
-                  "30px",
+                  "35px",
 
                 borderRadius:
-                  "10px",
+                  "18px",
 
                 border:
                   "1px solid #ddd",
@@ -238,59 +307,132 @@ export default function MyApplicationsPage() {
                   "white",
 
                 padding:
-                  "25px",
+                  "28px",
 
                 borderRadius:
-                  "12px",
+                  "20px",
 
                 border:
-                  "1px solid #ddd",
+                  "1px solid #e5e7eb",
 
                 marginBottom:
-                  "20px",
+                  "24px",
+
+                boxShadow:
+                  "0 4px 18px rgba(0,0,0,0.05)",
               }}
             >
-              <h2
-                style={{
-                  color:
-                    "#1c4ed8",
+              {/* TOP */}
 
-                  marginBottom:
-                    "10px",
+              <div
+                style={{
+                  display:
+                    "flex",
+
+                  justifyContent:
+                    "space-between",
+
+                  alignItems:
+                    "flex-start",
+
+                  flexWrap:
+                    "wrap",
+
+                  gap: "20px",
                 }}
               >
-                {app.jobTitle ||
-                  "Job"}
-              </h2>
+                <div>
+                  <h2
+                    style={{
+                      color:
+                        "#1c4ed8",
 
-              <p>
-                <strong>
-                  Applicant:
-                </strong>{" "}
-                {app.name}
-              </p>
+                      marginBottom:
+                        "10px",
+                    }}
+                  >
+                    {app.jobTitle ||
+                      "Job"}
+                  </h2>
 
-              <p>
-                <strong>
-                  Email:
-                </strong>{" "}
-                {app.email}
-              </p>
+                  <p>
+                    <strong>
+                      Applicant:
+                    </strong>{" "}
+                    {app.name}
+                  </p>
 
-              <p>
-                <strong>
-                  Applied:
-                </strong>{" "}
-                {new Date(
-                  app.created_at
-                ).toLocaleString()}
-              </p>
+                  <p>
+                    <strong>
+                      Email:
+                    </strong>{" "}
+                    {app.email}
+                  </p>
+
+                  <p>
+                    <strong>
+                      Applied:
+                    </strong>{" "}
+                    {new Date(
+                      app.created_at
+                    ).toLocaleString()}
+                  </p>
+                </div>
+
+                {/* STATUS BADGE */}
+
+                <div>
+                  <div
+                    style={{
+                      marginBottom:
+                        "10px",
+
+                      fontWeight:
+                        "bold",
+
+                      color:
+                        "#374151",
+                    }}
+                  >
+                    Application Status
+                  </div>
+
+                  <span
+                    style={{
+                      ...getStatusStyle(
+                        app.status ||
+                          "Applied"
+                      ),
+
+                      padding:
+                        "10px 18px",
+
+                      borderRadius:
+                        "999px",
+
+                      fontWeight:
+                        "bold",
+
+                      fontSize:
+                        "14px",
+
+                      display:
+                        "inline-block",
+                    }}
+                  >
+                    {app.status ||
+                      "Applied"}
+                  </span>
+                </div>
+              </div>
+
+              {/* RESUME */}
 
               {app.resumeLink && (
                 <div
                   style={{
                     marginTop:
-                      "15px",
+                      "24px",
                   }}
                 >
                   <a
@@ -298,6 +440,7 @@ export default function MyApplicationsPage() {
                       app.resumeLink
                     }
                     target="_blank"
+                    rel="noopener noreferrer"
                   >
                     <button
                       style={{
@@ -311,10 +454,10 @@ export default function MyApplicationsPage() {
                           "none",
 
                         padding:
-                          "10px 15px",
+                          "12px 18px",
 
                         borderRadius:
-                          "6px",
+                          "10px",
 
                         cursor:
                           "pointer",

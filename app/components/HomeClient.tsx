@@ -275,6 +275,20 @@ export default function HomeClient({
       }
     );
 
+  // FEATURED JOBS FIRST
+
+  const featuredJobs =
+    filteredJobs.filter(
+      (job) =>
+        job.featured
+    );
+
+  const regularJobs =
+    filteredJobs.filter(
+      (job) =>
+        !job.featured
+    );
+
   return (
     <div
       style={{
@@ -286,6 +300,8 @@ export default function HomeClient({
           "Arial, sans-serif",
       }}
     >
+      {/* HEADER */}
+
       <div
         style={{
           background:
@@ -634,6 +650,8 @@ export default function HomeClient({
         </div>
       </div>
 
+      {/* SEARCH */}
+
       <div
         style={{
           maxWidth:
@@ -683,7 +701,7 @@ export default function HomeClient({
                   "15px",
                 borderRadius:
                   "10px",
-                  border:
+                border:
                   "1px solid #ddd",
                 fontSize:
                   "16px",
@@ -780,6 +798,8 @@ export default function HomeClient({
         </div>
       </div>
 
+      {/* JOBS */}
+
       <div
         style={{
           maxWidth:
@@ -823,278 +843,445 @@ export default function HomeClient({
             </p>
           </div>
         ) : (
+          <>
+            {/* FEATURED JOBS */}
+
+            {featuredJobs.length >
+              0 && (
+              <div
+                style={{
+                  marginBottom:
+                    "40px",
+                }}
+              >
+                <h2
+                  style={{
+                    color:
+                      "#f59e0b",
+                    marginBottom:
+                      "20px",
+                  }}
+                >
+                  ⭐ Featured Jobs
+                </h2>
+
+                <div
+                  style={{
+                    display:
+                      "grid",
+                    gridTemplateColumns:
+                      "repeat(auto-fit, minmax(320px, 1fr))",
+                    gap: "22px",
+                  }}
+                >
+                  {featuredJobs.map(
+                    (
+                      job
+                    ) => (
+                      <JobCard
+                        key={
+                          job.id
+                        }
+                        job={job}
+                        role={role}
+                        savedJobs={
+                          savedJobs
+                        }
+                        toggleSaveJob={
+                          toggleSaveJob
+                        }
+                        getCurrencySymbol={
+                          getCurrencySymbol
+                        }
+                        featured
+                      />
+                    )
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* REGULAR JOBS */}
+
+            <h2
+              style={{
+                marginBottom:
+                  "20px",
+              }}
+            >
+              Latest Jobs
+            </h2>
+
+            <div
+              style={{
+                display:
+                  "grid",
+                gridTemplateColumns:
+                  "repeat(auto-fit, minmax(320px, 1fr))",
+                gap: "22px",
+              }}
+            >
+              {regularJobs.map(
+                (job) => (
+                  <JobCard
+                    key={
+                      job.id
+                    }
+                    job={job}
+                    role={role}
+                    savedJobs={
+                      savedJobs
+                    }
+                    toggleSaveJob={
+                      toggleSaveJob
+                    }
+                    getCurrencySymbol={
+                      getCurrencySymbol
+                    }
+                  />
+                )
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* JOB CARD */
+
+function JobCard({
+  job,
+  role,
+  savedJobs,
+  toggleSaveJob,
+  getCurrencySymbol,
+  featured = false,
+}: any) {
+  return (
+    <div
+      onClick={() =>
+        (window.location.href =
+          `/jobs/${job.id}`)
+      }
+      style={{
+        background:
+          "white",
+
+        borderRadius:
+          "18px",
+
+        padding:
+          "28px",
+
+        cursor:
+          "pointer",
+
+        boxShadow:
+          featured
+            ? "0 0 0 2px #f59e0b"
+            : "0 4px 18px rgba(0,0,0,0.05)",
+
+        border:
+          featured
+            ? "2px solid #f59e0b"
+            : "1px solid #edf2f7",
+
+        position:
+          "relative",
+      }}
+    >
+      {/* FEATURED BADGE */}
+
+      {featured && (
+        <div
+          style={{
+            position:
+              "absolute",
+
+            top: "16px",
+
+            right: "16px",
+
+            background:
+              "#f59e0b",
+
+            color:
+              "white",
+
+            padding:
+              "6px 12px",
+
+            borderRadius:
+              "999px",
+
+            fontSize:
+              "12px",
+
+            fontWeight:
+              "bold",
+          }}
+        >
+          ⭐ Featured
+        </div>
+      )}
+
+      <div
+        style={{
+          display:
+            "flex",
+
+          alignItems:
+            "center",
+
+          gap: "15px",
+
+          marginBottom:
+            "15px",
+        }}
+      >
+        {job.companyLogo && (
+          <img
+            src={
+              job.companyLogo
+            }
+            alt={
+              job.company
+            }
+            style={{
+              width: "55px",
+
+              height:
+                "55px",
+
+              objectFit:
+                "contain",
+
+              borderRadius:
+                "12px",
+
+              background:
+                "white",
+
+              border:
+                "1px solid #e5e7eb",
+
+              padding:
+                "6px",
+            }}
+          />
+        )}
+
+        <div>
+          <h2
+            style={{
+              margin: 0,
+            }}
+          >
+            {job.title}
+          </h2>
+
           <div
             style={{
               display:
-                "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit, minmax(320px, 1fr))",
-              gap: "22px",
+                "flex",
+
+              alignItems:
+                "center",
+
+              gap: "8px",
+
+              flexWrap:
+                "wrap",
+
+              marginTop:
+                "8px",
             }}
           >
-            {filteredJobs.map(
-              (job) => (
-                <div
-                  key={job.id}
-                  onClick={() =>
-                    (window.location.href =
-                      `/jobs/${job.id}`)
-                  }
-                  style={{
-                    background:
-                      "white",
-                    borderRadius:
-                      "18px",
-                    padding:
-                      "28px",
-                    cursor:
-                      "pointer",
-                    boxShadow:
-                      "0 4px 18px rgba(0,0,0,0.05)",
-                    border:
-                      "1px solid #edf2f7",
-                  }}
-                >
-                  <div
-                    style={{
-                      display:
-                        "flex",
-                      alignItems:
-                        "center",
-                      gap: "15px",
-                      marginBottom:
-                        "15px",
-                    }}
-                  >
-                    {job.companyLogo && (
-                      <img
-                        src={job.companyLogo}
-                        alt={job.company}
-                        style={{
-                          width: "55px",
-                          height:
-                            "55px",
-                          objectFit:
-                            "contain",
-                          borderRadius:
-                            "12px",
-                          background:
-                            "white",
-                          border:
-                            "1px solid #e5e7eb",
-                          padding:
-                            "6px",
-                        }}
-                      />
-                    )}
+            <a
+              href={`/company/${job.company
+                .toLowerCase()
+                .replace(
+                  /\s+/g,
+                  "-"
+                )}`}
+              onClick={(e) =>
+                e.stopPropagation()
+              }
+              style={{
+                textDecoration:
+                  "none",
 
-                    <div>
-                      <h2
-                        style={{
-                          margin: 0,
-                        }}
-                      >
-                        {job.title}
-                      </h2>
+                color:
+                  "#1d4ed8",
 
-                      <div
-                        style={{
-                          display:
-                            "flex",
-                          alignItems:
-                            "center",
-                          gap: "8px",
-                          flexWrap:
-                            "wrap",
-                          marginTop:
-                            "8px",
-                        }}
-                      >
-                        <a
-                          href={`/company/${job.company
-                            .toLowerCase()
-                            .replace(
-                              /\s+/g,
-                              "-"
-                            )}`}
-                          onClick={(e) =>
-                            e.stopPropagation()
-                          }
-                          style={{
-                            textDecoration:
-                              "none",
-                            color:
-                              "#1d4ed8",
-                            fontWeight:
-                              "bold",
-                          }}
-                        >
-                          {job.company}
-                        </a>
+                fontWeight:
+                  "bold",
+              }}
+            >
+              {job.company}
+            </a>
 
-                        {job.verified && (
-                          <div
-                            style={{
-                              background:
-                                "#dcfce7",
-                              color:
-                                "#15803d",
-                              padding:
-                                "4px 10px",
-                              borderRadius:
-                                "999px",
-                              fontSize:
-                                "11px",
-                              fontWeight:
-                                "bold",
-                            }}
-                          >
-                            ✔ Verified
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+            {job.verified && (
+              <div
+                style={{
+                  background:
+                    "#dcfce7",
 
-                  <p>
-                    📍{" "}
-                    {job.location}
-                  </p>
+                  color:
+                    "#15803d",
 
-                  {job.jobType && (
-                    <p>
-                      💼{" "}
-                      {job.jobType}
-                    </p>
-                  )}
+                  padding:
+                    "4px 10px",
 
-                  {job.category && (
-                    <a
-                      href={`/jobs/category/${job.category
-                        .toLowerCase()
-                        .replace(
-                          /\s+/g,
-                          "-"
-                        )}`}
-                      onClick={(e) =>
-                        e.stopPropagation()
-                      }
-                      style={{
-                        textDecoration:
-                          "none",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display:
-                            "inline-block",
-                          background:
-                            "#eff6ff",
-                          color:
-                            "#1d4ed8",
-                          padding:
-                            "6px 12px",
-                          borderRadius:
-                            "20px",
-                          fontSize:
-                            "13px",
-                          fontWeight:
-                            "bold",
-                          marginTop:
-                            "10px",
-                        }}
-                      >
-                        {
-                          job.category
-                        }
-                      </div>
-                    </a>
-                  )}
+                  borderRadius:
+                    "999px",
 
-                  {role ===
-                    "applicant" && (
-                    <button
-                      onClick={(e) =>
-                        toggleSaveJob(
-                          job.id,
-                          e
-                        )
-                      }
-                      style={{
-                        marginTop:
-                          "18px",
-                        background:
-                          savedJobs.includes(
-                            job.id
-                          )
-                            ? "#fee2e2"
-                            : "#eff6ff",
-                        color:
-                          savedJobs.includes(
-                            job.id
-                          )
-                            ? "#dc2626"
-                            : "#1d4ed8",
-                        border:
-                          "none",
-                        padding:
-                          "10px 14px",
-                        borderRadius:
-                          "10px",
-                        cursor:
-                          "pointer",
-                        fontWeight:
-                          "bold",
-                      }}
-                    >
-                      {savedJobs.includes(
-                        job.id
-                      )
-                        ? "❤️ Saved"
-                        : "🤍 Save Job"}
-                    </button>
-                  )}
+                  fontSize:
+                    "11px",
 
-                  {job.salaryMin &&
-                    job.salaryMax && (
-                      <p
-                        style={{
-                          marginTop:
-                            "20px",
-                          color:
-                            "#16a34a",
-                          fontWeight:
-                            "bold",
-                          fontSize:
-                            "18px",
-                        }}
-                      >
-                        💰{" "}
-                        {getCurrencySymbol(
-                          job.currency
-                        )}
-                        {Number(
-                          job.salaryMin
-                        ).toLocaleString(
-                          "en-US"
-                        )}
-                        {" - "}
-                        {getCurrencySymbol(
-                          job.currency
-                        )}
-                        {Number(
-                          job.salaryMax
-                        ).toLocaleString(
-                          "en-US"
-                        )}
-                      </p>
-                    )}
-                </div>
-              )
+                  fontWeight:
+                    "bold",
+                }}
+              >
+                ✔ Verified
+              </div>
             )}
           </div>
-        )}
+        </div>
       </div>
+
+      <p>
+        📍 {job.location}
+      </p>
+
+      {job.jobType && (
+        <p>
+          💼 {job.jobType}
+        </p>
+      )}
+
+      {job.category && (
+        <div
+          style={{
+            display:
+              "inline-block",
+
+            background:
+              "#eff6ff",
+
+            color:
+              "#1d4ed8",
+
+            padding:
+              "6px 12px",
+
+            borderRadius:
+              "20px",
+
+            fontSize:
+              "13px",
+
+            fontWeight:
+              "bold",
+
+            marginTop:
+              "10px",
+          }}
+        >
+          {job.category}
+        </div>
+      )}
+
+      {role ===
+        "applicant" && (
+        <button
+          onClick={(e) =>
+            toggleSaveJob(
+              job.id,
+              e
+            )
+          }
+          style={{
+            marginTop:
+              "18px",
+
+            background:
+              savedJobs.includes(
+                job.id
+              )
+                ? "#fee2e2"
+                : "#eff6ff",
+
+            color:
+              savedJobs.includes(
+                job.id
+              )
+                ? "#dc2626"
+                : "#1d4ed8",
+
+            border:
+              "none",
+
+            padding:
+              "10px 14px",
+
+            borderRadius:
+              "10px",
+
+            cursor:
+              "pointer",
+
+            fontWeight:
+              "bold",
+          }}
+        >
+          {savedJobs.includes(
+            job.id
+          )
+            ? "❤️ Saved"
+            : "🤍 Save Job"}
+        </button>
+      )}
+
+      {job.salaryMin &&
+        job.salaryMax && (
+          <p
+            style={{
+              marginTop:
+                "20px",
+
+              color:
+                "#16a34a",
+
+              fontWeight:
+                "bold",
+
+              fontSize:
+                "18px",
+            }}
+          >
+            💰{" "}
+            {getCurrencySymbol(
+              job.currency
+            )}
+            {Number(
+              job.salaryMin
+            ).toLocaleString(
+              "en-US"
+            )}
+            {" - "}
+            {getCurrencySymbol(
+              job.currency
+            )}
+            {Number(
+              job.salaryMax
+            ).toLocaleString(
+              "en-US"
+            )}
+          </p>
+        )}
     </div>
   );
 }
