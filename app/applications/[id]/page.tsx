@@ -90,6 +90,59 @@ export default function ApplicationsPage() {
       }
     };
 
+  const getStatusStyle =
+    (status: string) => {
+      switch (status) {
+        case "Applied":
+          return {
+            background:
+              "#dbeafe",
+            color:
+              "#1d4ed8",
+          };
+
+        case "Reviewing":
+          return {
+            background:
+              "#fef3c7",
+            color:
+              "#b45309",
+          };
+
+        case "Interview":
+          return {
+            background:
+              "#ede9fe",
+            color:
+              "#7c3aed",
+          };
+
+        case "Rejected":
+          return {
+            background:
+              "#fee2e2",
+            color:
+              "#dc2626",
+          };
+
+        case "Hired":
+          return {
+            background:
+              "#dcfce7",
+            color:
+              "#15803d",
+          };
+
+        default:
+          return {
+            background:
+              "#f3f4f6",
+            color:
+              "#374151",
+          };
+      }
+    };
+
   const renderAnswers = (
     answers: string
   ) => {
@@ -122,10 +175,10 @@ export default function ApplicationsPage() {
               padding: "15px",
 
               borderRadius:
-                "8px",
+                "10px",
 
               marginBottom:
-                "12px",
+                "14px",
 
               border:
                 "1px solid #e5e7eb",
@@ -168,7 +221,7 @@ export default function ApplicationsPage() {
     return (
       <div
         style={{
-          padding: "20px",
+          padding: "30px",
         }}
       >
         Loading...
@@ -179,62 +232,88 @@ export default function ApplicationsPage() {
   return (
     <div
       style={{
-        background: "#f3f2f1",
+        background:
+          "#f3f4f6",
 
-        minHeight: "100vh",
+        minHeight:
+          "100vh",
 
-        padding: "20px",
+        padding:
+          "30px",
       }}
     >
       <div
         style={{
-          maxWidth: "900px",
+          maxWidth:
+            "1000px",
 
-          margin: "0 auto",
+          margin:
+            "0 auto",
         }}
       >
         {/* Header */}
 
         <div
           style={{
-            display: "flex",
+            display:
+              "flex",
 
             justifyContent:
               "space-between",
 
-            alignItems: "center",
+            alignItems:
+              "center",
+
+            flexWrap:
+              "wrap",
+
+            gap: "15px",
 
             marginBottom:
-              "20px",
-
-            flexWrap: "wrap",
-
-            gap: "10px",
+              "30px",
           }}
         >
-          <h1
-            style={{
-              color: "#1c4ed8",
-            }}
-          >
-            Job Applicants
-          </h1>
+          <div>
+            <h1
+              style={{
+                color:
+                  "#1d4ed8",
+
+                marginBottom:
+                  "6px",
+              }}
+            >
+              Job Applicants
+            </h1>
+
+            <p
+              style={{
+                color:
+                  "#6b7280",
+              }}
+            >
+              ATS-style hiring
+              workflow dashboard
+            </p>
+          </div>
 
           <a href="/my-jobs">
             <button
               style={{
                 background:
-                  "#1c4ed8",
+                  "#1d4ed8",
 
-                color: "white",
+                color:
+                  "white",
 
-                border: "none",
+                border:
+                  "none",
 
                 padding:
-                  "10px 15px",
+                  "12px 18px",
 
                 borderRadius:
-                  "5px",
+                  "10px",
 
                 cursor:
                   "pointer",
@@ -243,17 +322,30 @@ export default function ApplicationsPage() {
                   "bold",
               }}
             >
-              Back to My Jobs
+              ← Back to My Jobs
             </button>
           </a>
         </div>
 
         {applications.length ===
         0 ? (
-          <p>
-            No applications
-            yet.
-          </p>
+          <div
+            style={{
+              background:
+                "white",
+
+              padding:
+                "40px",
+
+              borderRadius:
+                "18px",
+            }}
+          >
+            <h2>
+              No applications
+              yet.
+            </h2>
+          </div>
         ) : (
           applications.map(
             (app) => (
@@ -264,19 +356,22 @@ export default function ApplicationsPage() {
                     "white",
 
                   padding:
-                    "25px",
+                    "30px",
 
                   borderRadius:
-                    "12px",
-
-                  marginBottom:
                     "20px",
 
+                  marginBottom:
+                    "28px",
+
+                  boxShadow:
+                    "0 4px 18px rgba(0,0,0,0.05)",
+
                   border:
-                    "1px solid #ddd",
+                    "1px solid #e5e7eb",
                 }}
               >
-                {/* Applicant Header */}
+                {/* TOP SECTION */}
 
                 <div
                   style={{
@@ -287,16 +382,23 @@ export default function ApplicationsPage() {
                       "space-between",
 
                     alignItems:
-                      "center",
+                      "flex-start",
 
                     flexWrap:
                       "wrap",
 
-                    gap: "15px",
+                    gap: "25px",
                   }}
                 >
+                  {/* LEFT */}
+
                   <div>
-                    <h2>
+                    <h2
+                      style={{
+                        marginBottom:
+                          "10px",
+                      }}
+                    >
                       {app.name}
                     </h2>
 
@@ -306,9 +408,45 @@ export default function ApplicationsPage() {
                       </strong>{" "}
                       {app.email}
                     </p>
+
+                    {/* STATUS BADGE */}
+
+                    <div
+                      style={{
+                        marginTop:
+                          "16px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          ...getStatusStyle(
+                            app.status ||
+                              "Applied"
+                          ),
+
+                          padding:
+                            "8px 16px",
+
+                          borderRadius:
+                            "999px",
+
+                          fontWeight:
+                            "bold",
+
+                          fontSize:
+                            "14px",
+
+                          display:
+                            "inline-block",
+                        }}
+                      >
+                        {app.status ||
+                          "Applied"}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Status Dropdown */}
+                  {/* RIGHT */}
 
                   <div>
                     <label
@@ -317,14 +455,16 @@ export default function ApplicationsPage() {
                           "block",
 
                         marginBottom:
-                          "6px",
+                          "10px",
 
                         fontWeight:
                           "bold",
+
+                        color:
+                          "#374151",
                       }}
                     >
-                      Application
-                      Status
+                      Application Status
                     </label>
 
                     <select
@@ -340,16 +480,22 @@ export default function ApplicationsPage() {
                       }
                       style={{
                         padding:
-                          "10px",
+                          "12px 14px",
 
                         borderRadius:
-                          "8px",
+                          "10px",
 
                         border:
-                          "1px solid #ccc",
+                          "1px solid #d1d5db",
 
                         fontWeight:
                           "bold",
+
+                        background:
+                          "white",
+
+                        minWidth:
+                          "190px",
                       }}
                     >
                       <option>
@@ -375,12 +521,12 @@ export default function ApplicationsPage() {
                   </div>
                 </div>
 
-                {/* Resume */}
+                {/* RESUME */}
 
                 <div
                   style={{
                     marginTop:
-                      "20px",
+                      "28px",
                   }}
                 >
                   <strong>
@@ -394,6 +540,13 @@ export default function ApplicationsPage() {
                       }
                       target="_blank"
                       rel="noopener noreferrer"
+                      style={{
+                        color:
+                          "#1d4ed8",
+
+                        fontWeight:
+                          "bold",
+                      }}
                     >
                       View Resume
                     </a>
@@ -402,12 +555,12 @@ export default function ApplicationsPage() {
                   )}
                 </div>
 
-                {/* Cover Letter */}
+                {/* COVER LETTER */}
 
                 <div
                   style={{
                     marginTop:
-                      "20px",
+                      "28px",
                   }}
                 >
                   <h3>
@@ -420,16 +573,16 @@ export default function ApplicationsPage() {
                         "#f9fafb",
 
                       padding:
-                        "15px",
+                        "18px",
 
                       borderRadius:
-                        "8px",
+                        "12px",
 
                       border:
                         "1px solid #e5e7eb",
 
                       marginTop:
-                        "10px",
+                        "12px",
 
                       whiteSpace:
                         "pre-wrap",
@@ -440,12 +593,12 @@ export default function ApplicationsPage() {
                   </div>
                 </div>
 
-                {/* Screening Answers */}
+                {/* SCREENING ANSWERS */}
 
                 <div
                   style={{
                     marginTop:
-                      "20px",
+                      "28px",
                   }}
                 >
                   <h3>
@@ -456,7 +609,7 @@ export default function ApplicationsPage() {
                   <div
                     style={{
                       marginTop:
-                        "10px",
+                        "14px",
                     }}
                   >
                     {renderAnswers(
