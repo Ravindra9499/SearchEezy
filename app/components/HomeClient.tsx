@@ -24,6 +24,9 @@ export default function HomeClient({
   const [loading, setLoading] =
     useState(true);
 
+  const [savedJobs, setSavedJobs] =
+    useState<number[]>([]);
+
   const [
     searchTitle,
     setSearchTitle,
@@ -64,6 +67,39 @@ export default function HomeClient({
 
           if (
             profile.role ===
+            "applicant"
+          ) {
+            const {
+              data: savedData,
+            } =
+              await supabase
+                .from(
+                  "saved_jobs"
+                )
+                .select(
+                  "jobId"
+                )
+                .eq(
+                  "userEmail",
+                  user.email
+                );
+
+            if (
+              savedData
+            ) {
+              setSavedJobs(
+                savedData.map(
+                  (
+                    item
+                  ) =>
+                    item.jobId
+                )
+              );
+            }
+          }
+
+          if (
+            profile.role ===
             "employer"
           ) {
             const jobsRes =
@@ -93,6 +129,70 @@ export default function HomeClient({
 
     getUser();
   }, [jobs]);
+
+  const toggleSaveJob =
+    async (
+      jobId: number,
+      e: any
+    ) => {
+      e.stopPropagation();
+
+      if (!user) {
+        alert(
+          "Please login as applicant"
+        );
+
+        return;
+      }
+
+      const alreadySaved =
+        savedJobs.includes(
+          jobId
+        );
+
+      if (
+        alreadySaved
+      ) {
+        await supabase
+          .from(
+            "saved_jobs"
+          )
+          .delete()
+          .eq(
+            "userEmail",
+            user.email
+          )
+          .eq(
+            "jobId",
+            jobId
+          );
+
+        setSavedJobs(
+          savedJobs.filter(
+            (id) =>
+              id !==
+              jobId
+          )
+        );
+      } else {
+        await supabase
+          .from(
+            "saved_jobs"
+          )
+          .insert([
+            {
+              userEmail:
+                user.email,
+              jobId,
+            },
+          ]);
+
+        setSavedJobs([
+          ...savedJobs,
+          jobId,
+        ]);
+      }
+    };
 
   const getCurrencySymbol =
     (
@@ -183,8 +283,6 @@ export default function HomeClient({
           "Arial, sans-serif",
       }}
     >
-      {/* HEADER */}
-
       <div
         style={{
           background:
@@ -508,8 +606,6 @@ export default function HomeClient({
         </div>
       </div>
 
-      {/* SEARCH */}
-
       <div
         style={{
           maxWidth:
@@ -602,7 +698,9 @@ export default function HomeClient({
                 "bold",
             }}
           >
-            {filteredJobs.length} jobs found
+            {filteredJobs.length}
+            {" "}
+            jobs found
           </div>
 
           <div
@@ -653,8 +751,6 @@ export default function HomeClient({
           </div>
         </div>
       </div>
-
-      {/* JOBS */}
 
       <div
         style={{
@@ -885,6 +981,50 @@ export default function HomeClient({
                         }
                       </div>
                     </a>
+                  )}
+
+                  {role ===
+                    "applicant" && (
+                    <button
+                      onClick={(e) =>
+                        toggleSaveJob(
+                          job.id,
+                          e
+                        )
+                      }
+                      style={{
+                        marginTop:
+                          "18px",
+                        background:
+                          savedJobs.includes(
+                            job.id
+                          )
+                            ? "#fee2e2"
+                            : "#eff6ff",
+                        color:
+                          savedJobs.includes(
+                            job.id
+                          )
+                            ? "#dc2626"
+                            : "#1d4ed8",
+                        border:
+                          "none",
+                        padding:
+                          "10px 14px",
+                        borderRadius:
+                          "10px",
+                        cursor:
+                          "pointer",
+                        fontWeight:
+                          "bold",
+                      }}
+                    >
+                      {savedJobs.includes(
+                        job.id
+                      )
+                        ? "❤️ Saved"
+                        : "🤍 Save Job"}
+                    </button>
                   )}
 
                   {job.salaryMin &&
