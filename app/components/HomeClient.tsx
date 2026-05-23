@@ -92,7 +92,9 @@ export default function HomeClient({
                   (
                     item
                   ) =>
-                    item.jobId
+                    Number(
+                      item.jobId
+                    )
                 )
               );
             }
@@ -164,7 +166,7 @@ export default function HomeClient({
           )
           .eq(
             "jobId",
-            jobId
+            String(jobId)
           );
 
         setSavedJobs(
@@ -183,7 +185,8 @@ export default function HomeClient({
             {
               userEmail:
                 user.email,
-              jobId,
+              jobId:
+                String(jobId),
             },
           ]);
 
@@ -449,28 +452,53 @@ export default function HomeClient({
 
                 {role ===
                   "applicant" && (
-                  <a href="/my-applications">
-                    <button
-                      style={{
-                        background:
-                          "#16a34a",
-                        color:
-                          "white",
-                        border:
-                          "none",
-                        padding:
-                          "10px 16px",
-                        borderRadius:
-                          "8px",
-                        cursor:
-                          "pointer",
-                        fontWeight:
-                          "bold",
-                      }}
-                    >
-                      My Applications
-                    </button>
-                  </a>
+                  <>
+                    <a href="/my-applications">
+                      <button
+                        style={{
+                          background:
+                            "#16a34a",
+                          color:
+                            "white",
+                          border:
+                            "none",
+                          padding:
+                            "10px 16px",
+                          borderRadius:
+                            "8px",
+                          cursor:
+                            "pointer",
+                          fontWeight:
+                            "bold",
+                        }}
+                      >
+                        My Applications
+                      </button>
+                    </a>
+
+                    <a href="/saved-jobs">
+                      <button
+                        style={{
+                          background:
+                            "#7c3aed",
+                          color:
+                            "white",
+                          border:
+                            "none",
+                          padding:
+                            "10px 16px",
+                          borderRadius:
+                            "8px",
+                          cursor:
+                            "pointer",
+                          fontWeight:
+                            "bold",
+                        }}
+                      >
+                        Saved Jobs
+                      </button>
+                    </a>
+                  </>
                 )}
 
                 <button
@@ -655,7 +683,7 @@ export default function HomeClient({
                   "15px",
                 borderRadius:
                   "10px",
-                border:
+                  border:
                   "1px solid #ddd",
                 fontSize:
                   "16px",
