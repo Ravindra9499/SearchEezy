@@ -19,6 +19,20 @@ export default function MyApplicationsPage() {
   const [user, setUser] =
     useState<any>(null);
 
+  // JOB ALERTS
+
+  const [alerts, setAlerts] =
+    useState<any[]>([]);
+
+  const [keyword, setKeyword] =
+    useState("");
+
+  const [location, setLocation] =
+    useState("");
+
+  const [savingAlert, setSavingAlert] =
+    useState(false);
+
   useEffect(() => {
     getUser();
   }, []);
@@ -34,6 +48,10 @@ export default function MyApplicationsPage() {
 
       if (user?.email) {
         fetchApplications(
+          user.email
+        );
+
+        fetchAlerts(
           user.email
         );
       } else {
@@ -62,6 +80,123 @@ export default function MyApplicationsPage() {
       } finally {
         setLoading(false);
       }
+    };
+
+  // FETCH ALERTS
+
+  const fetchAlerts =
+    async (
+      email: string
+    ) => {
+      const {
+        data,
+      } =
+        await supabase
+          .from(
+            "job_alerts"
+          )
+          .select("*")
+          .eq(
+            "userEmail",
+            email
+          )
+          .order(
+            "created_at",
+            {
+              ascending:
+                false,
+            }
+          );
+
+      if (data) {
+        setAlerts(data);
+      }
+    };
+
+  // SAVE ALERT
+
+  const saveAlert =
+    async () => {
+      if (
+        !keyword.trim()
+      ) {
+        alert(
+          "Please enter keyword"
+        );
+
+        return;
+      }
+
+      if (!user?.email) {
+        return;
+      }
+
+      try {
+        setSavingAlert(true);
+
+        const {
+          error,
+        } =
+          await supabase
+            .from(
+              "job_alerts"
+            )
+            .insert([
+              {
+                userEmail:
+                  user.email,
+                keyword,
+                location,
+              },
+            ]);
+
+        if (error) {
+          console.error(
+            error
+          );
+
+          alert(
+            "Failed to create alert"
+          );
+
+          return;
+        }
+
+        setKeyword("");
+        setLocation("");
+
+        fetchAlerts(
+          user.email
+        );
+
+        alert(
+          "Job alert created successfully"
+        );
+      } catch (error) {
+        console.error(
+          error
+        );
+      } finally {
+        setSavingAlert(false);
+      }
+    };
+
+  // DELETE ALERT
+
+  const deleteAlert =
+    async (
+      id: number
+    ) => {
+      await supabase
+        .from(
+          "job_alerts"
+        )
+        .delete()
+        .eq("id", id);
+
+      fetchAlerts(
+        user.email
+      );
     };
 
   const getStatusStyle =
@@ -195,7 +330,8 @@ export default function MyApplicationsPage() {
             >
               Track your hiring
               progress and
-              application status.
+              manage your job
+              alerts.
             </p>
           </div>
 
@@ -228,6 +364,294 @@ export default function MyApplicationsPage() {
             </button>
           </a>
         </div>
+
+        {/* JOB ALERTS SECTION */}
+
+        {user && (
+          <div
+            style={{
+              background:
+                "white",
+
+              padding:
+                "30px",
+
+              borderRadius:
+                "20px",
+
+              border:
+                "1px solid #e5e7eb",
+
+              marginBottom:
+                "35px",
+
+              boxShadow:
+                "0 4px 18px rgba(0,0,0,0.05)",
+            }}
+          >
+            <h2
+              style={{
+                marginTop: 0,
+                color:
+                  "#7c3aed",
+              }}
+            >
+              🔔 Job Alerts
+            </h2>
+
+            <p
+              style={{
+                color:
+                  "#6b7280",
+
+                marginBottom:
+                  "24px",
+              }}
+            >
+              Create alerts and
+              get notified when
+              matching jobs are
+              posted.
+            </p>
+
+            {/* FORM */}
+
+            <div
+              style={{
+                display:
+                  "flex",
+
+                gap: "14px",
+
+                flexWrap:
+                  "wrap",
+
+                marginBottom:
+                  "24px",
+              }}
+            >
+              <input
+                placeholder="Keyword (Software Engineer)"
+                value={keyword}
+                onChange={(e) =>
+                  setKeyword(
+                    e.target.value
+                  )
+                }
+                style={{
+                  flex: 1,
+
+                  minWidth:
+                    "240px",
+
+                  padding:
+                    "14px",
+
+                  border:
+                    "1px solid #ddd",
+
+                  borderRadius:
+                    "10px",
+
+                  fontSize:
+                    "15px",
+                }}
+              />
+
+              <input
+                placeholder="Location (Optional)"
+                value={location}
+                onChange={(e) =>
+                  setLocation(
+                    e.target.value
+                  )
+                }
+                style={{
+                  flex: 1,
+
+                  minWidth:
+                    "240px",
+
+                  padding:
+                    "14px",
+
+                  border:
+                    "1px solid #ddd",
+
+                  borderRadius:
+                    "10px",
+
+                  fontSize:
+                    "15px",
+                }}
+              />
+
+              <button
+                onClick={
+                  saveAlert
+                }
+                disabled={
+                  savingAlert
+                }
+                style={{
+                  background:
+                    "#7c3aed",
+
+                  color:
+                    "white",
+
+                  border:
+                    "none",
+
+                  padding:
+                    "14px 20px",
+
+                  borderRadius:
+                    "10px",
+
+                  cursor:
+                    "pointer",
+
+                  fontWeight:
+                    "bold",
+                }}
+              >
+                {savingAlert
+                  ? "Saving..."
+                  : "Create Alert"}
+              </button>
+            </div>
+
+            {/* ALERTS */}
+
+            {alerts.length ===
+            0 ? (
+              <div
+                style={{
+                  color:
+                    "#6b7280",
+                }}
+              >
+                No alerts created
+                yet.
+              </div>
+            ) : (
+              <div
+                style={{
+                  display:
+                    "grid",
+
+                  gap: "14px",
+                }}
+              >
+                {alerts.map(
+                  (
+                    alert
+                  ) => (
+                    <div
+                      key={
+                        alert.id
+                      }
+                      style={{
+                        background:
+                          "#faf5ff",
+
+                        border:
+                          "1px solid #e9d5ff",
+
+                        padding:
+                          "18px",
+
+                        borderRadius:
+                          "14px",
+
+                        display:
+                          "flex",
+
+                        justifyContent:
+                          "space-between",
+
+                        alignItems:
+                          "center",
+
+                        flexWrap:
+                          "wrap",
+
+                        gap: "15px",
+                      }}
+                    >
+                      <div>
+                        <div
+                          style={{
+                            fontWeight:
+                              "bold",
+
+                            color:
+                              "#6d28d9",
+
+                            marginBottom:
+                              "6px",
+                          }}
+                        >
+                          🔔{" "}
+                          {
+                            alert.keyword
+                          }
+                        </div>
+
+                        <div
+                          style={{
+                            color:
+                              "#6b7280",
+
+                            fontSize:
+                              "14px",
+                          }}
+                        >
+                          📍{" "}
+                          {alert.location ||
+                            "Any Location"}
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() =>
+                          deleteAlert(
+                            alert.id
+                          )
+                        }
+                        style={{
+                          background:
+                            "#fee2e2",
+
+                          color:
+                            "#dc2626",
+
+                          border:
+                            "none",
+
+                          padding:
+                            "10px 16px",
+
+                          borderRadius:
+                            "10px",
+
+                          cursor:
+                            "pointer",
+
+                          fontWeight:
+                            "bold",
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Not logged in */}
 
@@ -280,6 +704,9 @@ export default function MyApplicationsPage() {
 
                 border:
                   "1px solid #ddd",
+
+                marginBottom:
+                  "25px",
               }}
             >
               <p
