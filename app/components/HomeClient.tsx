@@ -63,7 +63,7 @@ export default function HomeClient({
         if (user?.id) {
           const res =
             await fetch(
-              `/api/profile?userId=${user.id}`
+              `/api/profile?email=${user.email}`
             );
 
           const profile =

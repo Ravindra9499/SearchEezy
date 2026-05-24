@@ -20,39 +20,71 @@ export async function GET(
         "userId"
       );
 
-    if (!userId) {
+    const email =
+      searchParams.get(
+        "email"
+      );
+
+    // FETCH BY EMAIL
+
+    if (email) {
+      const {
+        data,
+        error,
+      } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("email", email)
+        .single();
+
+      if (error) {
+        return NextResponse.json(
+          {
+            error:
+              error.message,
+          },
+          { status: 500 }
+        );
+      }
+
       return NextResponse.json(
-        {
-          error:
-            "Missing userId",
-        },
-        { status: 400 }
+        data
       );
     }
 
-    const {
-      data,
-      error,
-    } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
+    // FETCH BY ID
 
-    if (error) {
-      console.error(error);
+    if (userId) {
+      const {
+        data,
+        error,
+      } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+      if (error) {
+        return NextResponse.json(
+          {
+            error:
+              error.message,
+          },
+          { status: 500 }
+        );
+      }
 
       return NextResponse.json(
-        {
-          error:
-            error.message,
-        },
-        { status: 500 }
+        data
       );
     }
 
     return NextResponse.json(
-      data
+      {
+        error:
+          "Missing parameters",
+      },
+      { status: 400 }
     );
   } catch (error) {
     console.error(error);
