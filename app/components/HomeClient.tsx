@@ -18,6 +18,14 @@ export default function HomeClient({
   const [role, setRole] =
     useState("");
 
+  const [isAdmin, setIsAdmin] =
+    useState(false);
+
+  const [
+    resumeSearchEnabled,
+    setResumeSearchEnabled,
+  ] = useState(false);
+
   const [displayJobs, setDisplayJobs] =
     useState<any[]>([]);
 
@@ -63,6 +71,16 @@ export default function HomeClient({
 
           setRole(
             profile.role
+          );
+
+          setIsAdmin(
+            profile.isAdmin ===
+              true
+          );
+
+          setResumeSearchEnabled(
+            profile.resumeSearchEnabled ===
+              true
           );
 
           if (
@@ -275,8 +293,6 @@ export default function HomeClient({
       }
     );
 
-  // FEATURED JOBS FIRST
-
   const featuredJobs =
     filteredJobs.filter(
       (job) =>
@@ -404,6 +420,27 @@ export default function HomeClient({
                     {role}
                   </div>
                 )}
+
+                {isAdmin && (
+                  <div
+                    style={{
+                      background:
+                        "#fee2e2",
+                      color:
+                        "#dc2626",
+                      padding:
+                        "4px 10px",
+                      borderRadius:
+                        "999px",
+                      fontSize:
+                        "12px",
+                      fontWeight:
+                        "bold",
+                    }}
+                  >
+                    Admin
+                  </div>
+                )}
               </div>
 
               <div
@@ -415,6 +452,31 @@ export default function HomeClient({
                     "wrap",
                 }}
               >
+                {isAdmin && (
+                  <a href="/admin">
+                    <button
+                      style={{
+                        background:
+                          "#111827",
+                        color:
+                          "white",
+                        border:
+                          "none",
+                        padding:
+                          "10px 16px",
+                        borderRadius:
+                          "8px",
+                        cursor:
+                          "pointer",
+                        fontWeight:
+                          "bold",
+                      }}
+                    >
+                      Admin Dashboard
+                    </button>
+                  </a>
+                )}
+
                 {role ===
                   "employer" && (
                   <>
@@ -463,6 +525,31 @@ export default function HomeClient({
                         My Jobs
                       </button>
                     </a>
+
+                    {resumeSearchEnabled && (
+                      <a href="/resume-search">
+                        <button
+                          style={{
+                            background:
+                              "#7c3aed",
+                            color:
+                              "white",
+                            border:
+                              "none",
+                            padding:
+                              "10px 16px",
+                            borderRadius:
+                              "8px",
+                            cursor:
+                              "pointer",
+                            fontWeight:
+                              "bold",
+                          }}
+                        >
+                          Resume Search
+                        </button>
+                      </a>
+                    )}
                   </>
                 )}
 
@@ -844,8 +931,6 @@ export default function HomeClient({
           </div>
         ) : (
           <>
-            {/* FEATURED JOBS */}
-
             {featuredJobs.length >
               0 && (
               <div
@@ -901,8 +986,6 @@ export default function HomeClient({
               </div>
             )}
 
-            {/* REGULAR JOBS */}
-
             <h2
               style={{
                 marginBottom:
@@ -949,8 +1032,6 @@ export default function HomeClient({
   );
 }
 
-/* JOB CARD */
-
 function JobCard({
   job,
   role,
@@ -968,57 +1049,41 @@ function JobCard({
       style={{
         background:
           "white",
-
         borderRadius:
           "18px",
-
         padding:
           "28px",
-
         cursor:
           "pointer",
-
         boxShadow:
           featured
             ? "0 0 0 2px #f59e0b"
             : "0 4px 18px rgba(0,0,0,0.05)",
-
         border:
           featured
             ? "2px solid #f59e0b"
             : "1px solid #edf2f7",
-
         position:
           "relative",
       }}
     >
-      {/* FEATURED BADGE */}
-
       {featured && (
         <div
           style={{
             position:
               "absolute",
-
             top: "16px",
-
             right: "16px",
-
             background:
               "#f59e0b",
-
             color:
               "white",
-
             padding:
               "6px 12px",
-
             borderRadius:
               "999px",
-
             fontSize:
               "12px",
-
             fontWeight:
               "bold",
           }}
@@ -1031,12 +1096,9 @@ function JobCard({
         style={{
           display:
             "flex",
-
           alignItems:
             "center",
-
           gap: "15px",
-
           marginBottom:
             "15px",
         }}
@@ -1051,22 +1113,16 @@ function JobCard({
             }
             style={{
               width: "55px",
-
               height:
                 "55px",
-
               objectFit:
                 "contain",
-
               borderRadius:
                 "12px",
-
               background:
                 "white",
-
               border:
                 "1px solid #e5e7eb",
-
               padding:
                 "6px",
             }}
@@ -1086,15 +1142,11 @@ function JobCard({
             style={{
               display:
                 "flex",
-
               alignItems:
                 "center",
-
               gap: "8px",
-
               flexWrap:
                 "wrap",
-
               marginTop:
                 "8px",
             }}
@@ -1112,10 +1164,8 @@ function JobCard({
               style={{
                 textDecoration:
                   "none",
-
                 color:
                   "#1d4ed8",
-
                 fontWeight:
                   "bold",
               }}
@@ -1128,19 +1178,14 @@ function JobCard({
                 style={{
                   background:
                     "#dcfce7",
-
                   color:
                     "#15803d",
-
                   padding:
                     "4px 10px",
-
                   borderRadius:
                     "999px",
-
                   fontSize:
                     "11px",
-
                   fontWeight:
                     "bold",
                 }}
@@ -1167,25 +1212,18 @@ function JobCard({
           style={{
             display:
               "inline-block",
-
             background:
               "#eff6ff",
-
             color:
               "#1d4ed8",
-
             padding:
               "6px 12px",
-
             borderRadius:
               "20px",
-
             fontSize:
               "13px",
-
             fontWeight:
               "bold",
-
             marginTop:
               "10px",
           }}
@@ -1206,33 +1244,26 @@ function JobCard({
           style={{
             marginTop:
               "18px",
-
             background:
               savedJobs.includes(
                 job.id
               )
                 ? "#fee2e2"
                 : "#eff6ff",
-
             color:
               savedJobs.includes(
                 job.id
               )
                 ? "#dc2626"
                 : "#1d4ed8",
-
             border:
               "none",
-
             padding:
               "10px 14px",
-
             borderRadius:
               "10px",
-
             cursor:
               "pointer",
-
             fontWeight:
               "bold",
           }}
@@ -1251,13 +1282,10 @@ function JobCard({
             style={{
               marginTop:
                 "20px",
-
               color:
                 "#16a34a",
-
               fontWeight:
                 "bold",
-
               fontSize:
                 "18px",
             }}

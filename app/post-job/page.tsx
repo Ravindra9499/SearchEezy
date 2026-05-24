@@ -20,6 +20,9 @@ export default function PostJobPage() {
   const [user, setUser] =
     useState<any>(null);
 
+  const [profile, setProfile] =
+    useState<any>(null);
+
   const [title, setTitle] =
     useState("");
 
@@ -32,12 +35,8 @@ export default function PostJobPage() {
   const [jobType, setJobType] =
     useState("");
 
-  // CATEGORY
-
   const [category, setCategory] =
     useState("");
-
-  // Salary fields
 
   const [
     salaryMin,
@@ -53,8 +52,6 @@ export default function PostJobPage() {
     salaryType,
     setSalaryType,
   ] = useState("");
-
-  // Currency
 
   const [currency, setCurrency] =
     useState("USD");
@@ -91,6 +88,19 @@ export default function PostJobPage() {
       }
 
       setUser(user);
+
+      // FETCH PROFILE
+
+      const {
+        data: profileData,
+      } =
+        await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+
+      setProfile(profileData);
     };
 
   const handleSubmit =
@@ -111,6 +121,21 @@ export default function PostJobPage() {
       ) {
         alert(
           "Please fill all required fields"
+        );
+
+        return;
+      }
+
+      // FREE PLAN LIMIT
+
+      if (
+        profile?.subscriptionPlan ===
+          "free" &&
+        profile?.freePostsRemaining <=
+          0
+      ) {
+        alert(
+          "Free posting limit reached. Upgrade to premium to continue posting jobs."
         );
 
         return;
@@ -159,6 +184,33 @@ export default function PostJobPage() {
             ),
           }
         );
+
+      // REDUCE FREE POSTS
+
+      if (res.ok) {
+        if (
+          profile?.subscriptionPlan ===
+          "free"
+        ) {
+          const remaining =
+            Math.max(
+              0,
+              profile.freePostsRemaining -
+                1
+            );
+
+          await supabase
+            .from("profiles")
+            .update({
+              freePostsRemaining:
+                remaining,
+            })
+            .eq(
+              "id",
+              user.id
+            );
+        }
+      }
 
       setLoading(false);
 
@@ -258,6 +310,61 @@ export default function PostJobPage() {
               ← Back
             </button>
           </a>
+        </div>
+
+        <div
+          style={{
+            background:
+              "#eff6ff",
+
+            border:
+              "1px solid #bfdbfe",
+
+            padding:
+              "14px",
+
+            borderRadius:
+              "10px",
+
+            marginBottom:
+              "25px",
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+
+              color:
+                "#1e3a8a",
+
+              fontWeight:
+                "bold",
+            }}
+          >
+            Subscription Plan:
+            {" "}
+            {profile?.subscriptionPlan ||
+              "free"}
+          </p>
+
+          <p
+            style={{
+              marginTop:
+                "8px",
+
+              marginBottom: 0,
+
+              color:
+                "#1e40af",
+            }}
+          >
+            Free Job Posts Remaining:
+            {" "}
+            {
+              profile?.freePostsRemaining ??
+              0
+            }
+          </p>
         </div>
 
         <p

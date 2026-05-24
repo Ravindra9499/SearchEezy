@@ -2,9 +2,15 @@ import { NextResponse } from "next/server";
 
 import { createClient } from "@supabase/supabase-js";
 
+import { Resend } from "resend";
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+const resend = new Resend(
+  process.env.RESEND_API_KEY
 );
 
 // GET jobs
@@ -118,8 +124,6 @@ export async function POST(
             jobType:
               body.jobType,
 
-            // NEW CATEGORY
-
             category:
               body.category,
 
@@ -146,6 +150,21 @@ export async function POST(
             screeningQuestions:
               body.screeningQuestions,
 
+            companyLogo:
+              body.companyLogo,
+
+            verified:
+              body.verified,
+
+            companyDescription:
+              body.companyDescription,
+
+            companyWebsite:
+              body.companyWebsite,
+
+            featured:
+              body.featured,
+
             userEmail:
               body.userEmail,
           },
@@ -164,6 +183,184 @@ export async function POST(
           error: error.message,
         },
         { status: 500 }
+      );
+    }
+
+    // JOB ALERT EMAIL MATCHING
+
+    try {
+      console.log(
+        "CHECKING JOB ALERTS..."
+      );
+
+      const {
+        data: alerts,
+        error: alertsError,
+      } =
+        await supabase
+          .from(
+            "job_alerts"
+          )
+          .select("*");
+
+      console.log(
+        "JOB ALERTS:",
+        alerts
+      );
+
+      if (alertsError) {
+        console.error(
+          "ALERT FETCH ERROR:",
+          alertsError
+        );
+      }
+
+      if (
+        alerts &&
+        alerts.length > 0
+      ) {
+        const matchingAlerts =
+          alerts.filter(
+            (alert) => {
+              const keyword =
+                alert.keyword
+                  ?.toLowerCase()
+                  ?.trim();
+
+              const title =
+                body.title
+                  ?.toLowerCase()
+                  ?.trim() || "";
+
+              const category =
+                body.category
+                  ?.toLowerCase()
+                  ?.trim() || "";
+
+              console.log(
+                "MATCH CHECK:",
+                {
+                  keyword,
+                  title,
+                  category,
+                }
+              );
+
+              return (
+                title.includes(
+                  keyword
+                ) ||
+                category.includes(
+                  keyword
+                )
+              );
+            }
+          );
+
+        console.log(
+          "MATCHING ALERTS:",
+          matchingAlerts
+        );
+
+        // SEND EMAILS
+
+        for (const alert of matchingAlerts) {
+          try {
+            const emailResponse =
+              await resend.emails.send(
+                {
+                  from:
+                    "SearchEezy <notifications@searcheezy.com>",
+
+                  to: alert.userEmail,
+
+                  subject: `New ${body.title} Job Posted`,
+
+                  html: `
+                    <div style="font-family: Arial, sans-serif; padding: 20px;">
+
+                      <h2 style="color: #1d4ed8;">
+                        New Matching Job Alert
+                      </h2>
+
+                      <p>
+                        A new job matching your alert has been posted on SearchEezy.
+                      </p>
+
+                      <hr />
+
+                      <p>
+                        <strong>Job Title:</strong>
+                        ${body.title}
+                      </p>
+
+                      <p>
+                        <strong>Company:</strong>
+                        ${body.company}
+                      </p>
+
+                      <p>
+                        <strong>Location:</strong>
+                        ${body.location}
+                      </p>
+
+                      <p>
+                        <strong>Category:</strong>
+                        ${body.category || "N/A"}
+                      </p>
+
+                      <div style="margin-top:20px;">
+                        <a
+                          href="https://www.searcheezy.com/jobs/${data.id}"
+                          target="_blank"
+                          style="
+                            background-color:#1d4ed8;
+                            color:white;
+                            padding:12px 20px;
+                            text-decoration:none;
+                            border-radius:6px;
+                            display:inline-block;
+                            font-weight:bold;
+                          "
+                        >
+                          View Job
+                        </a>
+                      </div>
+
+                    </div>
+                  `,
+                }
+              );
+
+            console.log(
+              "ALERT EMAIL SENT:",
+              alert.userEmail
+            );
+
+            console.log(
+              "EMAIL RESPONSE:",
+              emailResponse
+            );
+          } catch (
+            emailError
+          ) {
+            console.error(
+              "EMAIL ERROR:",
+              emailError
+            );
+          }
+        }
+      } else {
+        console.log(
+          "NO JOB ALERTS FOUND"
+        );
+      }
+    } catch (
+      alertError
+    ) {
+      console.error(
+        "ALERT MATCH ERROR:",
+        alertError
       );
     }
 
@@ -210,8 +407,6 @@ export async function PUT(
           jobType:
             body.jobType,
 
-          // NEW CATEGORY
-
           category:
             body.category,
 
@@ -237,6 +432,21 @@ export async function PUT(
 
           screeningQuestions:
             body.screeningQuestions,
+
+          companyLogo:
+            body.companyLogo,
+
+          verified:
+            body.verified,
+
+          companyDescription:
+            body.companyDescription,
+
+          companyWebsite:
+            body.companyWebsite,
+
+          featured:
+            body.featured,
         })
         .eq(
           "id",

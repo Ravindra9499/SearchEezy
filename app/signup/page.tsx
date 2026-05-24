@@ -13,6 +13,13 @@ export default function SignupPage() {
     setPassword,
   ] = useState("");
 
+  const [
+    employerType,
+    setEmployerType,
+  ] = useState(
+    "Direct Employer"
+  );
+
   const [loading, setLoading] =
     useState(false);
 
@@ -114,6 +121,18 @@ export default function SignupPage() {
 
                   role:
                     "employer",
+
+                  employerType:
+                    employerType,
+
+                  subscriptionPlan:
+                    "free",
+
+                  freePostsRemaining:
+                    4,
+
+                  resumeSearchEnabled:
+                    false,
                 },
               ]);
 
@@ -134,6 +153,10 @@ export default function SignupPage() {
         setEmail("");
 
         setPassword("");
+
+        setEmployerType(
+          "Direct Employer"
+        );
       } catch (err) {
         console.error(err);
 
@@ -197,6 +220,59 @@ export default function SignupPage() {
         Create your employer
         account on SearchEezy.
       </p>
+
+      <select
+        value={
+          employerType
+        }
+        onChange={(e) =>
+          setEmployerType(
+            e.target.value
+          )
+        }
+        style={{
+          width:
+            "100%",
+
+          padding:
+            "14px",
+
+          marginBottom:
+            "14px",
+
+          border:
+            "1px solid #d1d5db",
+
+          borderRadius:
+            "10px",
+
+          fontSize:
+            "15px",
+
+          background:
+            "white",
+        }}
+      >
+        <option>
+          Direct Employer
+        </option>
+
+        <option>
+          Staffing Agency
+        </option>
+
+        <option>
+          Recruiting Firm
+        </option>
+
+        <option>
+          Healthcare Facility
+        </option>
+
+        <option>
+          Consultancy
+        </option>
+      </select>
 
       <input
         type="email"
@@ -301,27 +377,67 @@ export default function SignupPage() {
           : "Sign Up"}
       </button>
 
-      <p
+      <div
         style={{
           marginTop:
-            "18px",
+            "20px",
 
-          fontSize:
+          padding:
             "14px",
 
-          color:
-            "#6b7280",
+          background:
+            "#f8fafc",
 
-          lineHeight:
-            "22px",
+          borderRadius:
+            "12px",
+
+          border:
+            "1px solid #e2e8f0",
         }}
       >
-        Employers should
-        eventually use official
-        company email
-        addresses for verified
-        hiring access.
-      </p>
+        <p
+          style={{
+            fontSize:
+              "13px",
+
+            color:
+              "#475569",
+
+            lineHeight:
+              "22px",
+
+            margin:
+              0,
+          }}
+        >
+          ✅ Direct employers
+          currently receive
+          limited free job
+          postings.
+        </p>
+
+        <p
+          style={{
+            fontSize:
+              "13px",
+
+            color:
+              "#475569",
+
+            lineHeight:
+              "22px",
+
+            marginTop:
+              "10px",
+          }}
+        >
+          🚀 Premium recruiter
+          tools and resume
+          database access will
+          be available in future
+          subscription plans.
+        </p>
+      </div>
     </div>
   );
 }
