@@ -34,6 +34,33 @@ export default function JobDetailsPage() {
     useState("");
 
   const [
+    currentTitle,
+    setCurrentTitle,
+  ] = useState("");
+
+  const [skills, setSkills] =
+    useState("");
+
+  const [
+    experience,
+    setExperience,
+  ] = useState("");
+
+  const [location, setLocation] =
+    useState("");
+
+  const [zipCode, setZipCode] =
+    useState("");
+
+  const [
+    education,
+    setEducation,
+  ] = useState("");
+
+  const [remote, setRemote] =
+    useState(false);
+
+  const [
     coverLetter,
     setCoverLetter,
   ] = useState("");
@@ -198,6 +225,20 @@ export default function JobDetailsPage() {
 
                   email,
 
+                  currentTitle,
+
+                  skills,
+
+                  experience,
+
+                  location,
+
+                  zipCode,
+
+                  education,
+
+                  remote,
+
                   coverLetter,
 
                   resumeLink,
@@ -223,6 +264,13 @@ export default function JobDetailsPage() {
 
           setName("");
           setEmail("");
+          setCurrentTitle("");
+          setSkills("");
+          setExperience("");
+          setLocation("");
+          setZipCode("");
+          setEducation("");
+          setRemote(false);
           setCoverLetter("");
           setResumeFile(
             null
@@ -857,6 +905,227 @@ export default function JobDetailsPage() {
                           "15px",
                       }}
                     />
+
+                    <input
+                      type="text"
+                      placeholder="Current Job Title"
+                      value={
+                        currentTitle
+                      }
+                      onChange={(e) =>
+                        setCurrentTitle(
+                          e.target
+                            .value
+                        )
+                      }
+                      style={{
+                        width:
+                          "100%",
+
+                        padding:
+                          "14px",
+
+                        marginBottom:
+                          "16px",
+
+                        borderRadius:
+                          "12px",
+
+                        border:
+                          "1px solid #d1d5db",
+                      }}
+                    />
+
+                    <textarea
+                      placeholder="Skills (React, JavaScript, SQL, etc)"
+                      value={skills}
+                      onChange={(e) =>
+                        setSkills(
+                          e.target
+                            .value
+                        )
+                      }
+                      style={{
+                        width:
+                          "100%",
+
+                        minHeight:
+                          "100px",
+
+                        padding:
+                          "14px",
+
+                        marginBottom:
+                          "16px",
+
+                        borderRadius:
+                          "12px",
+
+                        border:
+                          "1px solid #d1d5db",
+                      }}
+                    />
+
+                    <input
+                      type="text"
+                      placeholder="Years of Experience"
+                      value={
+                        experience
+                      }
+                      onChange={(e) =>
+                        setExperience(
+                          e.target
+                            .value
+                        )
+                      }
+                      style={{
+                        width:
+                          "100%",
+
+                        padding:
+                          "14px",
+
+                        marginBottom:
+                          "16px",
+
+                        borderRadius:
+                          "12px",
+
+                        border:
+                          "1px solid #d1d5db",
+                      }}
+                    />
+
+                    <input
+                      type="text"
+                      placeholder="Location / City"
+                      value={
+                        location
+                      }
+                      onChange={(e) =>
+                        setLocation(
+                          e.target
+                            .value
+                        )
+                      }
+                      style={{
+                        width:
+                          "100%",
+
+                        padding:
+                          "14px",
+
+                        marginBottom:
+                          "16px",
+
+                        borderRadius:
+                          "12px",
+
+                        border:
+                          "1px solid #d1d5db",
+                      }}
+                    />
+
+                    <input
+                      type="text"
+                      placeholder="ZIP Code"
+                      value={
+                        zipCode
+                      }
+                      onChange={(e) =>
+                        setZipCode(
+                          e.target
+                            .value
+                        )
+                      }
+                      style={{
+                        width:
+                          "100%",
+
+                        padding:
+                          "14px",
+
+                        marginBottom:
+                          "16px",
+
+                        borderRadius:
+                          "12px",
+
+                        border:
+                          "1px solid #d1d5db",
+                      }}
+                    />
+
+                    <textarea
+                      placeholder="Education"
+                      value={
+                        education
+                      }
+                      onChange={(e) =>
+                        setEducation(
+                          e.target
+                            .value
+                        )
+                      }
+                      style={{
+                        width:
+                          "100%",
+
+                        minHeight:
+                          "100px",
+
+                        padding:
+                          "14px",
+
+                        marginBottom:
+                          "16px",
+
+                        borderRadius:
+                          "12px",
+
+                        border:
+                          "1px solid #d1d5db",
+                      }}
+                    />
+
+                    <div
+                      style={{
+                        marginBottom:
+                          "20px",
+                      }}
+                    >
+                      <label
+                        style={{
+                          display:
+                            "flex",
+
+                          alignItems:
+                            "center",
+
+                          gap: "10px",
+
+                          fontWeight:
+                            "bold",
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={
+                            remote
+                          }
+                          onChange={(
+                            e
+                          ) =>
+                            setRemote(
+                              e
+                                .target
+                                .checked
+                            )
+                          }
+                        />
+                        Open to Remote Work
+                      </label>
+                    </div>
 
                     {job.screeningQuestions &&
                       job.screeningQuestions

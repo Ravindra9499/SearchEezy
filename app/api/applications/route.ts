@@ -118,86 +118,185 @@ export async function POST(
       );
     }
 
-    // CREATE SEARCHABLE CANDIDATE PROFILE
+    // CREATE OR UPDATE SEARCHABLE CANDIDATE PROFILE
 
     try {
+      // CHECK IF CANDIDATE EXISTS
+
       const {
-        error:
-          candidateInsertError,
+        data:
+          existingCandidate,
       } =
         await supabase
           .from(
             "candidate_profiles"
           )
-          .insert([
-            {
-              useremail:
-                body.email,
+          .select("*")
+          .eq(
+            "useremail",
+            body.email
+          )
+          .maybeSingle();
 
+      // UPDATE EXISTING PROFILE
+
+      if (
+        existingCandidate
+      ) {
+        const {
+          error:
+            updateError,
+        } =
+          await supabase
+            .from(
+              "candidate_profiles"
+            )
+            .update({
               fullname:
                 body.name,
 
               title:
                 body.currentTitle ||
-                "Candidate",
+                existingCandidate.title,
 
               skills:
                 body.skills ||
-                "",
+                existingCandidate.skills,
 
               experience:
                 body.experience ||
-                "",
+                existingCandidate.experience,
 
               location:
                 body.location ||
-                "",
+                existingCandidate.location,
 
               zipcode:
                 body.zipCode ||
-                "",
+                existingCandidate.zipcode,
 
               resumeurl:
-                body.resumeLink,
+                body.resumeLink ||
+                existingCandidate.resumeurl,
 
               summary:
                 body.coverLetter ||
-                "",
+                existingCandidate.summary,
 
               education:
                 body.education ||
-                "",
+                existingCandidate.education,
 
               remote:
-                body.remote ||
-                false,
-            },
-          ]);
+                body.remote,
+            })
+            .eq(
+              "useremail",
+              body.email
+            );
 
-      if (
-        candidateInsertError
-      ) {
-        console.error(
-          "Candidate profile creation failed:"
-        );
+        if (
+          updateError
+        ) {
+          console.error(
+            "Candidate profile update failed:"
+          );
 
-        console.error(
-          JSON.stringify(
-            candidateInsertError,
-            null,
-            2
-          )
-        );
-      } else {
-        console.log(
-          "Candidate profile inserted successfully"
-        );
+          console.error(
+            JSON.stringify(
+              updateError,
+              null,
+              2
+            )
+          );
+        } else {
+          console.log(
+            "Candidate profile updated successfully"
+          );
+        }
+      }
+
+      // INSERT NEW PROFILE
+
+      else {
+        const {
+          error:
+            insertError,
+        } =
+          await supabase
+            .from(
+              "candidate_profiles"
+            )
+            .insert([
+              {
+                useremail:
+                  body.email,
+
+                fullname:
+                  body.name,
+
+                title:
+                  body.currentTitle ||
+                  "Candidate",
+
+                skills:
+                  body.skills ||
+                  "",
+
+                experience:
+                  body.experience ||
+                  "",
+
+                location:
+                  body.location ||
+                  "",
+
+                zipcode:
+                  body.zipCode ||
+                  "",
+
+                resumeurl:
+                  body.resumeLink,
+
+                summary:
+                  body.coverLetter ||
+                  "",
+
+                education:
+                  body.education ||
+                  "",
+
+                remote:
+                  body.remote ||
+                  false,
+              },
+            ]);
+
+        if (
+          insertError
+        ) {
+          console.error(
+            "Candidate profile insert failed:"
+          );
+
+          console.error(
+            JSON.stringify(
+              insertError,
+              null,
+              2
+            )
+          );
+        } else {
+          console.log(
+            "Candidate profile inserted successfully"
+          );
+        }
       }
     } catch (
       candidateError
     ) {
       console.error(
-        "Candidate profile creation exception:"
+        "Candidate profile processing exception:"
       );
 
       console.error(
