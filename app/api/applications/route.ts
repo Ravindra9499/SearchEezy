@@ -88,15 +88,11 @@ export async function POST(
             jobId:
               body.jobId,
 
-            // SAVE JOB DETAILS
-
             jobTitle:
               job.title,
 
             company:
               job.company,
-
-            // Employer owner
 
             employerEmail:
               job.userEmail,
@@ -119,6 +115,97 @@ export async function POST(
             error.message,
         },
         { status: 500 }
+      );
+    }
+
+    // CREATE SEARCHABLE CANDIDATE PROFILE
+
+    try {
+      const {
+        error:
+          candidateInsertError,
+      } =
+        await supabase
+          .from(
+            "candidate_profiles"
+          )
+          .insert([
+            {
+              useremail:
+                body.email,
+
+              fullname:
+                body.name,
+
+              title:
+                body.currentTitle ||
+                "Candidate",
+
+              skills:
+                body.skills ||
+                "",
+
+              experience:
+                body.experience ||
+                "",
+
+              location:
+                body.location ||
+                "",
+
+              zipcode:
+                body.zipCode ||
+                "",
+
+              resumeurl:
+                body.resumeLink,
+
+              summary:
+                body.coverLetter ||
+                "",
+
+              education:
+                body.education ||
+                "",
+
+              remote:
+                body.remote ||
+                false,
+            },
+          ]);
+
+      if (
+        candidateInsertError
+      ) {
+        console.error(
+          "Candidate profile creation failed:"
+        );
+
+        console.error(
+          JSON.stringify(
+            candidateInsertError,
+            null,
+            2
+          )
+        );
+      } else {
+        console.log(
+          "Candidate profile inserted successfully"
+        );
+      }
+    } catch (
+      candidateError
+    ) {
+      console.error(
+        "Candidate profile creation exception:"
+      );
+
+      console.error(
+        JSON.stringify(
+          candidateError,
+          null,
+          2
+        )
       );
     }
 
