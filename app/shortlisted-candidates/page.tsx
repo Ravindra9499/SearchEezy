@@ -117,6 +117,68 @@ export default function ShortlistedCandidatesPage() {
       );
     };
 
+  // UPDATE NOTES
+
+  const updateNotes =
+    async (
+      shortlistId: number,
+      notes: string
+    ) => {
+      const { error } =
+        await supabase
+          .from(
+            "shortlisted_candidates"
+          )
+          .update({
+            recruiterNotes:
+              notes,
+          })
+          .eq(
+            "id",
+            shortlistId
+          );
+
+      if (error) {
+        console.error(
+          error
+        );
+
+        alert(
+          "Failed to save notes."
+        );
+
+        return;
+      }
+
+      alert(
+        "Recruiter notes saved successfully!"
+      );
+    };
+
+  // HANDLE NOTES CHANGE
+
+  const handleNotesChange =
+    (
+      shortlistId: number,
+      value: string
+    ) => {
+      setCandidates(
+        candidates.map(
+          (
+            candidate
+          ) =>
+            candidate.id ===
+            shortlistId
+              ? {
+                  ...candidate,
+                  recruiterNotes:
+                    value,
+                }
+              : candidate
+        )
+      );
+    };
+
   if (loading) {
     return (
       <div
@@ -342,7 +404,7 @@ export default function ShortlistedCandidatesPage() {
               "grid",
 
             gridTemplateColumns:
-              "repeat(auto-fit, minmax(380px, 1fr))",
+              "repeat(auto-fit, minmax(420px, 1fr))",
 
             gap: "22px",
           }}
@@ -442,6 +504,113 @@ export default function ShortlistedCandidatesPage() {
                       }
                     </div>
                   )}
+                </div>
+
+                {/* RECRUITER NOTES */}
+
+                <div
+                  style={{
+                    marginTop:
+                      "20px",
+                  }}
+                >
+                  <h4
+                    style={{
+                      marginBottom:
+                        "10px",
+
+                      color:
+                        "#111827",
+                    }}
+                  >
+                    Recruiter Notes
+                  </h4>
+
+                  <textarea
+                    value={
+                      candidate.recruiterNotes ||
+                      ""
+                    }
+                    onChange={(e) =>
+                      handleNotesChange(
+                        candidate.id,
+                        e.target
+                          .value
+                      )
+                    }
+                    placeholder="Add recruiter notes..."
+                    style={{
+                      width:
+                        "100%",
+
+                      minHeight:
+                        "120px",
+
+                      padding:
+                        "14px",
+
+                      border:
+                        "1px solid #d1d5db",
+
+                      borderRadius:
+                        "14px",
+
+                      resize:
+                        "vertical",
+
+                      fontSize:
+                        "14px",
+
+                      fontFamily:
+                        "Arial",
+
+                      lineHeight:
+                        "1.6",
+                    }}
+                  />
+
+                  <button
+                    onClick={() =>
+                      updateNotes(
+                        candidate.id,
+                        candidate.recruiterNotes ||
+                          ""
+                      )
+                    }
+                    style={{
+                      marginTop:
+                        "12px",
+
+                      width:
+                        "100%",
+
+                      background:
+                        "#f59e0b",
+
+                      color:
+                        "white",
+
+                      border:
+                        "none",
+
+                      padding:
+                        "14px 18px",
+
+                      borderRadius:
+                        "12px",
+
+                      cursor:
+                        "pointer",
+
+                      fontWeight:
+                        "bold",
+
+                      fontSize:
+                        "15px",
+                    }}
+                  >
+                    Save Recruiter Notes
+                  </button>
                 </div>
 
                 {/* ACTION BUTTONS */}
