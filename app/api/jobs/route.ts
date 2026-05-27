@@ -105,6 +105,73 @@ export async function POST(
       body
     );
 
+    // =====================================
+    // CHECK EMPLOYER PROFILE
+    // =====================================
+
+    const {
+      data: profile,
+      error: profileError,
+    } =
+      await supabase
+        .from("profiles")
+        .select("*")
+        .eq(
+          "email",
+          body.userEmail
+        )
+        .single();
+
+    if (profileError) {
+      console.error(
+        "PROFILE ERROR:",
+        profileError
+      );
+
+      return NextResponse.json(
+        {
+          error:
+            "Employer profile not found",
+        },
+        { status: 500 }
+      );
+    }
+
+    // =====================================
+    // PREMIUM EMPLOYERS
+    // =====================================
+
+    const isPremium =
+      profile.subscriptionPlan ===
+      "premium";
+
+    // =====================================
+    // FREE PLAN LIMIT CHECK
+    // =====================================
+
+    if (!isPremium) {
+      const remainingPosts =
+        Number(
+          profile.freePostsRemaining || 0
+        );
+
+      if (
+        remainingPosts <= 0
+      ) {
+        return NextResponse.json(
+          {
+            error:
+              "Free job posting limit reached. Please upgrade your subscription.",
+          },
+          { status: 403 }
+        );
+      }
+    }
+
+    // =====================================
+    // INSERT JOB
+    // =====================================
+
     const { data, error } =
       await supabase
         .from("jobs")
@@ -186,7 +253,41 @@ export async function POST(
       );
     }
 
+    // =====================================
+    // DECREMENT FREE POSTS
+    // =====================================
+
+    if (!isPremium) {
+      const updatedRemaining =
+        Number(
+          profile.freePostsRemaining || 0
+        ) - 1;
+
+      const {
+        error: updateError,
+      } =
+        await supabase
+          .from("profiles")
+          .update({
+            freePostsRemaining:
+              updatedRemaining,
+          })
+          .eq(
+            "email",
+            body.userEmail
+          );
+
+      if (updateError) {
+        console.error(
+          "FREE POST UPDATE ERROR:",
+          updateError
+        );
+      }
+    }
+
+    // =====================================
     // JOB ALERT EMAIL MATCHING
+    // =====================================
 
     try {
       console.log(
@@ -237,15 +338,6 @@ export async function POST(
                   ?.toLowerCase()
                   ?.trim() || "";
 
-              console.log(
-                "MATCH CHECK:",
-                {
-                  keyword,
-                  title,
-                  category,
-                }
-              );
-
               return (
                 title.includes(
                   keyword
@@ -257,89 +349,78 @@ export async function POST(
             }
           );
 
-        console.log(
-          "MATCHING ALERTS:",
-          matchingAlerts
-        );
-
         // SEND EMAILS
 
         for (const alert of matchingAlerts) {
           try {
-            const emailResponse =
-              await resend.emails.send(
-                {
-                  from:
-                    "SearchEezy <notifications@searcheezy.com>",
+            await resend.emails.send(
+              {
+                from:
+                  "SearchEezy <notifications@searcheezy.com>",
 
-                  to: alert.userEmail,
+                to: alert.userEmail,
 
-                  subject: `New ${body.title} Job Posted`,
+                subject: `New ${body.title} Job Posted`,
 
-                  html: `
-                    <div style="font-family: Arial, sans-serif; padding: 20px;">
+                html: `
+                  <div style="font-family: Arial, sans-serif; padding: 20px;">
 
-                      <h2 style="color: #1d4ed8;">
-                        New Matching Job Alert
-                      </h2>
+                    <h2 style="color: #1d4ed8;">
+                      New Matching Job Alert
+                    </h2>
 
-                      <p>
-                        A new job matching your alert has been posted on SearchEezy.
-                      </p>
+                    <p>
+                      A new job matching your alert has been posted on SearchEezy.
+                    </p>
 
-                      <hr />
+                    <hr />
 
-                      <p>
-                        <strong>Job Title:</strong>
-                        ${body.title}
-                      </p>
+                    <p>
+                      <strong>Job Title:</strong>
+                      ${body.title}
+                    </p>
 
-                      <p>
-                        <strong>Company:</strong>
-                        ${body.company}
-                      </p>
+                    <p>
+                      <strong>Company:</strong>
+                      ${body.company}
+                    </p>
 
-                      <p>
-                        <strong>Location:</strong>
-                        ${body.location}
-                      </p>
+                    <p>
+                      <strong>Location:</strong>
+                      ${body.location}
+                    </p>
 
-                      <p>
-                        <strong>Category:</strong>
-                        ${body.category || "N/A"}
-                      </p>
+                    <p>
+                      <strong>Category:</strong>
+                      ${body.category || "N/A"}
+                    </p>
 
-                      <div style="margin-top:20px;">
-                        <a
-                          href="https://www.searcheezy.com/jobs/${data.id}"
-                          target="_blank"
-                          style="
-                            background-color:#1d4ed8;
-                            color:white;
-                            padding:12px 20px;
-                            text-decoration:none;
-                            border-radius:6px;
-                            display:inline-block;
-                            font-weight:bold;
-                          "
-                        >
-                          View Job
-                        </a>
-                      </div>
-
+                    <div style="margin-top:20px;">
+                      <a
+                        href="https://www.searcheezy.com/jobs/${data.id}"
+                        target="_blank"
+                        style="
+                          background-color:#1d4ed8;
+                          color:white;
+                          padding:12px 20px;
+                          text-decoration:none;
+                          border-radius:6px;
+                          display:inline-block;
+                          font-weight:bold;
+                        "
+                      >
+                        View Job
+                      </a>
                     </div>
-                  `,
-                }
-              );
+
+                  </div>
+                `,
+              }
+            );
 
             console.log(
               "ALERT EMAIL SENT:",
               alert.userEmail
-            );
-
-            console.log(
-              "EMAIL RESPONSE:",
-              emailResponse
             );
           } catch (
             emailError
