@@ -601,6 +601,29 @@ export default function HomeClient({
                         Saved Jobs
                       </button>
                     </a>
+
+                    <a href="/my-profile">
+                      <button
+                        style={{
+                          background:
+                            "#0f766e",
+                          color:
+                            "white",
+                          border:
+                            "none",
+                          padding:
+                            "10px 16px",
+                          borderRadius:
+                            "8px",
+                          cursor:
+                            "pointer",
+                          fontWeight:
+                            "bold",
+                        }}
+                      >
+                        My Profile
+                      </button>
+                    </a>
                   </>
                 )}
 
