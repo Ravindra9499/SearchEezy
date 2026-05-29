@@ -121,105 +121,205 @@ export default function ResumeSearchPage() {
 
   const handleSearch =
     () => {
-      let filtered =
-        candidates;
+      let filtered = [
+        ...candidates,
+      ];
 
-      // KEYWORD SEARCH
+      const cleanKeyword =
+        keyword
+          .trim()
+          .toLowerCase();
 
-      if (keyword) {
-        filtered =
-          filtered.filter(
-            (
-              candidate
-            ) =>
-              candidate.fullname
-                ?.toLowerCase()
-                .includes(
-                  keyword.toLowerCase()
-                ) ||
-              candidate.useremail
-                ?.toLowerCase()
-                .includes(
-                  keyword.toLowerCase()
-                ) ||
-              candidate.title
-                ?.toLowerCase()
-                .includes(
-                  keyword.toLowerCase()
-                ) ||
-              candidate.skills
-                ?.toLowerCase()
-                .includes(
-                  keyword.toLowerCase()
-                ) ||
-              candidate.summary
-                ?.toLowerCase()
-                .includes(
-                  keyword.toLowerCase()
-                )
-          );
-      }
+      const cleanLocation =
+        location
+          .trim()
+          .toLowerCase();
 
-      // LOCATION / ZIP SEARCH
-
-      if (location) {
-        filtered =
-          filtered.filter(
-            (
-              candidate
-            ) =>
-              candidate.location
-                ?.toLowerCase()
-                .includes(
-                  location.toLowerCase()
-                ) ||
-              candidate.zipcode
-                ?.toLowerCase()
-                .includes(
-                  location.toLowerCase()
-                )
-          );
-      }
-
-      // EXPERIENCE FILTER
-
-      if (
+      const cleanExperience =
         experienceFilter
-      ) {
-        filtered =
-          filtered.filter(
-            (
-              candidate
-            ) =>
-              candidate.experience
-                ?.toLowerCase()
-                .includes(
-                  experienceFilter.toLowerCase()
-                )
-          );
-      }
+          .trim()
+          .toLowerCase();
 
-      // REMOTE FILTER
+      filtered = filtered.map(
+        (candidate) => {
+          let score = 0;
 
-      if (
-        remoteOnly
-      ) {
-        filtered =
-          filtered.filter(
-            (
-              candidate
-            ) =>
-              candidate.remote ===
+          if (
+            cleanKeyword
+          ) {
+            const fullname =
+              candidate.fullname?.toLowerCase() ||
+              "";
+
+            const email =
+              candidate.useremail?.toLowerCase() ||
+              "";
+
+            const title =
+              candidate.title?.toLowerCase() ||
+              "";
+
+            const skills =
+              candidate.skills?.toLowerCase() ||
+              "";
+
+            const summary =
+              candidate.summary?.toLowerCase() ||
+              "";
+
+            const keywordWords =
+              cleanKeyword.split(
+                " "
+              );
+
+            let matched =
+              false;
+
+            keywordWords.forEach(
+              (
+                word: string
+              ) => {
+                if (
+                  fullname.includes(
+                    word
+                  )
+                ) {
+                  score += 10;
+                  matched = true;
+                }
+
+                if (
+                  title.includes(
+                    word
+                  )
+                ) {
+                  score += 25;
+                  matched = true;
+                }
+
+                if (
+                  skills.includes(
+                    word
+                  )
+                ) {
+                  score += 40;
+                  matched = true;
+                }
+
+                if (
+                  summary.includes(
+                    word
+                  )
+                ) {
+                  score += 8;
+                  matched = true;
+                }
+
+                if (
+                  email.includes(
+                    word
+                  )
+                ) {
+                  score += 5;
+                  matched = true;
+                }
+              }
+            );
+
+            if (
+              !matched
+            ) {
+              score = -1;
+            }
+          }
+
+          if (
+            cleanLocation &&
+            score !== -1
+          ) {
+            const candidateLocation =
+              candidate.location?.toLowerCase() ||
+              "";
+
+            const candidateZip =
+              candidate.zipcode?.toLowerCase() ||
+              "";
+
+            const locationMatch =
+              candidateLocation.includes(
+                cleanLocation
+              ) ||
+              candidateZip.includes(
+                cleanLocation
+              );
+
+            if (
+              !locationMatch
+            ) {
+              score = -1;
+            } else {
+              score += 15;
+            }
+          }
+
+          if (
+            cleanExperience &&
+            score !== -1
+          ) {
+            const experience =
+              candidate.experience?.toLowerCase() ||
+              "";
+
+            if (
+              !experience.includes(
+                cleanExperience
+              )
+            ) {
+              score = -1;
+            } else {
+              score += 10;
+            }
+          }
+
+          if (
+            remoteOnly &&
+            score !== -1
+          ) {
+            if (
+              candidate.remote !==
               true
-          );
-      }
+            ) {
+              score = -1;
+            } else {
+              score += 5;
+            }
+          }
+
+          return {
+            ...candidate,
+            searchScore:
+              score,
+          };
+        }
+      );
+
+      filtered =
+        filtered.filter(
+          (candidate) =>
+            candidate.searchScore !==
+            -1
+        );
+
+      filtered.sort(
+        (a, b) =>
+          b.searchScore -
+          a.searchScore
+      );
 
       setFilteredCandidates(
         filtered
       );
     };
-
-  // SAVE CANDIDATE
 
   const saveCandidate =
     async (
@@ -237,8 +337,6 @@ export default function ResumeSearchPage() {
 
         return;
       }
-
-      // CHECK DUPLICATE
 
       const {
         data: existing,
@@ -357,8 +455,6 @@ export default function ResumeSearchPage() {
             "0 auto",
         }}
       >
-        {/* HEADER */}
-
         <div
           style={{
             display:
@@ -472,8 +568,6 @@ export default function ResumeSearchPage() {
             </a>
           </div>
         </div>
-
-        {/* SEARCH SECTION */}
 
         <div
           style={{
@@ -674,8 +768,6 @@ export default function ResumeSearchPage() {
             </button>
           </div>
 
-          {/* FILTERS */}
-
           <div
             style={{
               marginTop:
@@ -740,8 +832,6 @@ export default function ResumeSearchPage() {
           </div>
         </div>
 
-        {/* RESULTS */}
-
         <div
           style={{
             marginBottom:
@@ -762,8 +852,6 @@ export default function ResumeSearchPage() {
           }{" "}
           candidate profiles found
         </div>
-
-        {/* CANDIDATE GRID */}
 
         <div
           style={{
@@ -801,8 +889,6 @@ export default function ResumeSearchPage() {
                     "1px solid #eef2f7",
                 }}
               >
-                {/* TOP */}
-
                 <div
                   style={{
                     display:
@@ -876,8 +962,6 @@ export default function ResumeSearchPage() {
                   )}
                 </div>
 
-                {/* DETAILS */}
-
                 {candidate.title && (
                   <div
                     style={{
@@ -949,8 +1033,6 @@ export default function ResumeSearchPage() {
                   </div>
                 )}
 
-                {/* SKILLS */}
-
                 {candidate.skills && (
                   <div
                     style={{
@@ -988,8 +1070,6 @@ export default function ResumeSearchPage() {
                     </div>
                   </div>
                 )}
-
-                {/* SUMMARY */}
 
                 {candidate.summary && (
                   <div
@@ -1043,8 +1123,6 @@ export default function ResumeSearchPage() {
                     </div>
                   </div>
                 )}
-
-                {/* ACTION BUTTONS */}
 
                 <div
                   style={{
