@@ -221,7 +221,7 @@ export async function POST(
               body.companyLogo,
 
             verified:
-              body.verified,
+              profile.isverified === true,
 
             companyDescription:
               body.companyDescription,
@@ -518,7 +518,7 @@ export async function PUT(
             body.companyLogo,
 
           verified:
-            body.verified,
+            body.verified === true,
 
           companyDescription:
             body.companyDescription,

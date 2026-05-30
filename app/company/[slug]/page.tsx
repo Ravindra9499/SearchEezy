@@ -17,14 +17,8 @@ export default async function CompanyPage({
   const { slug } =
     await params;
 
-  const companyName = slug
-    .split("-")
-    .map(
-      (word) =>
-        word.charAt(0).toUpperCase() +
-        word.slice(1)
-    )
-    .join(" ");
+  const normalizedSlug =
+    slug.toLowerCase();
 
   // GET COMPANY JOBS
 
@@ -32,12 +26,23 @@ export default async function CompanyPage({
     await supabase
       .from("jobs")
       .select("*")
-      .eq("company", companyName)
       .order("created_at", {
         ascending: false,
       });
 
-  const company = jobs?.[0];
+  const filteredJobs =
+    jobs?.filter(
+      (job) =>
+        job.company
+          ?.toLowerCase()
+          .replace(
+            /\s+/g,
+            "-"
+          ) === normalizedSlug
+    ) || [];
+
+  const company =
+    filteredJobs?.[0];
 
   if (!company) {
     return (
@@ -320,7 +325,7 @@ export default async function CompanyPage({
                 "bold",
             }}
           >
-            {jobs?.length || 0} Jobs
+            {filteredJobs?.length || 0} Jobs
           </div>
         </div>
 
@@ -334,7 +339,7 @@ export default async function CompanyPage({
             gap: "24px",
           }}
         >
-          {jobs?.map((job) => (
+          {filteredJobs?.map((job) => (
             <Link
               key={job.id}
               href={`/jobs/${job.id}`}
