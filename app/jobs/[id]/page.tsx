@@ -7,6 +7,8 @@ import {
   useState,
 } from "react";
 
+import Head from "next/head";
+
 import { useParams } from "next/navigation";
 
 import { supabase } from "../../lib/supabase";
@@ -426,8 +428,66 @@ export default function JobDetailsPage() {
     role ===
     "applicant";
 
+  const seoTitle =
+    `${job.title} at ${job.company} | SearchEezy Jobs`;
+
+  const seoDescription =
+    `${job.title} job opening at ${job.company} in ${job.location}. Apply now on SearchEezy.`;
+
+  const canonicalUrl =
+    `https://www.searcheezy.com/jobs/${job.id}`;
+
   return (
     <>
+      <Head>
+        <title>{seoTitle}</title>
+
+        <meta
+          name="description"
+          content={seoDescription}
+        />
+
+        <meta
+          property="og:title"
+          content={seoTitle}
+        />
+
+        <meta
+          property="og:description"
+          content={seoDescription}
+        />
+
+        <meta
+          property="og:type"
+          content="website"
+        />
+
+        <meta
+          property="og:url"
+          content={canonicalUrl}
+        />
+
+        <meta
+          name="twitter:card"
+          content="summary_large_image"
+        />
+
+        <meta
+          name="twitter:title"
+          content={seoTitle}
+        />
+
+        <meta
+          name="twitter:description"
+          content={seoDescription}
+        />
+
+        <link
+          rel="canonical"
+          href={canonicalUrl}
+        />
+      </Head>
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -534,7 +594,7 @@ export default function JobDetailsPage() {
                 "24px",
 
               padding:
-                "45px",
+                "30px",
 
               color:
                 "white",
@@ -605,7 +665,7 @@ export default function JobDetailsPage() {
                 <h1
                   style={{
                     fontSize:
-                      "42px",
+                      "36px",
 
                     marginBottom:
                       "12px",
@@ -743,7 +803,7 @@ export default function JobDetailsPage() {
                 "grid",
 
               gridTemplateColumns:
-                "2fr 1fr",
+                "repeat(auto-fit, minmax(320px, 1fr))",
 
               gap: "28px",
             }}
