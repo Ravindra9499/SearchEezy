@@ -323,7 +323,7 @@ export default function HomeClient({
           background:
             "white",
           padding:
-            "18px 40px",
+            "18px 20px",
           borderBottom:
             "1px solid #e5e7eb",
           display:
@@ -332,6 +332,9 @@ export default function HomeClient({
             "space-between",
           alignItems:
             "center",
+          flexWrap:
+            "wrap",
+          gap: "20px",
           position:
             "sticky",
           top: 0,
@@ -787,10 +790,10 @@ export default function HomeClient({
           <div
             style={{
               display:
-                "flex",
+                "grid",
+              gridTemplateColumns:
+                "repeat(auto-fit, minmax(260px, 1fr))",
               gap: "15px",
-              flexWrap:
-                "wrap",
               marginBottom:
                 "20px",
             }}
@@ -804,9 +807,8 @@ export default function HomeClient({
                 )
               }
               style={{
-                flex: 1,
-                minWidth:
-                  "250px",
+                width:
+                  "100%",
                 padding:
                   "15px",
                 borderRadius:
@@ -829,9 +831,8 @@ export default function HomeClient({
                 )
               }
               style={{
-                flex: 1,
-                minWidth:
-                  "250px",
+                width:
+                  "100%",
                 padding:
                   "15px",
                 borderRadius:
@@ -978,7 +979,7 @@ export default function HomeClient({
                     display:
                       "grid",
                     gridTemplateColumns:
-                      "repeat(auto-fit, minmax(320px, 1fr))",
+                      "repeat(auto-fit, minmax(280px, 1fr))",
                     gap: "22px",
                   }}
                 >
@@ -1023,7 +1024,7 @@ export default function HomeClient({
                 display:
                   "grid",
                 gridTemplateColumns:
-                  "repeat(auto-fit, minmax(320px, 1fr))",
+                  "repeat(auto-fit, minmax(280px, 1fr))",
                 gap: "22px",
               }}
             >
@@ -1075,7 +1076,7 @@ function JobCard({
         borderRadius:
           "18px",
         padding:
-          "28px",
+          "22px",
         cursor:
           "pointer",
         boxShadow:
@@ -1120,8 +1121,10 @@ function JobCard({
           display:
             "flex",
           alignItems:
-            "center",
+            "flex-start",
           gap: "15px",
+          flexWrap:
+            "wrap",
           marginBottom:
             "15px",
         }}
