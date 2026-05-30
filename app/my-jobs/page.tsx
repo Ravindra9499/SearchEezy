@@ -32,6 +32,11 @@ export default function MyJobsPage() {
     setCandidateDatabaseCount,
   ] = useState(0);
 
+  const [
+    recentApplicants,
+    setRecentApplicants,
+  ] = useState<any[]>([]);
+
   useEffect(() => {
     getUserAndJobs();
   }, []);
@@ -132,6 +137,37 @@ export default function MyJobsPage() {
       setCandidateDatabaseCount(
         candidateProfiles?.length ||
           0
+      );
+
+      // RECENT APPLICANTS
+
+      const {
+        data:
+          recentApplications,
+      } =
+        await supabase
+          .from(
+            "applications"
+          )
+          .select(
+            "id, name, created_at, jobTitle"
+          )
+          .eq(
+            "employerEmail",
+            user.email
+          )
+          .order(
+            "created_at",
+            {
+              ascending:
+                false,
+            }
+          )
+          .limit(5);
+
+      setRecentApplicants(
+        recentApplications ||
+          []
       );
 
       setLoading(false);
@@ -634,6 +670,213 @@ export default function MyJobsPage() {
               </h2>
             </div>
           </div>
+
+        {/* RECENT APPLICANTS */}
+
+        <div
+          style={{
+            background:
+              "white",
+
+            borderRadius:
+              "22px",
+
+            padding:
+              "28px",
+
+            marginBottom:
+              "35px",
+
+            boxShadow:
+              "0 4px 20px rgba(0,0,0,0.05)",
+          }}
+        >
+          <div
+            style={{
+              display:
+                "flex",
+
+              justifyContent:
+                "space-between",
+
+              alignItems:
+                "center",
+
+              marginBottom:
+                "20px",
+
+              flexWrap:
+                "wrap",
+
+              gap: "12px",
+            }}
+          >
+            <div>
+              <h2
+                style={{
+                  margin: 0,
+
+                  color:
+                    "#111827",
+                }}
+              >
+                Recent Applicants
+              </h2>
+
+              <p
+                style={{
+                  color:
+                    "#6b7280",
+
+                  marginTop:
+                    "6px",
+                }}
+              >
+                Latest candidate activity across your jobs.
+              </p>
+            </div>
+
+            <div
+              style={{
+                background:
+                  "#eff6ff",
+
+                color:
+                  "#1d4ed8",
+
+                padding:
+                  "8px 14px",
+
+                borderRadius:
+                  "999px",
+
+                fontWeight:
+                  "bold",
+              }}
+            >
+              {
+                recentApplicants.length
+              } Recent
+            </div>
+          </div>
+
+          {recentApplicants.length ===
+          0 ? (
+            <div
+              style={{
+                color:
+                  "#6b7280",
+              }}
+            >
+              No recent applicants yet.
+            </div>
+          ) : (
+            <div
+              style={{
+                display:
+                  "grid",
+
+                gap: "16px",
+              }}
+            >
+              {recentApplicants.map(
+                (
+                  applicant
+                ) => (
+                  <div
+                    key={
+                      applicant.id
+                    }
+                    style={{
+                      display:
+                        "flex",
+
+                      justifyContent:
+                        "space-between",
+
+                      alignItems:
+                        "center",
+
+                      flexWrap:
+                        "wrap",
+
+                      gap: "12px",
+
+                      background:
+                        "#f9fafb",
+
+                      padding:
+                        "18px",
+
+                      borderRadius:
+                        "16px",
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          fontWeight:
+                            "bold",
+
+                          color:
+                            "#111827",
+
+                          marginBottom:
+                            "5px",
+                        }}
+                      >
+                        {
+                          applicant.name
+                        }
+                      </div>
+
+                      <div
+                        style={{
+                          color:
+                            "#6b7280",
+
+                          fontSize:
+                            "14px",
+                        }}
+                      >
+                        Applied to{" "}
+                        <strong>
+                          {
+                            applicant.jobTitle
+                          }
+                        </strong>
+                      </div>
+                    </div>
+
+                    <div
+                      style={{
+                        background:
+                          "#dcfce7",
+
+                        color:
+                          "#166534",
+
+                        padding:
+                          "8px 14px",
+
+                        borderRadius:
+                          "999px",
+
+                        fontWeight:
+                          "bold",
+
+                        fontSize:
+                          "13px",
+                      }}
+                    >
+                      New Applicant
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+          )}
+        </div>
 
           {/* EMPTY */}
 
