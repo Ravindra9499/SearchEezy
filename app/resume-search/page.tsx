@@ -295,10 +295,54 @@ export default function ResumeSearchPage() {
             }
           }
 
+          let completionScore = 0;
+
+          const completionFields = [
+            candidate.fullname,
+            candidate.title,
+            candidate.skills,
+            candidate.experience,
+            candidate.education,
+            candidate.location,
+            candidate.summary,
+            candidate.resumeurl,
+          ];
+
+          completionFields.forEach(
+            (field) => {
+              if (
+                field &&
+                String(field)
+                  .trim()
+                  .length > 0
+              ) {
+                completionScore += 1;
+              }
+            }
+          );
+
+          const profileCompletion =
+            Math.round(
+              (completionScore /
+                completionFields.length) *
+                100
+            );
+
+          score += Math.floor(
+            profileCompletion / 10
+          );
+
+          if (
+            candidate.resumeurl
+          ) {
+            score += 15;
+          }
+
           return {
             ...candidate,
             searchScore:
               score,
+            profileCompletion,
           };
         }
       );
@@ -593,7 +637,7 @@ export default function ResumeSearchPage() {
                 "grid",
 
               gridTemplateColumns:
-                "2fr 1.5fr 1fr 1fr auto",
+                "repeat(auto-fit, minmax(220px, 1fr))",
 
               gap: "15px",
 
@@ -859,7 +903,7 @@ export default function ResumeSearchPage() {
               "grid",
 
             gridTemplateColumns:
-              "repeat(auto-fit, minmax(380px, 1fr))",
+              "repeat(auto-fit, minmax(320px, 1fr))",
 
             gap: "22px",
           }}
@@ -935,6 +979,40 @@ export default function ResumeSearchPage() {
                     </div>
                   </div>
 
+                  <div
+                    style={{
+                      display:
+                        "flex",
+                      flexDirection:
+                        "column",
+                      gap: "10px",
+                      alignItems:
+                        "flex-end",
+                    }}
+                  >
+                    <div
+                      style={{
+                        background:
+                          candidate.profileCompletion >= 80
+                            ? "#dcfce7"
+                            : "#eff6ff",
+                        color:
+                          candidate.profileCompletion >= 80
+                            ? "#166534"
+                            : "#1d4ed8",
+                        padding:
+                          "6px 12px",
+                        borderRadius:
+                          "999px",
+                        fontWeight:
+                          "bold",
+                        fontSize:
+                          "12px",
+                      }}
+                    >
+                      {candidate.profileCompletion || 0}% Complete
+                    </div>
+
                   {candidate.remote && (
                     <div
                       style={{
@@ -960,6 +1038,7 @@ export default function ResumeSearchPage() {
                       Remote
                     </div>
                   )}
+                  </div>
                 </div>
 
                 {candidate.title && (
