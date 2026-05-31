@@ -3,6 +3,7 @@
 import JobCard from "./home/JobCard";
 import Navbar from "./home/Navbar";
 import SearchFilters from "./home/SearchFilters";
+import FeaturedJobs from "./home/FeaturedJobs";
 
 import {
   useEffect,
@@ -455,70 +456,21 @@ export default function HomeClient({
           </div>
         ) : (
           <>
-            {featuredJobs.length >
-              0 && (
-              <div
-                style={{
-                  marginBottom:
-                    "40px",
-                }}
-              >
-                <h2
-                  style={{
-                    color:
-                      "#f59e0b",
-                    marginBottom:
-                      "20px",
-                  }}
-                >
-                  ⭐ Featured Jobs
-                </h2>
-
-                <div
-                  style={{
-                    display:
-                      "grid",
-                    gridTemplateColumns:
-                      "repeat(auto-fit, minmax(280px, 1fr))",
-                    gap: "22px",
-                  }}
-                >
-                  {featuredJobs.map(
-                    (
-                      job
-                    ) => (
-                      <JobCard
-                        key={
-                          job.id
-                        }
-                        job={job}
-                        role={role}
-                        savedJobs={
-                          savedJobs
-                        }
-                        toggleSaveJob={
-                          toggleSaveJob
-                        }
-                        getCurrencySymbol={
-                          getCurrencySymbol
-                        }
-                        featured
-                      />
-                    )
-                  )}
-                </div>
-              </div>
-            )}
-
-            <h2
-              style={{
-                marginBottom:
-                  "20px",
-              }}
-            >
-              Latest Jobs
-            </h2>
-
+<FeaturedJobs
+  featuredJobs={
+    featuredJobs
+  }
+  role={role}
+  savedJobs={
+    savedJobs
+  }
+  toggleSaveJob={
+    toggleSaveJob
+  }
+  getCurrencySymbol={
+    getCurrencySymbol
+  }
+/>
             <div
               style={{
                 display:
