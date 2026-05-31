@@ -77,7 +77,7 @@ export default function MyJobsPage() {
             ) => {
               const appRes =
                 await fetch(
-                  `/api/applications?jobId=${job.id}`,
+                  `/api/applications?jobId=${job.id}&employerEmail=${user.email}`,
                   {
                     cache:
                       "no-store",
@@ -87,11 +87,18 @@ export default function MyJobsPage() {
               const applications =
                 await appRes.json();
 
+              const safeApplicantCount =
+                Array.isArray(
+                  applications
+                )
+                  ? applications.length
+                  : 0;
+
               return {
                 ...job,
 
                 applicantCount:
-                  applications.length,
+                  safeApplicantCount,
               };
             }
           )
@@ -223,7 +230,9 @@ export default function MyJobsPage() {
         job
       ) =>
         total +
-        job.applicantCount,
+        Number(
+          job.applicantCount || 0
+        ),
       0
     );
 
@@ -234,8 +243,12 @@ export default function MyJobsPage() {
           a,
           b
         ) =>
-          b.applicantCount -
-          a.applicantCount
+          Number(
+            b.applicantCount || 0
+          ) -
+          Number(
+            a.applicantCount || 0
+          )
       )
       .slice(0, 5);
 

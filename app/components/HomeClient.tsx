@@ -67,11 +67,20 @@ export default function HomeClient({
             );
 
           const profile =
-            await res.json();
+  await res.json();
 
-          setRole(
-            profile.role
-          );
+console.log(
+  "PROFILE RESPONSE:",
+  profile
+);
+
+if (
+  profile?.role
+) {
+  setRole(
+    profile.role
+  );
+}
 
           setIsAdmin(
             profile.isAdmin ===

@@ -48,7 +48,7 @@ export default function SavedJobsPage() {
         ) {
           const jobIds =
             savedJobs.map(
-              (item) =>
+              (item: any) =>
                 item.jobId
             );
 

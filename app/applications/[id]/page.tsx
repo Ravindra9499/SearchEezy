@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 
 import { useParams } from "next/navigation";
 
+import { supabase } from "../../lib/supabase";
+
 export default function ApplicationsPage() {
   const params = useParams();
 
@@ -22,16 +24,55 @@ export default function ApplicationsPage() {
   const fetchApplications =
     async () => {
       try {
+
+        const {
+          data: {
+            user,
+          },
+        } =
+          await supabase.auth.getUser();
+
+        if (!user?.email) {
+          alert(
+            "Recruiter authorization required."
+          );
+
+          return;
+        }
+
         const res = await fetch(
-          `/api/applications?jobId=${jobId}`
+          `/api/applications?jobId=${jobId}&employerEmail=${user.email}`
         );
 
         const data =
           await res.json();
 
+        if (
+          !Array.isArray(
+            data
+          )
+        ) {
+          console.error(
+            "Applications API Error:",
+            data
+          );
+
+          setApplications(
+            []
+          );
+
+          return;
+        }
+
         setApplications(data);
+
       } catch (error) {
         console.error(error);
+
+        setApplications(
+          []
+        );
+
       } finally {
         setLoading(false);
       }
