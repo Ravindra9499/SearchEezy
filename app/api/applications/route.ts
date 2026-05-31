@@ -16,6 +16,48 @@ const resend =
       .RESEND_API_KEY
   );
 
+
+async function verifyEmployerAccess(
+  jobId: number,
+  employerEmail: string
+) {
+  const {
+    data: job,
+    error,
+  } = await supabase
+    .from("jobs")
+    .select("id, userEmail")
+    .eq("id", jobId)
+    .single();
+
+  if (
+    error ||
+    !job
+  ) {
+    return {
+      authorized: false,
+      message:
+        "Job not found",
+    };
+  }
+
+  if (
+    job.userEmail !==
+    employerEmail
+  ) {
+    return {
+      authorized: false,
+      message:
+        "Unauthorized employer access",
+    };
+  }
+
+  return {
+    authorized: true,
+  };
+}
+
+
 // CREATE application
 
 export async function POST(
@@ -24,6 +66,21 @@ export async function POST(
   try {
     const body =
       await req.json();
+
+    if (
+      !body.name ||
+      !body.email ||
+      !body.jobId ||
+      !body.resumeLink
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Missing required application fields",
+        },
+        { status: 400 }
+      );
+    }
 
     // Fetch job details FIRST
 
@@ -438,9 +495,45 @@ export async function GET(
           }
         );
 
+    const employerEmail =
+      searchParams.get(
+        "employerEmail"
+      );
+
     // Employer view
 
     if (jobId) {
+
+      if (
+        !employerEmail
+      ) {
+        return NextResponse.json(
+          {
+            error:
+              "Employer authorization required",
+          },
+          { status: 403 }
+        );
+      }
+
+      const ownership =
+        await verifyEmployerAccess(
+          Number(jobId),
+          employerEmail
+        );
+
+      if (
+        !ownership.authorized
+      ) {
+        return NextResponse.json(
+          {
+            error:
+              ownership.message,
+          },
+          { status: 403 }
+        );
+      }
+
       query = query.eq(
         "jobId",
         jobId
@@ -450,6 +543,20 @@ export async function GET(
     // Applicant view
 
     if (email) {
+
+      if (
+        typeof email !==
+        "string"
+      ) {
+        return NextResponse.json(
+          {
+            error:
+              "Invalid applicant email",
+          },
+          { status: 403 }
+        );
+      }
+
       query = query.eq(
         "email",
         email
