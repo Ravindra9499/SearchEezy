@@ -227,6 +227,18 @@ export default function MyJobsPage() {
       0
     );
 
+  const topPerformingJobs =
+    [...jobs]
+      .sort(
+        (
+          a,
+          b
+        ) =>
+          b.applicantCount -
+          a.applicantCount
+      )
+      .slice(0, 5);
+
   if (loading) {
     return (
       <div
@@ -870,6 +882,245 @@ export default function MyJobsPage() {
                       }}
                     >
                       New Applicant
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* TOP PERFORMING JOBS */}
+
+        <div
+          style={{
+            background:
+              "white",
+
+            borderRadius:
+              "22px",
+
+            padding:
+              "28px",
+
+            marginBottom:
+              "35px",
+
+            boxShadow:
+              "0 4px 20px rgba(0,0,0,0.05)",
+          }}
+        >
+          <div
+            style={{
+              display:
+                "flex",
+
+              justifyContent:
+                "space-between",
+
+              alignItems:
+                "center",
+
+              marginBottom:
+                "20px",
+
+              flexWrap:
+                "wrap",
+
+              gap: "12px",
+            }}
+          >
+            <div>
+              <h2
+                style={{
+                  margin: 0,
+
+                  color:
+                    "#111827",
+                }}
+              >
+                Top Performing Jobs
+              </h2>
+
+              <p
+                style={{
+                  color:
+                    "#6b7280",
+
+                  marginTop:
+                    "6px",
+                }}
+              >
+                Jobs attracting the highest applicant activity.
+              </p>
+            </div>
+
+            <div
+              style={{
+                background:
+                  "#fef3c7",
+
+                color:
+                  "#92400e",
+
+                padding:
+                  "8px 14px",
+
+                borderRadius:
+                  "999px",
+
+                fontWeight:
+                  "bold",
+              }}
+            >
+              Top Insights
+            </div>
+          </div>
+
+          {topPerformingJobs.length ===
+          0 ? (
+            <div
+              style={{
+                color:
+                  "#6b7280",
+              }}
+            >
+              No job analytics available yet.
+            </div>
+          ) : (
+            <div
+              style={{
+                display:
+                  "grid",
+
+                gap: "16px",
+              }}
+            >
+              {topPerformingJobs.map(
+                (
+                  job,
+                  index
+                ) => (
+                  <div
+                    key={job.id}
+                    style={{
+                      display:
+                        "flex",
+
+                      justifyContent:
+                        "space-between",
+
+                      alignItems:
+                        "center",
+
+                      flexWrap:
+                        "wrap",
+
+                      gap: "14px",
+
+                      background:
+                        "#f9fafb",
+
+                      padding:
+                        "18px",
+
+                      borderRadius:
+                        "16px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display:
+                          "flex",
+
+                        alignItems:
+                          "center",
+
+                        gap: "14px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width:
+                            "42px",
+
+                          height:
+                            "42px",
+
+                          borderRadius:
+                            "12px",
+
+                          background:
+                            "#dbeafe",
+
+                          display:
+                            "flex",
+
+                          justifyContent:
+                            "center",
+
+                          alignItems:
+                            "center",
+
+                          fontWeight:
+                            "bold",
+
+                          color:
+                            "#1d4ed8",
+                        }}
+                      >
+                        #{index + 1}
+                      </div>
+
+                      <div>
+                        <div
+                          style={{
+                            fontWeight:
+                              "bold",
+
+                            color:
+                              "#111827",
+
+                            marginBottom:
+                              "5px",
+                          }}
+                        >
+                          {job.title}
+                        </div>
+
+                        <div
+                          style={{
+                            color:
+                              "#6b7280",
+
+                            fontSize:
+                              "14px",
+                          }}
+                        >
+                          {job.company}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      style={{
+                        background:
+                          "#dcfce7",
+
+                        color:
+                          "#166534",
+
+                        padding:
+                          "10px 16px",
+
+                        borderRadius:
+                          "999px",
+
+                        fontWeight:
+                          "bold",
+                      }}
+                    >
+                      👥 {job.applicantCount} Applicants
                     </div>
                   </div>
                 )

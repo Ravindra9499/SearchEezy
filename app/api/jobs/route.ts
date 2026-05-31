@@ -13,6 +13,47 @@ const resend = new Resend(
   process.env.RESEND_API_KEY
 );
 
+
+async function verifyJobOwnership(
+  jobId: number,
+  userEmail: string
+) {
+  const {
+    data: existingJob,
+    error,
+  } = await supabase
+    .from("jobs")
+    .select("id, userEmail")
+    .eq("id", jobId)
+    .single();
+
+  if (
+    error ||
+    !existingJob
+  ) {
+    return {
+      authorized: false,
+      message:
+        "Job not found",
+    };
+  }
+
+  if (
+    existingJob.userEmail !==
+    userEmail
+  ) {
+    return {
+      authorized: false,
+      message:
+        "Unauthorized job access",
+    };
+  }
+
+  return {
+    authorized: true,
+  };
+}
+
 // GET jobs
 
 export async function GET(req: Request) {
@@ -104,6 +145,21 @@ export async function POST(
       "POST JOB BODY:",
       body
     );
+
+    if (
+      !body.title ||
+      !body.company ||
+      !body.location ||
+      !body.userEmail
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Missing required job fields",
+        },
+        { status: 400 }
+      );
+    }
 
     // =====================================
     // CHECK EMPLOYER PROFILE
@@ -470,6 +526,36 @@ export async function PUT(
     const body =
       await req.json();
 
+    if (
+      !body.userEmail
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Missing employer email",
+        },
+        { status: 403 }
+      );
+    }
+
+    const ownership =
+      await verifyJobOwnership(
+        Number(body.id),
+        body.userEmail
+      );
+
+    if (
+      !ownership.authorized
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            ownership.message,
+        },
+        { status: 403 }
+      );
+    }
+
     const { data, error } =
       await supabase
         .from("jobs")
@@ -573,6 +659,36 @@ export async function DELETE(
   try {
     const body =
       await req.json();
+
+    if (
+      !body.userEmail
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Missing employer email",
+        },
+        { status: 403 }
+      );
+    }
+
+    const ownership =
+      await verifyJobOwnership(
+        Number(body.id),
+        body.userEmail
+      );
+
+    if (
+      !ownership.authorized
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            ownership.message,
+        },
+        { status: 403 }
+      );
+    }
 
     const { data, error } =
       await supabase
