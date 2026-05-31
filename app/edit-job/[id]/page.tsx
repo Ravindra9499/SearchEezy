@@ -62,6 +62,12 @@ export default function EditJobPage() {
     setDescription,
   ] = useState("");
 
+  // IMPORTANT FIX
+  const [
+    userEmail,
+    setUserEmail,
+  ] = useState("");
+
   useEffect(() => {
     fetchJob();
   }, []);
@@ -128,6 +134,11 @@ export default function EditJobPage() {
           job.description ||
             ""
         );
+
+        // IMPORTANT FIX
+        setUserEmail(
+          job.userEmail || ""
+        );
       }
     };
 
@@ -146,6 +157,9 @@ export default function EditJobPage() {
 
             body: JSON.stringify({
               id,
+
+              // IMPORTANT FIX
+              userEmail,
 
               title,
 
