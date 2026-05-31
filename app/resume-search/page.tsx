@@ -15,6 +15,11 @@ export default function ResumeSearchPage() {
     useState(false);
 
   const [
+    recruiterEmail,
+    setRecruiterEmail,
+  ] = useState("");
+
+  const [
     candidates,
     setCandidates,
   ] = useState<any[]>([]);
@@ -82,17 +87,38 @@ export default function ResumeSearchPage() {
         return;
       }
 
+      if (
+        !user.email
+      ) {
+        alert(
+          "Recruiter email verification failed."
+        );
+
+        window.location.href =
+          "/";
+
+        return;
+      }
+
+      setRecruiterEmail(
+        user.email
+      );
+
       setAuthorized(
         true
       );
 
-      await loadCandidates();
+      await loadCandidates(
+        user.email
+      );
 
       setLoading(false);
     };
 
   const loadCandidates =
-    async () => {
+    async (
+      recruiterEmail: string
+    ) => {
       const {
         data,
         error,
@@ -101,7 +127,23 @@ export default function ResumeSearchPage() {
           .from(
             "candidate_profiles"
           )
-          .select("*")
+          .select(
+            `
+            id,
+            fullname,
+            useremail,
+            title,
+            skills,
+            experience,
+            education,
+            location,
+            zipcode,
+            summary,
+            remote,
+            resumeurl,
+            created_at
+            `
+          )
           .order(
             "created_at",
             {
@@ -109,6 +151,16 @@ export default function ResumeSearchPage() {
                 false,
             }
           );
+
+      if (
+        !recruiterEmail
+      ) {
+        alert(
+          "Unauthorized recruiter access."
+        );
+
+        return;
+      }
 
       if (!error && data) {
         setCandidates(data);
@@ -878,6 +930,33 @@ export default function ResumeSearchPage() {
 
         <div
           style={{
+            background:
+              "#fef3c7",
+
+            border:
+              "1px solid #fcd34d",
+
+            color:
+              "#92400e",
+
+            padding:
+              "16px 20px",
+
+            borderRadius:
+              "14px",
+
+            marginBottom:
+              "22px",
+
+            fontWeight:
+              "bold",
+          }}
+        >
+          Recruiter Access Protected • Candidate data and resumes are restricted to authorized premium recruiters only.
+        </div>
+
+        <div
+          style={{
             marginBottom:
               "22px",
 
@@ -1297,12 +1376,14 @@ export default function ResumeSearchPage() {
                       </button>
                     </a>
 
-                    {candidate.resumeurl && (
+                    {candidate.resumeurl &&
+                    authorized && (
                       <a
                         href={
                           candidate.resumeurl
                         }
                         target="_blank"
+                        rel="noopener noreferrer"
                         style={{
                           flex: 1,
                         }}
