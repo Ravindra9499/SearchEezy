@@ -4,6 +4,7 @@ import JobCard from "./home/JobCard";
 import Navbar from "./home/Navbar";
 import SearchFilters from "./home/SearchFilters";
 import FeaturedJobs from "./home/FeaturedJobs";
+import JobsGrid from "./home/JobsGrid";
 
 import {
   useEffect,
@@ -422,43 +423,16 @@ export default function HomeClient({
             "0 20px 50px",
         }}
       >
-        {loading ? (
-          <div
-            style={{
-              textAlign:
-                "center",
-              padding:
-                "60px",
-            }}
-          >
-            Loading jobs...
-          </div>
-        ) : filteredJobs.length ===
-          0 ? (
-          <div
-            style={{
-              background:
-                "white",
-              padding:
-                "50px",
-              borderRadius:
-                "20px",
-              textAlign:
-                "center",
-            }}
-          >
-            <h2>No jobs found</h2>
-
-            <p>
-              Try different search
-              filters.
-            </p>
-          </div>
-        ) : (
-          <>
-<FeaturedJobs
+<JobsGrid
+  loading={loading}
+  filteredJobs={
+    filteredJobs
+  }
   featuredJobs={
     featuredJobs
+  }
+  regularJobs={
+    regularJobs
   }
   role={role}
   savedJobs={
@@ -471,38 +445,7 @@ export default function HomeClient({
     getCurrencySymbol
   }
 />
-            <div
-              style={{
-                display:
-                  "grid",
-                gridTemplateColumns:
-                  "repeat(auto-fit, minmax(280px, 1fr))",
-                gap: "22px",
-              }}
-            >
-              {regularJobs.map(
-                (job) => (
-                  <JobCard
-                    key={
-                      job.id
-                    }
-                    job={job}
-                    role={role}
-                    savedJobs={
-                      savedJobs
-                    }
-                    toggleSaveJob={
-                      toggleSaveJob
-                    }
-                    getCurrencySymbol={
-                      getCurrencySymbol
-                    }
-                  />
-                )
-              )}
-            </div>
-          </>
-        )}
+
       </div>
     </div>
   );
