@@ -225,6 +225,29 @@ export default function Navbar({
                     </button>
                   </a>
 
+                  <a href="/employer-settings">
+                    <button
+                      style={{
+                        background:
+                          "#0f172a",
+                        color:
+                          "white",
+                        border:
+                          "none",
+                        padding:
+                          "10px 16px",
+                        borderRadius:
+                          "8px",
+                        cursor:
+                          "pointer",
+                        fontWeight:
+                          "bold",
+                      }}
+                    >
+                      Employer Settings
+                    </button>
+                  </a>
+
                   {resumeSearchEnabled && (
                     <a href="/resume-search">
                       <button

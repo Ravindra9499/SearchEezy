@@ -125,6 +125,70 @@ export default function AdminPage() {
       loadProfiles();
     };
 
+  const updateVerificationStatus =
+    async (
+      id: string,
+      status: string
+    ) => {
+      const updates: any = {
+        verificationStatus:
+          status,
+        verificationRequested:
+          false,
+      };
+
+      if (
+        status ===
+        "verified"
+      ) {
+        updates.isverified =
+          true;
+
+        updates.verifiedAt =
+          new Date().toISOString();
+      }
+
+      if (
+        status ===
+        "rejected"
+      ) {
+        updates.isverified =
+          false;
+      }
+
+      await supabase
+        .from(
+          "profiles"
+        )
+        .update(
+          updates
+        )
+        .eq("id", id);
+
+      loadProfiles();
+    };
+
+  const getVerificationColor =
+    (
+      status: string
+    ) => {
+      switch (
+        status
+      ) {
+        case "verified":
+          return "#16a34a";
+
+        case "pending":
+          return "#f59e0b";
+
+        case "rejected":
+          return "#dc2626";
+
+        default:
+          return "#6b7280";
+      }
+    };
+
   if (loading) {
     return (
       <div
@@ -163,428 +227,171 @@ export default function AdminPage() {
             "0 auto",
         }}
       >
-        {/* HEADER */}
+        <h1>
+          SearchEezy Admin Dashboard
+        </h1>
 
         <div
           style={{
-            display:
-              "flex",
-            justifyContent:
-              "space-between",
-            alignItems:
-              "center",
-            marginBottom:
-              "30px",
-          }}
-        >
-          <div>
-            <h1
-              style={{
-                margin: 0,
-                color:
-                  "#111827",
-              }}
-            >
-              SearchEezy Admin Dashboard
-            </h1>
-
-            <p
-              style={{
-                color:
-                  "#6b7280",
-              }}
-            >
-              Manage employers, subscriptions and platform access.
-            </p>
-          </div>
-
-          <a href="/">
-            <button
-              style={{
-                background:
-                  "#1c4ed8",
-                color:
-                  "white",
-                border:
-                  "none",
-                padding:
-                  "12px 18px",
-                borderRadius:
-                  "10px",
-                cursor:
-                  "pointer",
-                fontWeight:
-                  "bold",
-              }}
-            >
-              ← Back to Home
-            </button>
-          </a>
-        </div>
-
-        {/* STATS */}
-
-        <div
-          style={{
-            display:
-              "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: "20px",
-            marginBottom:
-              "30px",
-          }}
-        >
-          <div
-            style={{
-              background:
-                "white",
-              padding:
-                "25px",
-              borderRadius:
-                "18px",
-            }}
-          >
-            <h2>
-              {
-                profiles.length
-              }
-            </h2>
-
-            <p>
-              Total Users
-            </p>
-          </div>
-
-          <div
-            style={{
-              background:
-                "white",
-              padding:
-                "25px",
-              borderRadius:
-                "18px",
-            }}
-          >
-            <h2>
-              {
-                profiles.filter(
-                  (
-                    p
-                  ) =>
-                    p.role ===
-                    "employer"
-                ).length
-              }
-            </h2>
-
-            <p>
-              Employers
-            </p>
-          </div>
-
-          <div
-            style={{
-              background:
-                "white",
-              padding:
-                "25px",
-              borderRadius:
-                "18px",
-            }}
-          >
-            <h2>
-              {
-                profiles.filter(
-                  (
-                    p
-                  ) =>
-                    p.subscriptionPlan ===
-                    "premium"
-                ).length
-              }
-            </h2>
-
-            <p>
-              Premium Accounts
-            </p>
-          </div>
-
-          <div
-            style={{
-              background:
-                "white",
-              padding:
-                "25px",
-              borderRadius:
-                "18px",
-            }}
-          >
-            <h2>
-              {
-                profiles.filter(
-                  (
-                    p
-                  ) =>
-                    p.resumeSearchEnabled
-                ).length
-              }
-            </h2>
-
-            <p>
-              Resume Search Enabled
-            </p>
-          </div>
-        </div>
-
-        {/* USERS TABLE */}
-
-        <div
-          style={{
+            overflowX:
+              "auto",
             background:
               "white",
             borderRadius:
               "18px",
-            overflow:
-              "hidden",
+            padding:
+              "20px",
           }}
         >
-          <div
+          <table
             style={{
-              padding:
-                "20px",
-              borderBottom:
-                "1px solid #eee",
+              width:
+                "100%",
+              borderCollapse:
+                "collapse",
             }}
           >
-            <h2
-              style={{
-                margin: 0,
-              }}
-            >
-              Employer & User Management
-            </h2>
-          </div>
+            <thead>
+              <tr>
+                <th style={thStyle}>
+                  Email
+                </th>
 
-          <div
-            style={{
-              overflowX:
-                "auto",
-            }}
-          >
-            <table
-              style={{
-                width:
-                  "100%",
-                borderCollapse:
-                  "collapse",
-              }}
-            >
-              <thead>
-                <tr
-                  style={{
-                    background:
-                      "#f9fafb",
-                  }}
-                >
-                  <th
-                    style={
-                      thStyle
+                <th style={thStyle}>
+                  Role
+                </th>
+
+                <th style={thStyle}>
+                  Verification
+                </th>
+
+                <th style={thStyle}>
+                  Plan
+                </th>
+
+                <th style={thStyle}>
+                  Actions
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {profiles.map(
+                (
+                  profile
+                ) => (
+                  <tr
+                    key={
+                      profile.id
                     }
                   >
-                    Email
-                  </th>
-
-                  <th
-                    style={
-                      thStyle
-                    }
-                  >
-                    Role
-                  </th>
-
-                  <th
-                    style={
-                      thStyle
-                    }
-                  >
-                    Plan
-                  </th>
-
-                  <th
-                    style={
-                      thStyle
-                    }
-                  >
-                    Free Posts
-                  </th>
-
-                  <th
-                    style={
-                      thStyle
-                    }
-                  >
-                    Resume Search
-                  </th>
-
-                  <th
-                    style={
-                      thStyle
-                    }
-                  >
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {profiles.map(
-                  (
-                    profile
-                  ) => (
-                    <tr
-                      key={
-                        profile.id
+                    <td style={tdStyle}>
+                      {
+                        profile.email
                       }
-                    >
-                      <td
-                        style={
-                          tdStyle
-                        }
-                      >
-                        {
-                          profile.email
-                        }
-                      </td>
+                    </td>
 
-                      <td
-                        style={
-                          tdStyle
-                        }
-                      >
-                        {
-                          profile.role
-                        }
-                      </td>
+                    <td style={tdStyle}>
+                      {
+                        profile.role
+                      }
+                    </td>
 
-                      <td
-                        style={
-                          tdStyle
-                        }
+                    <td style={tdStyle}>
+                      <div
+                        style={{
+                          display:
+                            "flex",
+                          flexDirection:
+                            "column",
+                          gap: "8px",
+                        }}
                       >
                         <div
                           style={{
-                            display:
-                              "flex",
-                            gap: "8px",
-                            alignItems:
-                              "center",
-                          }}
-                        >
-                          <span>
-                            {
-                              profile.subscriptionPlan
-                            }
-                          </span>
-
-                          <button
-                            onClick={() =>
-                              updatePlan(
-                                profile.id,
-                                profile.subscriptionPlan ===
-                                  "premium"
-                                  ? "free"
-                                  : "premium"
-                              )
-                            }
-                            style={{
-                              background:
-                                profile.subscriptionPlan ===
-                                "premium"
-                                  ? "#dc2626"
-                                  : "#16a34a",
-                              color:
-                                "white",
-                              border:
-                                "none",
-                              padding:
-                                "6px 10px",
-                              borderRadius:
-                                "8px",
-                              cursor:
-                                "pointer",
-                              fontSize:
-                                "12px",
-                              fontWeight:
-                                "bold",
-                            }}
-                          >
-                            {profile.subscriptionPlan ===
-                            "premium"
-                              ? "Downgrade"
-                              : "Upgrade"}
-                          </button>
-                        </div>
-                      </td>
-
-                      <td
-                        style={
-                          tdStyle
-                        }
-                      >
-                        {
-                          profile.freePostsRemaining
-                        }
-                      </td>
-
-                      <td
-                        style={
-                          tdStyle
-                        }
-                      >
-                        {profile.resumeSearchEnabled
-                          ? "Enabled"
-                          : "Disabled"}
-                      </td>
-
-                      <td
-                        style={
-                          tdStyle
-                        }
-                      >
-                        <button
-                          onClick={() =>
-                            toggleResumeSearch(
-                              profile.id,
-                              profile.resumeSearchEnabled
-                            )
-                          }
-                          style={{
                             background:
-                              "#1d4ed8",
+                              getVerificationColor(
+                                profile.verificationStatus ||
+                                  "unverified"
+                              ),
                             color:
                               "white",
-                            border:
-                              "none",
                             padding:
-                              "8px 12px",
+                              "6px 10px",
                             borderRadius:
-                              "8px",
-                            cursor:
-                              "pointer",
+                              "999px",
+                            fontSize:
+                              "12px",
                             fontWeight:
                               "bold",
+                            width:
+                              "fit-content",
                           }}
                         >
-                          Toggle Resume Access
-                        </button>
-                      </td>
-                    </tr>
-                  )
-                )}
-              </tbody>
-            </table>
-          </div>
+                          {
+                            profile.verificationStatus ||
+                              "unverified"
+                          }
+                        </div>
+
+                        {profile.role ===
+                          "employer" && (
+                          <div
+                            style={{
+                              display:
+                                "flex",
+                              gap: "8px",
+                            }}
+                          >
+                            <button
+                              onClick={() =>
+                                updateVerificationStatus(
+                                  profile.id,
+                                  "verified"
+                                )
+                              }
+                            >
+                              Approve
+                            </button>
+
+                            <button
+                              onClick={() =>
+                                updateVerificationStatus(
+                                  profile.id,
+                                  "rejected"
+                                )
+                              }
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+
+                    <td style={tdStyle}>
+                      {
+                        profile.subscriptionPlan
+                      }
+                    </td>
+
+                    <td style={tdStyle}>
+                      <button
+                        onClick={() =>
+                          toggleResumeSearch(
+                            profile.id,
+                            profile.resumeSearchEnabled
+                          )
+                        }
+                      >
+                        Toggle Resume Access
+                      </button>
+                    </td>
+                  </tr>
+                )
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -594,13 +401,8 @@ export default function AdminPage() {
 const thStyle = {
   textAlign: "left" as const,
   padding: "16px",
-  borderBottom:
-    "1px solid #eee",
-  fontWeight: "bold",
 };
 
 const tdStyle = {
   padding: "16px",
-  borderBottom:
-    "1px solid #f3f4f6",
 };
