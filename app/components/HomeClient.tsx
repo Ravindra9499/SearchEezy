@@ -5,6 +5,7 @@ import Navbar from "./home/Navbar";
 import SearchFilters from "./home/SearchFilters";
 import FeaturedJobs from "./home/FeaturedJobs";
 import JobsGrid from "./home/JobsGrid";
+import CategoryFilters from "./home/CategoryFilters";
 
 import {
   useEffect,
@@ -245,7 +246,7 @@ export default function HomeClient({
           return "£";
 
         default:
-          return "$";
+          return "$"; 
       }
     };
 
@@ -363,52 +364,17 @@ export default function HomeClient({
             "0 20px 30px",
         }}
       >
-        <div
-          style={{
-            display:
-              "flex",
-            gap: "10px",
-            flexWrap:
-              "wrap",
-          }}
-        >
-          {categories.map(
-            (category) => (
-              <button
-                key={category}
-                onClick={() =>
-                  setSelectedCategory(
-                    category
-                  )
-                }
-                style={{
-                  background:
-                    selectedCategory ===
-                    category
-                      ? "#1c4ed8"
-                      : "white",
-                  color:
-                    selectedCategory ===
-                    category
-                      ? "white"
-                      : "#1c4ed8",
-                  border:
-                    "1px solid #1c4ed8",
-                  padding:
-                    "10px 16px",
-                  borderRadius:
-                    "999px",
-                  cursor:
-                    "pointer",
-                  fontWeight:
-                    "bold",
-                }}
-              >
-                {category}
-              </button>
-            )
-          )}
-        </div>
+        <CategoryFilters
+          categories={
+            categories
+          }
+          selectedCategory={
+            selectedCategory
+          }
+          setSelectedCategory={
+            setSelectedCategory
+          }
+        />
       </div>
 
       {/* JOBS */}
@@ -423,29 +389,28 @@ export default function HomeClient({
             "0 20px 50px",
         }}
       >
-<JobsGrid
-  loading={loading}
-  filteredJobs={
-    filteredJobs
-  }
-  featuredJobs={
-    featuredJobs
-  }
-  regularJobs={
-    regularJobs
-  }
-  role={role}
-  savedJobs={
-    savedJobs
-  }
-  toggleSaveJob={
-    toggleSaveJob
-  }
-  getCurrencySymbol={
-    getCurrencySymbol
-  }
-/>
-
+        <JobsGrid
+          loading={loading}
+          filteredJobs={
+            filteredJobs
+          }
+          featuredJobs={
+            featuredJobs
+          }
+          regularJobs={
+            regularJobs
+          }
+          role={role}
+          savedJobs={
+            savedJobs
+          }
+          toggleSaveJob={
+            toggleSaveJob
+          }
+          getCurrencySymbol={
+            getCurrencySymbol
+          }
+        />
       </div>
     </div>
   );
