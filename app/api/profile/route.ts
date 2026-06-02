@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 const supabase =
   createClient(
     process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
 export async function GET(
@@ -25,7 +25,7 @@ export async function GET(
         "email"
       );
 
-    // FETCH BY EMAIL
+    // FETCH PROFILE BY EMAIL
 
     if (email) {
       const {
@@ -38,10 +38,17 @@ export async function GET(
         .single();
 
       if (error) {
+        console.error(
+          "PROFILE API ERROR:",
+          error
+        );
+
         return NextResponse.json(
           {
             error:
               error.message,
+            details:
+              error,
           },
           { status: 500 }
         );
@@ -52,7 +59,7 @@ export async function GET(
       );
     }
 
-    // FETCH BY ID
+    // FETCH PROFILE BY USER ID
 
     if (userId) {
       const {
@@ -65,10 +72,17 @@ export async function GET(
         .single();
 
       if (error) {
+        console.error(
+          "PROFILE API ERROR:",
+          error
+        );
+
         return NextResponse.json(
           {
             error:
               error.message,
+            details:
+              error,
           },
           { status: 500 }
         );
@@ -87,7 +101,10 @@ export async function GET(
       { status: 400 }
     );
   } catch (error) {
-    console.error(error);
+    console.error(
+      "PROFILE ROUTE CRASH:",
+      error
+    );
 
     return NextResponse.json(
       {
