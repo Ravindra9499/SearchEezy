@@ -203,6 +203,8 @@ export default function MyJobsPage() {
 
           body: JSON.stringify({
             id,
+            userEmail:
+              user?.email,
           }),
         }
       );
