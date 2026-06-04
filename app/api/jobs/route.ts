@@ -407,3 +407,126 @@ export async function DELETE(
     );
   }
 }
+
+
+// PUT update job
+
+export async function PUT(
+  req: Request
+) {
+  try {
+    const body =
+      await req.json();
+
+    if (
+      !body.userEmail
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Missing employer email",
+        },
+        { status: 403 }
+      );
+    }
+
+    const ownership =
+      await verifyJobOwnership(
+        Number(body.id),
+        body.userEmail
+      );
+
+    if (
+      !ownership.authorized
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            ownership.message,
+        },
+        { status: 403 }
+      );
+    }
+
+    const { data, error } =
+      await supabase
+        .from("jobs")
+        .update({
+          title: body.title,
+
+          company:
+            body.company,
+
+          location:
+            body.location,
+
+          description:
+            body.description,
+
+          jobType:
+            body.jobType,
+
+          salaryMin:
+            body.salaryMin
+              ? Number(
+                  body.salaryMin
+                )
+              : null,
+
+          salaryMax:
+            body.salaryMax
+              ? Number(
+                  body.salaryMax
+                )
+              : null,
+
+          salaryType:
+            body.salaryType,
+
+          currency:
+            body.currency,
+
+          screeningQuestions:
+            body.screeningQuestions,
+        })
+        .eq(
+          "id",
+          Number(body.id)
+        )
+        .select()
+        .single();
+
+    if (error) {
+      console.error(
+        "PUT ERROR:",
+        error
+      );
+
+      return NextResponse.json(
+        {
+          error: error.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      message:
+        "Job updated successfully",
+
+      updatedJob: data,
+    });
+  } catch (error) {
+    console.error(
+      "PUT ERROR:",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        error: "PUT failed",
+      },
+      { status: 500 }
+    );
+  }
+}

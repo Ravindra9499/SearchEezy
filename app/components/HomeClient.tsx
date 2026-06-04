@@ -39,6 +39,9 @@ export default function HomeClient({
   const [loading, setLoading] =
     useState(true);
 
+  const [authReady, setAuthReady] =
+    useState(false);
+
   const [savedJobs, setSavedJobs] =
     useState<number[]>([]);
 
@@ -58,6 +61,8 @@ export default function HomeClient({
   ] = useState("All");
 
   useEffect(() => {
+    let mounted = true;
+
     const getUser =
       async () => {
         const {
@@ -155,10 +160,17 @@ export default function HomeClient({
           setDisplayJobs(jobs);
         }
 
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+          setAuthReady(true);
+        }
       };
 
     getUser();
+
+    return () => {
+      mounted = false;
+    };
   }, [jobs]);
 
   const toggleSaveJob =
@@ -315,6 +327,19 @@ export default function HomeClient({
       (job) =>
         !job.featured
     );
+
+  if (!authReady) {
+    return (
+      <div
+        style={{
+          background:
+            "#f5f7fb",
+          minHeight:
+            "100vh",
+        }}
+      />
+    );
+  }
 
   return (
     <div

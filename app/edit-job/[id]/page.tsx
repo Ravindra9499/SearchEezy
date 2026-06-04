@@ -146,7 +146,7 @@ export default function EditJobPage() {
     async () => {
       const res =
         await fetch(
-          "/api/jobs",
+          `/api/jobs/${id}`,
           {
             method: "PUT",
 
