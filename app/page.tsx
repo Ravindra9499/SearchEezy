@@ -7,10 +7,10 @@ import HomeClient from "./components/HomeClient";
 
 export const metadata: Metadata = {
   title:
-    "SearchEezy - Modern Job Board & Hiring Platform",
+    "SearchEezy | Healthcare, Tech & Remote Jobs Hiring Platform",
 
   description:
-    "SearchEezy is a modern hiring platform where employers connect with top talent and applicants discover meaningful career opportunities.",
+    "SearchEezy is a modern hiring platform connecting employers with top talent across healthcare, software engineering, remote work, staffing, allied health, and technology careers.",
 
   keywords: [
     "jobs",
@@ -20,17 +20,33 @@ export const metadata: Metadata = {
     "employment",
     "remote jobs",
     "software jobs",
+    "software engineer jobs",
+    "healthcare jobs",
+    "travel healthcare jobs",
+    "staffing jobs",
+    "allied health jobs",
     "tech jobs",
+    "remote hiring",
+    "healthcare staffing",
     "SearchEezy",
     "job portal",
+    "recruitment platform",
   ],
+
+  metadataBase: new URL(
+    "https://www.searcheezy.com"
+  ),
+
+  alternates: {
+    canonical: "/",
+  },
 
   openGraph: {
     title:
-      "SearchEezy - Modern Hiring Platform",
+      "SearchEezy | Healthcare, Tech & Remote Jobs",
 
     description:
-      "Find jobs, hire talent, and grow careers with SearchEezy.",
+      "Find healthcare, software engineering, remote, staffing, and technology jobs while employers hire top talent through SearchEezy.",
 
     url:
       "https://www.searcheezy.com",
@@ -46,10 +62,10 @@ export const metadata: Metadata = {
       "summary_large_image",
 
     title:
-      "SearchEezy - Modern Hiring Platform",
+      "SearchEezy | Modern Hiring Platform",
 
     description:
-      "Find jobs and hire talent with SearchEezy.",
+      "Search healthcare, software engineering, remote, and staffing jobs with SearchEezy.",
   },
 };
 

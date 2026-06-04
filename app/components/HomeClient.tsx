@@ -379,6 +379,185 @@ export default function HomeClient({
         }
       />
 
+
+      {/* SEO CONTENT SECTIONS */}
+
+      <div
+        style={{
+          maxWidth:
+            "1200px",
+          margin:
+            "0 auto",
+          padding:
+            "10px 20px 20px",
+        }}
+      >
+        <div
+          style={{
+            background:
+              "linear-gradient(135deg, #111827, #1e3a8a)",
+            borderRadius:
+              "24px",
+            padding:
+              "50px 35px",
+            color:
+              "white",
+            marginBottom:
+              "30px",
+          }}
+        >
+          <h1
+            style={{
+              fontSize:
+                "42px",
+              marginBottom:
+                "20px",
+              lineHeight:
+                "1.2",
+            }}
+          >
+            Find Healthcare, Technology & Remote Jobs with SearchEezy
+          </h1>
+
+          <p
+            style={{
+              fontSize:
+                "18px",
+              lineHeight:
+                "1.8",
+              color:
+                "#dbeafe",
+              maxWidth:
+                "900px",
+            }}
+          >
+            SearchEezy connects employers with top talent across healthcare staffing,
+            software engineering, allied health, remote technology, travel healthcare,
+            and professional recruitment industries.
+          </p>
+        </div>
+
+        <div
+          style={{
+            display:
+              "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit, minmax(260px, 1fr))",
+            gap: "20px",
+            marginBottom:
+              "35px",
+          }}
+        >
+          <div
+            style={{
+              background:
+                "white",
+              borderRadius:
+                "18px",
+              padding:
+                "24px",
+              boxShadow:
+                "0 2px 12px rgba(0,0,0,0.05)",
+            }}
+          >
+            <h2
+              style={{
+                color:
+                  "#111827",
+                marginBottom:
+                  "14px",
+              }}
+            >
+              Healthcare Jobs
+            </h2>
+
+            <p
+              style={{
+                color:
+                  "#6b7280",
+                lineHeight:
+                  "1.7",
+              }}
+            >
+              Explore nursing, allied health, radiology,
+              therapist, pharmacist, and healthcare staffing opportunities.
+            </p>
+          </div>
+
+          <div
+            style={{
+              background:
+                "white",
+              borderRadius:
+                "18px",
+              padding:
+                "24px",
+              boxShadow:
+                "0 2px 12px rgba(0,0,0,0.05)",
+            }}
+          >
+            <h2
+              style={{
+                color:
+                  "#111827",
+                marginBottom:
+                  "14px",
+              }}
+            >
+              Software Engineering Jobs
+            </h2>
+
+            <p
+              style={{
+                color:
+                  "#6b7280",
+                lineHeight:
+                  "1.7",
+              }}
+            >
+              Discover frontend, backend, full stack,
+              cloud, DevOps, and remote software engineering careers.
+            </p>
+          </div>
+
+          <div
+            style={{
+              background:
+                "white",
+              borderRadius:
+                "18px",
+              padding:
+                "24px",
+              boxShadow:
+                "0 2px 12px rgba(0,0,0,0.05)",
+            }}
+          >
+            <h2
+              style={{
+                color:
+                  "#111827",
+                marginBottom:
+                  "14px",
+              }}
+            >
+              Remote & Staffing Careers
+            </h2>
+
+            <p
+              style={{
+                color:
+                  "#6b7280",
+                lineHeight:
+                  "1.7",
+              }}
+            >
+              Search remote opportunities, staffing assignments,
+              contract positions, and nationwide recruitment openings.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div
         style={{
           maxWidth:
