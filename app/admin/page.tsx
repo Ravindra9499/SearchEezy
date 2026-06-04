@@ -193,8 +193,8 @@ export default function AdminPage() {
     return (
       <div
         style={{
-          padding:
-            "50px",
+          padding: "40px",
+          fontFamily: "Arial",
         }}
       >
         Loading admin dashboard...
@@ -227,9 +227,186 @@ export default function AdminPage() {
             "0 auto",
         }}
       >
-        <h1>
-          SearchEezy Admin Dashboard
-        </h1>
+        <div
+          style={{
+            display:
+              "flex",
+            justifyContent:
+              "space-between",
+            alignItems:
+              "center",
+            marginBottom:
+              "30px",
+            flexWrap:
+              "wrap",
+            gap: "20px",
+          }}
+        >
+          <div>
+            <h1
+              style={{
+                margin: 0,
+                fontSize:
+                  "36px",
+                color:
+                  "#111827",
+              }}
+            >
+              SearchEezy Admin Dashboard
+            </h1>
+
+            <p
+              style={{
+                color:
+                  "#6b7280",
+                marginTop:
+                  "8px",
+              }}
+            >
+              Manage employers, applicants, verification and premium access
+            </p>
+          </div>
+
+          <div
+            style={{
+              display:
+                "flex",
+              gap: "16px",
+              flexWrap:
+                "wrap",
+            }}
+          >
+            <div
+              style={{
+                background:
+                  "white",
+                padding:
+                  "18px 24px",
+                borderRadius:
+                  "16px",
+                minWidth:
+                  "180px",
+                boxShadow:
+                  "0 2px 10px rgba(0,0,0,0.05)",
+              }}
+            >
+              <p
+                style={{
+                  margin: 0,
+                  color:
+                    "#6b7280",
+                  fontSize:
+                    "14px",
+                }}
+              >
+                Total Profiles
+              </p>
+
+              <h2
+                style={{
+                  margin:
+                    "8px 0 0 0",
+                  color:
+                    "#111827",
+                }}
+              >
+                {profiles.length}
+              </h2>
+            </div>
+
+            <div
+              style={{
+                background:
+                  "white",
+                padding:
+                  "18px 24px",
+                borderRadius:
+                  "16px",
+                minWidth:
+                  "180px",
+                boxShadow:
+                  "0 2px 10px rgba(0,0,0,0.05)",
+              }}
+            >
+              <p
+                style={{
+                  margin: 0,
+                  color:
+                    "#6b7280",
+                  fontSize:
+                    "14px",
+                }}
+              >
+                Employers
+              </p>
+
+              <h2
+                style={{
+                  margin:
+                    "8px 0 0 0",
+                  color:
+                    "#1d4ed8",
+                }}
+              >
+                {
+                  profiles.filter(
+                    (
+                      p
+                    ) =>
+                      p.role ===
+                      "employer"
+                  ).length
+                }
+              </h2>
+            </div>
+
+            <div
+              style={{
+                background:
+                  "white",
+                padding:
+                  "18px 24px",
+                borderRadius:
+                  "16px",
+                minWidth:
+                  "180px",
+                boxShadow:
+                  "0 2px 10px rgba(0,0,0,0.05)",
+              }}
+            >
+              <p
+                style={{
+                  margin: 0,
+                  color:
+                    "#6b7280",
+                  fontSize:
+                    "14px",
+                }}
+              >
+                Verified Employers
+              </p>
+
+              <h2
+                style={{
+                  margin:
+                    "8px 0 0 0",
+                  color:
+                    "#16a34a",
+                }}
+              >
+                {
+                  profiles.filter(
+                    (
+                      p
+                    ) =>
+                      p.verificationStatus ===
+                      "verified"
+                  ).length
+                }
+              </h2>
+            </div>
+          </div>
+        </div>
 
         <div
           style={{
@@ -238,9 +415,11 @@ export default function AdminPage() {
             background:
               "white",
             borderRadius:
-              "18px",
+              "24px",
             padding:
-              "20px",
+              "24px",
+            boxShadow:
+              "0 4px 20px rgba(0,0,0,0.05)",
           }}
         >
           <table
@@ -252,7 +431,12 @@ export default function AdminPage() {
             }}
           >
             <thead>
-              <tr>
+              <tr
+                style={{
+                  borderBottom:
+                    "1px solid #e5e7eb",
+                }}
+              >
                 <th style={thStyle}>
                   Email
                 </th>
@@ -284,17 +468,57 @@ export default function AdminPage() {
                     key={
                       profile.id
                     }
+                    style={{
+                      borderBottom:
+                        "1px solid #f3f4f6",
+                    }}
                   >
                     <td style={tdStyle}>
-                      {
-                        profile.email
-                      }
+                      <div
+                        style={{
+                          fontWeight:
+                            "bold",
+                          color:
+                            "#111827",
+                        }}
+                      >
+                        {
+                          profile.email
+                        }
+                      </div>
                     </td>
 
                     <td style={tdStyle}>
-                      {
-                        profile.role
-                      }
+                      <div
+                        style={{
+                          background:
+                            profile.role ===
+                            "employer"
+                              ? "#dbeafe"
+                              : "#dcfce7",
+                          color:
+                            profile.role ===
+                            "employer"
+                              ? "#1d4ed8"
+                              : "#15803d",
+                          padding:
+                            "6px 12px",
+                          borderRadius:
+                            "999px",
+                          width:
+                            "fit-content",
+                          fontSize:
+                            "12px",
+                          fontWeight:
+                            "bold",
+                          textTransform:
+                            "capitalize",
+                        }}
+                      >
+                        {
+                          profile.role
+                        }
+                      </div>
                     </td>
 
                     <td style={tdStyle}>
@@ -304,7 +528,7 @@ export default function AdminPage() {
                             "flex",
                           flexDirection:
                             "column",
-                          gap: "8px",
+                          gap: "10px",
                         }}
                       >
                         <div
@@ -317,7 +541,7 @@ export default function AdminPage() {
                             color:
                               "white",
                             padding:
-                              "6px 10px",
+                              "6px 12px",
                             borderRadius:
                               "999px",
                             fontSize:
@@ -326,6 +550,8 @@ export default function AdminPage() {
                               "bold",
                             width:
                               "fit-content",
+                            textTransform:
+                              "capitalize",
                           }}
                         >
                           {
@@ -340,7 +566,9 @@ export default function AdminPage() {
                             style={{
                               display:
                                 "flex",
-                              gap: "8px",
+                              gap: "10px",
+                              flexWrap:
+                                "wrap",
                             }}
                           >
                             <button
@@ -350,6 +578,22 @@ export default function AdminPage() {
                                   "verified"
                                 )
                               }
+                              style={{
+                                background:
+                                  "#16a34a",
+                                color:
+                                  "white",
+                                border:
+                                  "none",
+                                padding:
+                                  "8px 14px",
+                                borderRadius:
+                                  "8px",
+                                cursor:
+                                  "pointer",
+                                fontWeight:
+                                  "bold",
+                              }}
                             >
                               Approve
                             </button>
@@ -361,6 +605,22 @@ export default function AdminPage() {
                                   "rejected"
                                 )
                               }
+                              style={{
+                                background:
+                                  "#dc2626",
+                                color:
+                                  "white",
+                                border:
+                                  "none",
+                                padding:
+                                  "8px 14px",
+                                borderRadius:
+                                  "8px",
+                                cursor:
+                                  "pointer",
+                                fontWeight:
+                                  "bold",
+                              }}
                             >
                               Reject
                             </button>
@@ -370,9 +630,36 @@ export default function AdminPage() {
                     </td>
 
                     <td style={tdStyle}>
-                      {
-                        profile.subscriptionPlan
-                      }
+                      <div
+                        style={{
+                          background:
+                            profile.subscriptionPlan ===
+                            "premium"
+                              ? "#ede9fe"
+                              : "#f3f4f6",
+                          color:
+                            profile.subscriptionPlan ===
+                            "premium"
+                              ? "#7c3aed"
+                              : "#374151",
+                          padding:
+                            "6px 12px",
+                          borderRadius:
+                            "999px",
+                          width:
+                            "fit-content",
+                          fontSize:
+                            "12px",
+                          fontWeight:
+                            "bold",
+                          textTransform:
+                            "capitalize",
+                        }}
+                      >
+                        {
+                          profile.subscriptionPlan
+                        }
+                      </div>
                     </td>
 
                     <td style={tdStyle}>
@@ -383,6 +670,22 @@ export default function AdminPage() {
                             profile.resumeSearchEnabled
                           )
                         }
+                        style={{
+                          background:
+                            "#111827",
+                          color:
+                            "white",
+                          border:
+                            "none",
+                          padding:
+                            "10px 16px",
+                          borderRadius:
+                            "10px",
+                          cursor:
+                            "pointer",
+                          fontWeight:
+                            "bold",
+                        }}
                       >
                         Toggle Resume Access
                       </button>
