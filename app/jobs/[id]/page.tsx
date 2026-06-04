@@ -304,10 +304,20 @@ export default function JobDetailsPage() {
       "JobPosting",
 
     title:
-      job?.title,
+      job?.title ||
+      "Job Opening",
 
     description:
-      job?.description,
+      job?.description
+        ?.replace(
+          /<[^>]*>/g,
+          ""
+        ) ||
+      "Job opportunity available on SearchEezy.",
+
+    datePosted:
+      job?.created_at ||
+      new Date().toISOString(),
 
     hiringOrganization:
       {
@@ -315,15 +325,23 @@ export default function JobDetailsPage() {
           "Organization",
 
         name:
-          job?.company,
+          job?.company ||
+          "SearchEezy Employer",
 
         sameAs:
           "https://www.searcheezy.com",
       },
 
     employmentType:
-      job?.jobType ||
-      "FULL_TIME",
+      (
+        job?.jobType ||
+        "FULL_TIME"
+      )
+        .replace(
+          "-",
+          "_"
+        )
+        .toUpperCase(),
 
     jobLocation: {
       "@type":
@@ -334,10 +352,17 @@ export default function JobDetailsPage() {
           "PostalAddress",
 
         addressLocality:
-          job?.location,
+          job?.location ||
+          "India",
 
         addressCountry:
-          "IN",
+          {
+            "@type":
+              "Country",
+
+            name:
+              "IN",
+          },
       },
     },
 
@@ -368,9 +393,6 @@ export default function JobDetailsPage() {
             },
           }
         : undefined,
-
-    datePosted:
-      job?.created_at,
 
     validThrough:
       new Date(
