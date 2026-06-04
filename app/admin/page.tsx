@@ -243,6 +243,26 @@ export default function AdminPage() {
           }}
         >
           <div>
+            <a
+              href="/"
+              style={{
+                display:
+                  "inline-block",
+                marginBottom:
+                  "20px",
+                color:
+                  "#1d4ed8",
+                fontWeight:
+                  "bold",
+                textDecoration:
+                  "none",
+                fontSize:
+                  "15px",
+              }}
+            >
+              ← Back to Home
+            </a>
+
             <h1
               style={{
                 margin: 0,
