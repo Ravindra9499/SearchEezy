@@ -84,6 +84,16 @@ export default function JobDetailsPage() {
   const [loading, setLoading] =
     useState(true);
 
+  const [
+    relatedJobs,
+    setRelatedJobs,
+  ] = useState<any[]>([]);
+
+  const [
+    companyJobs,
+    setCompanyJobs,
+  ] = useState<any[]>([]);
+
   useEffect(() => {
     fetchJob();
 
@@ -150,10 +160,109 @@ export default function JobDetailsPage() {
           await res.json();
 
         setJob(data);
+
+        fetchRelatedJobs(
+          data
+        );
       } catch (error) {
         console.error(error);
       } finally {
         setLoading(false);
+      }
+    };
+
+  const fetchRelatedJobs =
+    async (
+      currentJob: any
+    ) => {
+      try {
+        const res =
+          await fetch(
+            "/api/jobs"
+          );
+
+        const allJobs =
+          await res.json();
+
+        const normalize =
+          (
+            value: any
+          ) =>
+            String(
+              value || ""
+            )
+              .trim()
+              .toLowerCase();
+
+        const similarJobs =
+          allJobs
+            .filter(
+              (
+                item: any
+              ) =>
+                String(
+                  item.id
+                ) !==
+                  String(
+                    currentJob.id
+                  ) &&
+                (
+                  normalize(
+                    item.jobType
+                  ) ===
+                    normalize(
+                      currentJob.jobType
+                    ) ||
+                  normalize(
+                    item.location
+                  ) ===
+                    normalize(
+                      currentJob.location
+                    ) ||
+                  normalize(
+                    item.title
+                  ).includes(
+                    normalize(
+                      currentJob.title
+                    )
+                  )
+                )
+            )
+            .slice(0, 4);
+
+        const sameCompanyJobs =
+          allJobs
+            .filter(
+              (
+                item: any
+              ) =>
+                String(
+                  item.id
+                ) !==
+                  String(
+                    currentJob.id
+                  ) &&
+                normalize(
+                  item.company
+                ) ===
+                  normalize(
+                    currentJob.company
+                  )
+            )
+            .slice(0, 4);
+
+        setRelatedJobs(
+          similarJobs
+        );
+
+        setCompanyJobs(
+          sameCompanyJobs
+        );
+      } catch (error) {
+        console.error(
+          "RELATED JOBS ERROR:",
+          error
+        );
       }
     };
 
@@ -1409,9 +1518,159 @@ export default function JobDetailsPage() {
                 </div>
               )}
             </div>
-          </div>
-        </div>
       </div>
-    </>
-  );
+
+      {(relatedJobs.length > 0 ||
+        companyJobs.length > 0) && (
+        <div
+          style={{
+            marginTop: "50px",
+          }}
+        >
+          {relatedJobs.length > 0 && (
+            <div
+              style={{
+                marginBottom: "40px",
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: "30px",
+                  marginBottom: "22px",
+                  color: "#111827",
+                }}
+              >
+                Related Jobs
+              </h2>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns:
+                    "repeat(auto-fit, minmax(260px, 1fr))",
+                  gap: "20px",
+                }}
+              >
+                {relatedJobs.map(
+                  (relatedJob) => (
+                    <a
+                      key={relatedJob.id}
+                      href={`/jobs/${relatedJob.id}`}
+                      style={{
+                        textDecoration: "none",
+                        color: "inherit",
+                      }}
+                    >
+                      <div
+                        style={{
+                          background: "white",
+                          borderRadius: "20px",
+                          padding: "24px",
+                          boxShadow:
+                            "0 4px 18px rgba(0,0,0,0.05)",
+                        }}
+                      >
+                        <h3
+                          style={{
+                            marginBottom: "12px",
+                            color: "#111827",
+                          }}
+                        >
+                          {relatedJob.title}
+                        </h3>
+
+                        <p
+                          style={{
+                            color: "#2563eb",
+                            fontWeight: "bold",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          {relatedJob.company}
+                        </p>
+
+                        <p
+                          style={{
+                            color: "#6b7280",
+                          }}
+                        >
+                          📍 {relatedJob.location}
+                        </p>
+                      </div>
+                    </a>
+                  )
+                )}
+              </div>
+            </div>
+          )}
+
+          {companyJobs.length > 0 && (
+            <div>
+              <h2
+                style={{
+                  fontSize: "30px",
+                  marginBottom: "22px",
+                  color: "#111827",
+                }}
+              >
+                More Jobs From {job.company}
+              </h2>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns:
+                    "repeat(auto-fit, minmax(260px, 1fr))",
+                  gap: "20px",
+                }}
+              >
+                {companyJobs.map(
+                  (companyJob) => (
+                    <a
+                      key={companyJob.id}
+                      href={`/jobs/${companyJob.id}`}
+                      style={{
+                        textDecoration: "none",
+                        color: "inherit",
+                      }}
+                    >
+                      <div
+                        style={{
+                          background: "white",
+                          borderRadius: "20px",
+                          padding: "24px",
+                          boxShadow:
+                            "0 4px 18px rgba(0,0,0,0.05)",
+                        }}
+                      >
+                        <h3
+                          style={{
+                            marginBottom: "12px",
+                            color: "#111827",
+                          }}
+                        >
+                          {companyJob.title}
+                        </h3>
+
+                        <p
+                          style={{
+                            color: "#6b7280",
+                          }}
+                        >
+                          📍 {companyJob.location}
+                        </p>
+                      </div>
+                    </a>
+                  )
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  </div>
+</>
+
+);
 }
