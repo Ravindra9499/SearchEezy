@@ -123,9 +123,47 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(
-      data
-    );
+    // ✅ FETCH EMPLOYER VERIFICATION STATUS
+
+    let isverified =
+      false;
+
+    try {
+      const {
+        data: profile,
+      } =
+        await supabase
+          .from(
+            "profiles"
+          )
+          .select(
+            "isverified"
+          )
+          .eq(
+            "email",
+            data.userEmail
+          )
+          .single();
+
+      isverified =
+        profile?.isverified ===
+        true;
+    } catch (
+      profileError
+    ) {
+      console.error(
+        "PROFILE FETCH ERROR:",
+        profileError
+      );
+    }
+
+    // ✅ RETURN JOB WITH VERIFICATION
+
+    return NextResponse.json({
+      ...data,
+
+      isverified,
+    });
   } catch (err) {
     console.error(
       "SERVER ERROR:",
@@ -197,7 +235,8 @@ export async function PUT(
     } = await supabase
       .from("jobs")
       .update({
-        title: body.title,
+        title:
+          body.title,
 
         company:
           body.company,

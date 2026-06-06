@@ -808,19 +808,40 @@ export default function JobDetailsPage() {
                   {job.title}
                 </h1>
 
-                <h2
+                <div
                   style={{
-                    fontSize:
-                      "24px",
-
-                    opacity: 0.95,
-
-                    marginBottom:
-                      "25px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    flexWrap: "wrap",
+                    marginBottom: "25px",
                   }}
                 >
-                  {job.company}
-                </h2>
+                  <h2
+                    style={{
+                      fontSize: "24px",
+                      opacity: 0.95,
+                      margin: 0,
+                    }}
+                  >
+                    {job.company}
+                  </h2>
+
+                  {job.isverified && (
+                    <div
+                      style={{
+                        background: "#dcfce7",
+                        color: "#15803d",
+                        padding: "6px 12px",
+                        borderRadius: "999px",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      ✔ Verified Employer
+                    </div>
+                  )}
+                </div>
 
                 <div
                   style={{
