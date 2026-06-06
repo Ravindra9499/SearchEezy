@@ -109,17 +109,66 @@ export async function GET(req: Request) {
       );
     }
 
+    // ADD VERIFIED STATUS FROM PROFILES TABLE
+
+    const jobsWithVerification =
+      await Promise.all(
+        (data || []).map(
+          async (job) => {
+            try {
+              const {
+                data: profile,
+              } =
+                await supabase
+                  .from(
+                    "profiles"
+                  )
+                  .select(
+                    "isverified"
+                  )
+                  .eq(
+                    "email",
+                    job.userEmail
+                  )
+                  .single();
+
+              return {
+                ...job,
+
+                isverified:
+                  profile?.isverified ===
+                  true,
+              };
+            } catch {
+              return {
+                ...job,
+
+                isverified:
+                  false,
+              };
+            }
+          }
+        )
+      );
+
     console.log(
       "RETURNING JOBS:",
-      data?.map((job) => ({
-        id: job.id,
-        title: job.title,
-        userEmail:
-          job.userEmail,
-      }))
+      jobsWithVerification?.map(
+        (job) => ({
+          id: job.id,
+          title:
+            job.title,
+          userEmail:
+            job.userEmail,
+          isverified:
+            job.isverified,
+        })
+      )
     );
 
-    return NextResponse.json(data);
+    return NextResponse.json(
+      jobsWithVerification
+    );
   } catch (error) {
     console.error(
       "GET ERROR:",
@@ -203,7 +252,8 @@ export async function POST(
         );
 
       if (
-        remainingPosts <= 0
+        remainingPosts <=
+        0
       ) {
         return NextResponse.json(
           {
@@ -220,7 +270,8 @@ export async function POST(
         .from("jobs")
         .insert([
           {
-            title: body.title,
+            title:
+              body.title,
 
             company:
               body.company,
@@ -264,7 +315,12 @@ export async function POST(
               body.companyLogo,
 
             verified:
-              profile.isverified === true,
+              profile.isverified ===
+              true,
+
+            isverified:
+              profile.isverified ===
+              true,
 
             companyDescription:
               body.companyDescription,
@@ -389,9 +445,11 @@ export async function DELETE(
     }
 
     return NextResponse.json({
-      message: "Job deleted",
+      message:
+        "Job deleted",
 
-      deletedJob: data[0],
+      deletedJob:
+        data[0],
     });
   } catch (error) {
     console.error(
@@ -407,7 +465,6 @@ export async function DELETE(
     );
   }
 }
-
 
 // PUT update job
 
@@ -452,7 +509,8 @@ export async function PUT(
       await supabase
         .from("jobs")
         .update({
-          title: body.title,
+          title:
+            body.title,
 
           company:
             body.company,
@@ -514,7 +572,8 @@ export async function PUT(
       message:
         "Job updated successfully",
 
-      updatedJob: data,
+      updatedJob:
+        data,
     });
   } catch (error) {
     console.error(

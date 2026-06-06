@@ -45,6 +45,8 @@ export default function JobCard({
             : "1px solid #edf2f7",
         position:
           "relative",
+        transition:
+          "0.2s ease",
       }}
     >
       {featured && (
@@ -85,7 +87,7 @@ export default function JobCard({
             "15px",
         }}
       >
-        {job.companyLogo && (
+        {job.companyLogo ? (
           <img
             src={
               job.companyLogo
@@ -109,12 +111,51 @@ export default function JobCard({
                 "6px",
             }}
           />
+        ) : (
+          <div
+            style={{
+              width: "55px",
+              height:
+                "55px",
+              borderRadius:
+                "12px",
+              background:
+                "#dbeafe",
+              color:
+                "#1d4ed8",
+              display:
+                "flex",
+              alignItems:
+                "center",
+              justifyContent:
+                "center",
+              fontWeight:
+                "bold",
+              fontSize:
+                "20px",
+            }}
+          >
+            {job.company
+              ?.charAt(0)
+              ?.toUpperCase()}
+          </div>
         )}
 
-        <div>
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+          }}
+        >
           <h2
             style={{
               margin: 0,
+              color:
+                "#111827",
+              fontSize:
+                "22px",
+              lineHeight:
+                "1.4",
             }}
           >
             {job.title}
@@ -150,12 +191,15 @@ export default function JobCard({
                   "#1d4ed8",
                 fontWeight:
                   "bold",
+                fontSize:
+                  "16px",
               }}
             >
               {job.company}
             </a>
 
-            {job.verified && (
+            {(job.isverified ||
+              job.verified) && (
               <div
                 style={{
                   background:
@@ -170,21 +214,40 @@ export default function JobCard({
                     "11px",
                   fontWeight:
                     "bold",
+                  display:
+                    "flex",
+                  alignItems:
+                    "center",
+                  gap: "4px",
                 }}
               >
-                ✔ Verified
+                ✔ Verified Employer
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <p>
+      <p
+        style={{
+          color:
+            "#4b5563",
+          marginBottom:
+            "10px",
+        }}
+      >
         📍 {job.location}
       </p>
 
       {job.jobType && (
-        <p>
+        <p
+          style={{
+            color:
+              "#4b5563",
+            marginBottom:
+              "10px",
+          }}
+        >
           💼 {job.jobType}
         </p>
       )}
