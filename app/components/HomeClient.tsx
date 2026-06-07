@@ -9,6 +9,7 @@ import CategoryFilters from "./home/CategoryFilters";
 
 import {
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -262,70 +263,91 @@ export default function HomeClient({
       }
     };
 
-  const categories = [
-    "All",
+  const categories =
+    useMemo(
+      () => [
+        "All",
 
-    ...Array.from(
-      new Set(
-        displayJobs
-          .map(
-            (job) =>
-              job.category
+        ...Array.from(
+          new Set(
+            displayJobs
+              .map(
+                (job) =>
+                  job.category
+              )
+              .filter(Boolean)
           )
-          .filter(Boolean)
-      )
-    ),
-  ];
+        ),
+      ],
+      [displayJobs]
+    );
 
   const filteredJobs =
-    displayJobs.filter(
-      (job) => {
-        const searchValue =
-          searchTitle.toLowerCase();
+    useMemo(
+      () =>
+        displayJobs.filter(
+          (job) => {
+            const searchValue =
+              searchTitle.toLowerCase();
 
-        const matchesTitle =
-          job.title
-            ?.toLowerCase()
-            .includes(
-              searchValue
-            ) ||
-          job.company
-            ?.toLowerCase()
-            .includes(
-              searchValue
+            const matchesTitle =
+              job.title
+                ?.toLowerCase()
+                .includes(
+                  searchValue
+                ) ||
+              job.company
+                ?.toLowerCase()
+                .includes(
+                  searchValue
+                );
+
+            const matchesLocation =
+              job.location
+                ?.toLowerCase()
+                .includes(
+                  searchLocation.toLowerCase()
+                );
+
+            const matchesCategory =
+              selectedCategory ===
+                "All" ||
+              job.category ===
+                selectedCategory;
+
+            return (
+              matchesTitle &&
+              matchesLocation &&
+              matchesCategory
             );
-
-        const matchesLocation =
-          job.location
-            ?.toLowerCase()
-            .includes(
-              searchLocation.toLowerCase()
-            );
-
-        const matchesCategory =
-          selectedCategory ===
-            "All" ||
-          job.category ===
-            selectedCategory;
-
-        return (
-          matchesTitle &&
-          matchesLocation &&
-          matchesCategory
-        );
-      }
+          }
+        ),
+      [
+        displayJobs,
+        searchTitle,
+        searchLocation,
+        selectedCategory,
+      ]
     );
 
   const featuredJobs =
-    filteredJobs.filter(
-      (job) =>
-        job.featured
+    useMemo(
+      () =>
+        filteredJobs.filter(
+          (job) =>
+            job.featured
+        ),
+      [filteredJobs]
     );
 
   const regularJobs =
-    filteredJobs.filter(
-      (job) =>
-        !job.featured
+    useMemo(
+      () =>
+        filteredJobs.filter(
+          (job) =>
+            !job.featured
+        ),
+      [filteredJobs]
     );
 
   if (!authReady) {
