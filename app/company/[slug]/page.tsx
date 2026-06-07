@@ -2,18 +2,95 @@ import { createClient } from "@supabase/supabase-js";
 
 import Link from "next/link";
 
+import type { Metadata } from "next";
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export default async function CompanyPage({
-  params,
-}: {
+type Props = {
   params: Promise<{
     slug: string;
   }>;
-}) {
+};
+
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata> {
+  const { slug } =
+    await params;
+
+  const normalizedSlug =
+    slug.toLowerCase();
+
+  const { data: jobs } =
+    await supabase
+      .from("jobs")
+      .select("*");
+
+  const filteredJobs =
+    jobs?.filter(
+      (job) =>
+        job.company
+          ?.toLowerCase()
+          .replace(
+            /\s+/g,
+            "-"
+          ) === normalizedSlug
+    ) || [];
+
+  const company =
+    filteredJobs?.[0];
+
+  if (!company) {
+    return {
+      title:
+        "Company | SearchEezy",
+    };
+  }
+
+  return {
+    title:
+      `${company.company} Careers & Jobs | SearchEezy`,
+
+    description:
+      company.companyDescription ||
+      `Explore open jobs, hiring activity, and careers at ${company.company} on SearchEezy.`,
+
+    keywords: [
+      `${company.company} jobs`,
+      `${company.company} careers`,
+      `${company.company} hiring`,
+      `${company.company} employment`,
+      "SearchEezy company jobs",
+    ],
+
+    alternates: {
+      canonical:
+        `/company/${slug}`,
+    },
+
+    openGraph: {
+      title:
+        `${company.company} Careers & Jobs | SearchEezy`,
+
+      description:
+        company.companyDescription ||
+        `Explore open jobs and careers at ${company.company}.`,
+
+      url:
+        `https://www.searcheezy.com/company/${slug}`,
+
+      type:
+        "website",
+    },
+  };
+}
+
+export default async function CompanyPage({
+  params,
+}: Props) {
   const { slug } =
     await params;
 
@@ -78,6 +155,27 @@ export default async function CompanyPage({
       </div>
     );
   }
+
+  const totalJobs =
+    filteredJobs.length;
+
+  const featuredJobs =
+    filteredJobs.filter(
+      (job) =>
+        job.featured
+    ).length;
+
+  const categories =
+    Array.from(
+      new Set(
+        filteredJobs
+          .map(
+            (job) =>
+              job.category
+          )
+          .filter(Boolean)
+      )
+    );
 
   return (
     <div
@@ -247,19 +345,90 @@ export default async function CompanyPage({
                 </div>
               )}
 
+              {/* COMPANY STATS */}
+
+              <div
+                style={{
+                  display:
+                    "flex",
+                  gap: "14px",
+                  flexWrap:
+                    "wrap",
+                  marginTop:
+                    "20px",
+                }}
+              >
+                <div
+                  style={{
+                    background:
+                      "#eff6ff",
+                    color:
+                      "#1d4ed8",
+                    padding:
+                      "10px 16px",
+                    borderRadius:
+                      "999px",
+                    fontWeight:
+                      "bold",
+                  }}
+                >
+                  {totalJobs} Open Jobs
+                </div>
+
+                <div
+                  style={{
+                    background:
+                      "#fef3c7",
+                    color:
+                      "#92400e",
+                    padding:
+                      "10px 16px",
+                    borderRadius:
+                      "999px",
+                    fontWeight:
+                      "bold",
+                  }}
+                >
+                  {featuredJobs} Featured Jobs
+                </div>
+
+                {categories.length >
+                  0 && (
+                  <div
+                    style={{
+                      background:
+                        "#ecfeff",
+                      color:
+                        "#0f766e",
+                      padding:
+                        "10px 16px",
+                      borderRadius:
+                        "999px",
+                      fontWeight:
+                        "bold",
+                    }}
+                  >
+                    {
+                      categories.length
+                    }{" "}
+                    Categories
+                  </div>
+                )}
+              </div>
+
               {/* DESCRIPTION */}
 
               {company.companyDescription && (
                 <div
                   style={{
                     marginTop:
-                      "20px",
+                      "24px",
                     maxWidth:
                       "850px",
                     color:
                       "#374151",
                     lineHeight:
-                      "1.7",
+                      "1.8",
                     fontSize:
                       "16px",
                   }}
@@ -274,6 +443,145 @@ export default async function CompanyPage({
         </div>
       </div>
 
+      {/* SEO CONTENT */}
+
+      <div
+        style={{
+          maxWidth:
+            "1100px",
+          margin:
+            "35px auto 0",
+          padding:
+            "0 20px",
+        }}
+      >
+        <div
+          style={{
+            background:
+              "white",
+            borderRadius:
+              "22px",
+            padding:
+              "32px",
+            marginBottom:
+              "30px",
+            boxShadow:
+              "0 4px 16px rgba(0,0,0,0.05)",
+          }}
+        >
+          <h2
+            style={{
+              color:
+                "#111827",
+              marginBottom:
+                "18px",
+            }}
+          >
+            Careers at {company.company}
+          </h2>
+
+          <p
+            style={{
+              color:
+                "#4b5563",
+              lineHeight:
+                "1.9",
+              fontSize:
+                "16px",
+            }}
+          >
+            Explore career opportunities at{" "}
+            {company.company}. SearchEezy helps employers connect
+            with professionals across healthcare, software engineering,
+            staffing, remote work, allied health, and technology industries.
+            Browse open positions, hiring activity, featured jobs,
+            and employer information all in one place.
+          </p>
+        </div>
+
+        {/* RELATED CATEGORIES */}
+
+        {categories.length >
+          0 && (
+          <div
+            style={{
+              background:
+                "white",
+              borderRadius:
+                "22px",
+              padding:
+                "32px",
+              marginBottom:
+                "35px",
+              boxShadow:
+                "0 4px 16px rgba(0,0,0,0.05)",
+            }}
+          >
+            <h2
+              style={{
+                color:
+                  "#111827",
+                marginBottom:
+                  "20px",
+              }}
+            >
+              Explore Job Categories
+            </h2>
+
+            <div
+              style={{
+                display:
+                  "flex",
+                gap: "14px",
+                flexWrap:
+                  "wrap",
+              }}
+            >
+              {categories.map(
+                (
+                  category
+                ) => (
+                  <Link
+                    key={
+                      category
+                    }
+                    href={`/categories/${category
+                      .toLowerCase()
+                      .replace(
+                        /\s+/g,
+                        "-"
+                      )}`}
+                    style={{
+                      textDecoration:
+                        "none",
+                    }}
+                  >
+                    <div
+                      style={{
+                        background:
+                          "#eff6ff",
+                        color:
+                          "#1d4ed8",
+                        padding:
+                          "12px 18px",
+                        borderRadius:
+                          "999px",
+                        fontWeight:
+                          "bold",
+                      }}
+                    >
+                      {
+                        category
+                      }
+                    </div>
+                  </Link>
+                )
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* OPEN JOBS */}
 
       <div
@@ -281,7 +589,7 @@ export default async function CompanyPage({
           maxWidth:
             "1100px",
           margin:
-            "40px auto",
+            "0 auto 40px",
           padding:
             "0 20px",
         }}
