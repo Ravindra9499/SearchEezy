@@ -259,7 +259,7 @@ export default function HomeClient({
           return "£";
 
         default:
-          return "$"; 
+          return "$";
       }
     };
 
@@ -400,7 +400,6 @@ export default function HomeClient({
           filteredJobs
         }
       />
-
 
       {/* SEO CONTENT SECTIONS */}
 
@@ -576,6 +575,193 @@ export default function HomeClient({
               Search remote opportunities, staffing assignments,
               contract positions, and nationwide recruitment openings.
             </p>
+          </div>
+        </div>
+      </div>
+
+      {/* SEO LINK HUBS */}
+
+      <div
+        style={{
+          maxWidth:
+            "1200px",
+          margin:
+            "0 auto",
+          padding:
+            "0 20px 40px",
+        }}
+      >
+        {/* LOCATIONS */}
+
+        <div
+          style={{
+            background:
+              "white",
+            borderRadius:
+              "22px",
+            padding:
+              "30px",
+            marginBottom:
+              "28px",
+            boxShadow:
+              "0 2px 14px rgba(0,0,0,0.05)",
+          }}
+        >
+          <h2
+            style={{
+              marginBottom:
+                "18px",
+              color:
+                "#111827",
+              fontSize:
+                "28px",
+            }}
+          >
+            Browse Jobs By Location
+          </h2>
+
+          <div
+            style={{
+              display:
+                "flex",
+              flexWrap:
+                "wrap",
+              gap: "14px",
+            }}
+          >
+            {[
+              "texas",
+              "california",
+              "florida",
+              "remote",
+            ].map(
+              (location) => (
+                <a
+                  key={location}
+                  href={`/locations/${location}`}
+                  style={{
+                    textDecoration:
+                      "none",
+                    background:
+                      "#eff6ff",
+                    color:
+                      "#1d4ed8",
+                    padding:
+                      "12px 18px",
+                    borderRadius:
+                      "999px",
+                    fontWeight:
+                      "bold",
+                    textTransform:
+                      "capitalize",
+                  }}
+                >
+                  {location} Jobs
+                </a>
+              )
+            )}
+          </div>
+        </div>
+
+        {/* CATEGORIES */}
+
+        <div
+          style={{
+            background:
+              "white",
+            borderRadius:
+              "22px",
+            padding:
+              "30px",
+            boxShadow:
+              "0 2px 14px rgba(0,0,0,0.05)",
+          }}
+        >
+          <h2
+            style={{
+              marginBottom:
+                "18px",
+              color:
+                "#111827",
+              fontSize:
+                "28px",
+            }}
+          >
+            Popular Job Categories
+          </h2>
+
+          <div
+            style={{
+              display:
+                "flex",
+              flexWrap:
+                "wrap",
+              gap: "14px",
+            }}
+          >
+            {[
+              {
+                label:
+                  "Healthcare Jobs",
+                href:
+                  "/categories/healthcare",
+              },
+
+              {
+                label:
+                  "Software Engineering",
+                href:
+                  "/categories/software-engineering",
+              },
+
+              {
+                label:
+                  "Remote Jobs",
+                href:
+                  "/categories/remote",
+              },
+
+              {
+                label:
+                  "Construction Jobs",
+                href:
+                  "/categories/construction",
+              },
+
+              {
+                label:
+                  "Manufacturing Jobs",
+                href:
+                  "/categories/manufacturing",
+              },
+            ].map(
+              (item) => (
+                <a
+                  key={
+                    item.label
+                  }
+                  href={
+                    item.href
+                  }
+                  style={{
+                    textDecoration:
+                      "none",
+                    background:
+                      "#ecfeff",
+                    color:
+                      "#0f766e",
+                    padding:
+                      "12px 18px",
+                    borderRadius:
+                      "999px",
+                    fontWeight:
+                      "bold",
+                  }}
+                >
+                  {item.label}
+                </a>
+              )
+            )}
           </div>
         </div>
       </div>
