@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 type Props = {
   job: any;
   role: string;
@@ -88,29 +90,43 @@ export default function JobCard({
         }}
       >
         {job.companyLogo ? (
-          <img
-            src={
-              job.companyLogo
-            }
-            alt={
-              job.company
-            }
+          <div
             style={{
               width: "55px",
               height:
                 "55px",
-              objectFit:
-                "contain",
+              position:
+                "relative",
               borderRadius:
                 "12px",
+              overflow:
+                "hidden",
               background:
                 "white",
               border:
                 "1px solid #e5e7eb",
               padding:
                 "6px",
+              flexShrink: 0,
             }}
-          />
+          >
+            <Image
+              src={
+                job.companyLogo
+              }
+              alt={
+                job.company
+              }
+              fill
+              sizes="55px"
+              style={{
+                objectFit:
+                  "contain",
+                padding:
+                  "6px",
+              }}
+            />
+          </div>
         ) : (
           <div
             style={{
@@ -133,6 +149,7 @@ export default function JobCard({
                 "bold",
               fontSize:
                 "20px",
+              flexShrink: 0,
             }}
           >
             {job.company
