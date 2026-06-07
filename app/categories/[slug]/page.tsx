@@ -16,6 +16,11 @@ const categoryContent: Record<
     description: string;
     keywords: string[];
     matchKeywords: string[];
+    seoContent: string;
+    popularSearches: {
+      label: string;
+      href: string;
+    }[];
   }
 > = {
   healthcare: {
@@ -49,6 +54,32 @@ const categoryContent: Record<
       "technologist",
       "medical",
     ],
+
+    seoContent:
+      "SearchEezy helps healthcare professionals discover opportunities across nursing, allied health, radiology, imaging, therapy, travel healthcare, rehabilitation, and healthcare staffing organizations. Browse healthcare employers actively hiring for hospitals, outpatient clinics, rehabilitation centers, staffing agencies, and remote healthcare positions.",
+
+    popularSearches: [
+      {
+        label:
+          "Remote Healthcare Jobs",
+        href:
+          "/categories/remote",
+      },
+
+      {
+        label:
+          "Travel Healthcare Careers",
+        href:
+          "/categories/healthcare",
+      },
+
+      {
+        label:
+          "Therapist Jobs",
+        href:
+          "/categories/healthcare",
+      },
+    ],
   },
 
   "software-engineering": {
@@ -78,6 +109,32 @@ const categoryContent: Record<
       "devops",
       "cloud",
     ],
+
+    seoContent:
+      "Explore software engineering opportunities including frontend, backend, full stack, DevOps, cloud computing, React, Next.js, JavaScript, TypeScript, and remote engineering careers. SearchEezy connects technology employers with experienced engineering talent across startups, SaaS companies, staffing firms, and enterprise organizations.",
+
+    popularSearches: [
+      {
+        label:
+          "Remote Software Jobs",
+        href:
+          "/categories/remote",
+      },
+
+      {
+        label:
+          "Frontend Developer Jobs",
+        href:
+          "/categories/software-engineering",
+      },
+
+      {
+        label:
+          "Cloud & DevOps Jobs",
+        href:
+          "/categories/software-engineering",
+      },
+    ],
   },
 
   construction: {
@@ -99,6 +156,32 @@ const categoryContent: Record<
       "project manager",
       "builder",
       "contractor",
+    ],
+
+    seoContent:
+      "Find construction management, skilled trades, civil engineering, field engineering, site supervision, and contractor opportunities across commercial, residential, and industrial projects.",
+
+    popularSearches: [
+      {
+        label:
+          "Project Manager Jobs",
+        href:
+          "/categories/construction",
+      },
+
+      {
+        label:
+          "Civil Engineering Careers",
+        href:
+          "/categories/construction",
+      },
+
+      {
+        label:
+          "Field Engineer Jobs",
+        href:
+          "/categories/construction",
+      },
     ],
   },
 
@@ -122,6 +205,32 @@ const categoryContent: Record<
       "operations",
       "warehouse",
     ],
+
+    seoContent:
+      "Search manufacturing and industrial careers including production, warehouse operations, process engineering, factory management, logistics, industrial operations, and supply chain opportunities.",
+
+    popularSearches: [
+      {
+        label:
+          "Industrial Operations Jobs",
+        href:
+          "/categories/manufacturing",
+      },
+
+      {
+        label:
+          "Warehouse Careers",
+        href:
+          "/categories/manufacturing",
+      },
+
+      {
+        label:
+          "Production Engineering Jobs",
+        href:
+          "/categories/manufacturing",
+      },
+    ],
   },
 
   remote: {
@@ -141,6 +250,32 @@ const categoryContent: Record<
       "work from home",
       "hybrid",
       "virtual",
+    ],
+
+    seoContent:
+      "Explore remote careers across healthcare, technology, staffing, engineering, administration, recruiting, and professional services. SearchEezy helps employers connect with remote talent across multiple industries and locations.",
+
+    popularSearches: [
+      {
+        label:
+          "Remote Software Jobs",
+        href:
+          "/categories/software-engineering",
+      },
+
+      {
+        label:
+          "Remote Healthcare Jobs",
+        href:
+          "/categories/healthcare",
+      },
+
+      {
+        label:
+          "Work From Home Careers",
+        href:
+          "/categories/remote",
+      },
     ],
   },
 };
@@ -339,6 +474,141 @@ export default async function CategoryPage({
           >
             {category.description}
           </p>
+
+          <div
+            style={{
+              marginTop:
+                "24px",
+              display:
+                "inline-block",
+              background:
+                "rgba(255,255,255,0.15)",
+              padding:
+                "12px 18px",
+              borderRadius:
+                "14px",
+              fontWeight:
+                "bold",
+              fontSize:
+                "16px",
+            }}
+          >
+            {filteredJobs.length} Jobs Available
+          </div>
+        </div>
+
+        {/* SEO CONTENT */}
+
+        <div
+          style={{
+            background:
+              "white",
+            borderRadius:
+              "20px",
+            padding:
+              "30px",
+            marginBottom:
+              "35px",
+            boxShadow:
+              "0 4px 18px rgba(0,0,0,0.05)",
+          }}
+        >
+          <h2
+            style={{
+              marginBottom:
+                "18px",
+              color:
+                "#111827",
+            }}
+          >
+            Explore {category.title}
+          </h2>
+
+          <p
+            style={{
+              color:
+                "#4b5563",
+              lineHeight:
+                "1.9",
+              fontSize:
+                "16px",
+            }}
+          >
+            {
+              category.seoContent
+            }
+          </p>
+        </div>
+
+        {/* POPULAR SEARCHES */}
+
+        <div
+          style={{
+            background:
+              "white",
+            borderRadius:
+              "20px",
+            padding:
+              "30px",
+            marginBottom:
+              "35px",
+            boxShadow:
+              "0 4px 18px rgba(0,0,0,0.05)",
+          }}
+        >
+          <h2
+            style={{
+              marginBottom:
+                "20px",
+              color:
+                "#111827",
+            }}
+          >
+            Popular Searches
+          </h2>
+
+          <div
+            style={{
+              display:
+                "flex",
+              gap: "14px",
+              flexWrap:
+                "wrap",
+            }}
+          >
+            {category.popularSearches.map(
+              (
+                item
+              ) => (
+                <a
+                  key={
+                    item.label
+                  }
+                  href={
+                    item.href
+                  }
+                  style={{
+                    textDecoration:
+                      "none",
+                    background:
+                      "#eff6ff",
+                    color:
+                      "#1d4ed8",
+                    padding:
+                      "12px 18px",
+                    borderRadius:
+                      "999px",
+                    fontWeight:
+                      "bold",
+                    fontSize:
+                      "14px",
+                  }}
+                >
+                  {item.label}
+                </a>
+              )
+            )}
+          </div>
         </div>
 
         {filteredJobs.length ===
