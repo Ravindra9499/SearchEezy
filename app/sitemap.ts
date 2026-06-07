@@ -6,7 +6,7 @@ export default async function sitemap():
   const baseUrl =
     "https://www.searcheezy.com";
 
-  let jobs = [];
+  let jobs: any[] = [];
 
   try {
     const res = await fetch(
@@ -26,6 +26,8 @@ export default async function sitemap():
     );
   }
 
+  // JOB URLS
+
   const jobUrls =
     jobs.map(
       (job: any) => ({
@@ -33,7 +35,10 @@ export default async function sitemap():
           `${baseUrl}/jobs/${job.id}`,
 
         lastModified:
-          new Date(),
+          new Date(
+            job.created_at ||
+              Date.now()
+          ),
 
         changeFrequency:
           "daily" as const,
@@ -41,6 +46,86 @@ export default async function sitemap():
         priority: 0.9,
       })
     );
+
+  // COMPANY URLS
+
+  const companySlugs =
+    Array.from(
+      new Set(
+        jobs
+          .map(
+            (job: any) =>
+              job.company
+                ?.toLowerCase()
+                .replace(
+                  /\s+/g,
+                  "-"
+                )
+          )
+          .filter(Boolean)
+      )
+    );
+
+  const companyUrls =
+    companySlugs.map(
+      (slug: any) => ({
+        url:
+          `${baseUrl}/company/${slug}`,
+
+        lastModified:
+          new Date(),
+
+        changeFrequency:
+          "weekly" as const,
+
+        priority: 0.8,
+      })
+    );
+
+  // CATEGORY URLS
+
+  const categoryUrls = [
+    "healthcare",
+    "software-engineering",
+    "remote",
+    "construction",
+    "manufacturing",
+  ].map(
+    (category) => ({
+      url:
+        `${baseUrl}/categories/${category}`,
+
+      lastModified:
+        new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority: 0.9,
+    })
+  );
+
+  // LOCATION URLS
+
+  const locationUrls = [
+    "texas",
+    "california",
+    "florida",
+    "remote",
+  ].map(
+    (location) => ({
+      url:
+        `${baseUrl}/locations/${location}`,
+
+      lastModified:
+        new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority: 0.8,
+    })
+  );
 
   return [
     {
@@ -106,6 +191,20 @@ export default async function sitemap():
 
       priority: 0.5,
     },
+
+    // CATEGORY PAGES
+
+    ...categoryUrls,
+
+    // LOCATION PAGES
+
+    ...locationUrls,
+
+    // COMPANY PAGES
+
+    ...companyUrls,
+
+    // JOB PAGES
 
     ...jobUrls,
   ];
