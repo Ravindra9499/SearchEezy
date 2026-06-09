@@ -630,11 +630,14 @@ export default function HomeClient({
             }}
           >
             {[
-              "texas",
-              "california",
-              "florida",
-              "remote",
-            ].map(
+  "texas",
+  "california",
+  "florida",
+  "remote",
+  "dallas",
+  "houston",
+  "austin",
+].map(
               (location) => (
                 <a
                   key={location}

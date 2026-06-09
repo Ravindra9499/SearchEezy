@@ -94,6 +94,147 @@ const locationContent: Record<
       },
     ],
   },
+
+  dallas: {
+    title:
+      "Dallas Jobs",
+
+    description:
+      "Find healthcare, software engineering, staffing, and remote jobs in Dallas on SearchEezy.",
+
+    seoContent:
+      "SearchEezy connects Dallas employers with healthcare professionals, software engineers, recruiters, remote talent, and skilled professionals.",
+
+    keywords: [
+      "Dallas jobs",
+      "jobs in Dallas",
+      "healthcare jobs Dallas",
+      "software jobs Dallas",
+    ],
+
+    matchKeywords: [
+      "dallas",
+      "texas",
+      "tx",
+    ],
+
+    popularSearches: [
+      {
+        label:
+          "Healthcare Jobs",
+        href:
+          "/categories/healthcare",
+      },
+
+      {
+        label:
+          "Software Engineering",
+        href:
+          "/categories/software-engineering",
+      },
+
+      {
+        label:
+          "Remote Jobs",
+        href:
+          "/categories/remote",
+      },
+    ],
+  },
+
+  houston: {
+    title:
+      "Houston Jobs",
+
+    description:
+      "Explore healthcare, engineering, staffing, and remote jobs in Houston on SearchEezy.",
+
+    seoContent:
+      "SearchEezy helps Houston employers connect with healthcare professionals, software engineers, recruiters, and remote talent across growing industries.",
+
+    keywords: [
+      "Houston jobs",
+      "jobs in Houston",
+      "engineering jobs Houston",
+      "healthcare jobs Houston",
+    ],
+
+    matchKeywords: [
+      "houston",
+      "texas",
+      "tx",
+    ],
+
+    popularSearches: [
+      {
+        label:
+          "Healthcare Jobs",
+        href:
+          "/categories/healthcare",
+      },
+
+      {
+        label:
+          "Software Engineering",
+        href:
+          "/categories/software-engineering",
+      },
+
+      {
+        label:
+          "Remote Jobs",
+        href:
+          "/categories/remote",
+      },
+    ],
+  },
+
+  austin: {
+    title:
+      "Austin Jobs",
+
+    description:
+      "Search software engineering, startup, remote, and healthcare jobs in Austin on SearchEezy.",
+
+    seoContent:
+      "Explore Austin career opportunities across startups, software engineering, healthcare staffing, recruiting, and remote work.",
+
+    keywords: [
+      "Austin jobs",
+      "jobs in Austin",
+      "software jobs Austin",
+      "remote jobs Austin",
+    ],
+
+    matchKeywords: [
+      "austin",
+      "texas",
+      "tx",
+    ],
+
+    popularSearches: [
+      {
+        label:
+          "Software Engineering",
+        href:
+          "/categories/software-engineering",
+      },
+
+      {
+        label:
+          "Remote Jobs",
+        href:
+          "/categories/remote",
+      },
+
+      {
+        label:
+          "Healthcare Jobs",
+        href:
+          "/categories/healthcare",
+      },
+    ],
+  },
 };
 
 export async function generateMetadata({
