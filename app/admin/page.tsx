@@ -126,47 +126,51 @@ export default function AdminPage() {
     };
 
   const updateVerificationStatus =
-    async (
-      id: string,
-      status: string
-    ) => {
-      const updates: any = {
-        verificationStatus:
-          status,
-        verificationRequested:
-          false,
-      };
+  async (
+    id: string,
+    status: string
+  ) => {
+    try {
+      const response =
+        await fetch(
+          "/api/admin/verify",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+            body: JSON.stringify({
+              id,
+              status,
+            }),
+          }
+        );
 
-      if (
-        status ===
-        "verified"
-      ) {
-        updates.isverified =
-          true;
+      const result =
+        await response.json();
 
-        updates.verifiedAt =
-          new Date().toISOString();
+      if (!response.ok) {
+        alert(
+          result.error ||
+            "Verification failed"
+        );
+        return;
       }
 
-      if (
-        status ===
-        "rejected"
-      ) {
-        updates.isverified =
-          false;
-      }
+      alert(
+        `Employer ${status}`
+      );
 
-      await supabase
-        .from(
-          "profiles"
-        )
-        .update(
-          updates
-        )
-        .eq("id", id);
+      await loadProfiles();
+    } catch (error) {
+      console.error(error);
 
-      loadProfiles();
-    };
+      alert(
+        "Verification failed"
+      );
+    }
+  };
 
   const getVerificationColor =
     (
