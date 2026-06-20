@@ -67,25 +67,25 @@ export default function AdminPage() {
 
   const loadProfiles =
     async () => {
-      const {
-        data,
-        error,
-      } =
-        await supabase
-          .from(
-            "profiles"
-          )
-          .select("*")
-          .order(
-            "created_at",
-            {
-              ascending:
-                false,
-            }
+      try {
+        const response =
+          await fetch(
+            "/api/admin/profiles"
           );
 
-      if (!error && data) {
-        setProfiles(data);
+        const data =
+          await response.json();
+
+        if (
+          Array.isArray(data)
+        ) {
+          setProfiles(data);
+        }
+      } catch (error) {
+        console.error(
+          "Failed to load profiles",
+          error
+        );
       }
     };
 
@@ -425,6 +425,50 @@ export default function AdminPage() {
                 }
               </h2>
             </div>
+
+            <div
+              style={{
+                background:
+                  "white",
+                padding:
+                  "18px 24px",
+                borderRadius:
+                  "16px",
+                minWidth:
+                  "180px",
+                boxShadow:
+                  "0 2px 10px rgba(0,0,0,0.05)",
+              }}
+            >
+              <p
+                style={{
+                  margin: 0,
+                  color:
+                    "#6b7280",
+                  fontSize:
+                    "14px",
+                }}
+              >
+                Pending Requests
+              </p>
+
+              <h2
+                style={{
+                  margin:
+                    "8px 0 0 0",
+                  color:
+                    "#f59e0b",
+                }}
+              >
+                {
+                  profiles.filter(
+                    (p) =>
+                      p.verificationRequested ===
+                      true
+                  ).length
+                }
+              </h2>
+            </div>
           </div>
         </div>
 
@@ -457,6 +501,10 @@ export default function AdminPage() {
                     "1px solid #e5e7eb",
                 }}
               >
+                <th style={thStyle}>
+                  Company
+                </th>
+
                 <th style={thStyle}>
                   Email
                 </th>
@@ -493,6 +541,22 @@ export default function AdminPage() {
                         "1px solid #f3f4f6",
                     }}
                   >
+                    <td style={tdStyle}>
+                      <div
+                        style={{
+                          fontWeight:
+                            "bold",
+                          color:
+                            "#111827",
+                        }}
+                      >
+                        {
+                          profile.company_name ||
+                          "-"
+                        }
+                      </div>
+                    </td>
+
                     <td style={tdStyle}>
                       <div
                         style={{
@@ -581,7 +645,9 @@ export default function AdminPage() {
                         </div>
 
                         {profile.role ===
-                          "employer" && (
+                          "employer" &&
+                          profile.verificationRequested ===
+                            true && (
                           <div
                             style={{
                               display:
