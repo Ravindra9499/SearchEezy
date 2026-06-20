@@ -108,22 +108,54 @@ export default function AdminPage() {
     };
 
   const toggleResumeSearch =
-    async (
-      id: string,
-      current: boolean
-    ) => {
-      await supabase
-        .from(
-          "profiles"
-        )
-        .update({
-          resumeSearchEnabled:
-            !current,
-        })
-        .eq("id", id);
+  async (
+    id: string,
+    current: boolean
+  ) => {
+    try {
+      const response =
+        await fetch(
+          "/api/admin/resume-access",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+            body: JSON.stringify({
+              id,
+              resumeSearchEnabled:
+                !current,
+            }),
+          }
+        );
 
-      loadProfiles();
-    };
+      const result =
+        await response.json();
+
+      if (!response.ok) {
+        alert(
+          result.error ||
+            "Update failed"
+        );
+        return;
+      }
+
+      alert(
+        !current
+          ? "Resume access enabled"
+          : "Resume access disabled"
+      );
+
+      await loadProfiles();
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Update failed"
+      );
+    }
+  };
 
   const updateVerificationStatus =
   async (
