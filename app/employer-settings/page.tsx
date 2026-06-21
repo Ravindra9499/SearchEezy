@@ -227,6 +227,87 @@ export default function EmployerSettingsPage() {
       >
         <div
           style={{
+            display:
+              "flex",
+            gap: "10px",
+            flexWrap:
+              "wrap",
+            marginBottom:
+              "20px",
+          }}
+        >
+          <a href="/">
+            <button
+              style={{
+                background:
+                  "#1c4ed8",
+                color:
+                  "white",
+                border:
+                  "none",
+                padding:
+                  "10px 16px",
+                borderRadius:
+                  "8px",
+                cursor:
+                  "pointer",
+                fontWeight:
+                  "bold",
+              }}
+            >
+              🏠 Home
+            </button>
+          </a>
+
+          <a href="/my-jobs">
+            <button
+              style={{
+                background:
+                  "#16a34a",
+                color:
+                  "white",
+                border:
+                  "none",
+                padding:
+                  "10px 16px",
+                borderRadius:
+                  "8px",
+                cursor:
+                  "pointer",
+                fontWeight:
+                  "bold",
+              }}
+            >
+              📋 My Jobs
+            </button>
+          </a>
+
+          <a href="/pricing">
+            <button
+              style={{
+                background:
+                  "#7c3aed",
+                color:
+                  "white",
+                border:
+                  "none",
+                padding:
+                  "10px 16px",
+                borderRadius:
+                  "8px",
+                cursor:
+                  "pointer",
+                fontWeight:
+                  "bold",
+              }}
+            >
+              💰 Pricing
+            </button>
+          </a>
+        </div>
+
+        <div
+          style={{
             marginBottom:
               "30px",
           }}
