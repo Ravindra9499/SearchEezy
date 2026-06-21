@@ -349,6 +349,29 @@ export default function Navbar({
                 </>
               )}
 
+              <a href="/pricing">
+                <button
+                  style={{
+                    background:
+                      "#7c3aed",
+                    color:
+                      "white",
+                    border:
+                      "none",
+                    padding:
+                      "10px 16px",
+                    borderRadius:
+                      "8px",
+                    cursor:
+                      "pointer",
+                    fontWeight:
+                      "bold",
+                  }}
+                >
+                  Pricing
+                </button>
+              </a>
+
               <button
                 onClick={async () => {
                   await supabase.auth.signOut();
@@ -475,6 +498,29 @@ export default function Navbar({
                 }}
               >
                 Applicant Login
+              </button>
+            </a>
+
+            <a href="/pricing">
+              <button
+                style={{
+                  background:
+                    "#7c3aed",
+                  color:
+                    "white",
+                  border:
+                    "none",
+                  padding:
+                    "10px 16px",
+                  borderRadius:
+                    "8px",
+                  cursor:
+                    "pointer",
+                  fontWeight:
+                    "bold",
+                }}
+              >
+                Pricing
               </button>
             </a>
           </div>
