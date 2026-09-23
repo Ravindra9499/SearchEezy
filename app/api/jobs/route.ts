@@ -110,46 +110,65 @@ export async function GET(req: Request) {
     }
 
     // ADD VERIFIED STATUS FROM PROFILES TABLE
+    //
+    // PERFORMANCE FIX:
+    // Fetch employer verification records in one batched query instead of
+    // making one profiles query per job (N+1 queries).
 
-    const jobsWithVerification =
-      await Promise.all(
-        (data || []).map(
-          async (job) => {
-            try {
-              const {
-                data: profile,
-              } =
-                await supabase
-                  .from(
-                    "profiles"
-                  )
-                  .select(
-                    "isverified"
-                  )
-                  .eq(
-                    "email",
-                    job.userEmail
-                  )
-                  .single();
+    const jobs = data || [];
 
-              return {
-                ...job,
+    const employerEmails = Array.from(
+      new Set(
+        jobs
+          .map((job) =>
+            typeof job.userEmail === "string"
+              ? job.userEmail.trim().toLowerCase()
+              : ""
+          )
+          .filter(Boolean)
+      )
+    );
 
-                isverified:
-                  profile?.isverified ===
-                  true,
-              };
-            } catch {
-              return {
-                ...job,
+    let profileMap = new Map<string, boolean>();
 
-                isverified:
-                  false,
-              };
-            }
-          }
-        )
-      );
+    if (employerEmails.length > 0) {
+      const {
+        data: profiles,
+        error: profilesError,
+      } = await supabase
+        .from("profiles")
+        .select("email, isverified")
+        .in("email", employerEmails);
+
+      if (profilesError) {
+        console.error(
+          "GET JOBS PROFILES ERROR:",
+          profilesError
+        );
+      } else {
+        profileMap = new Map(
+          (profiles || []).map((profile) => [
+            profile.email?.trim().toLowerCase(),
+            profile.isverified === true,
+          ])
+        );
+      }
+    }
+
+    const jobsWithVerification = jobs.map(
+      (job) => {
+        const email =
+          typeof job.userEmail === "string"
+            ? job.userEmail.trim().toLowerCase()
+            : "";
+
+        return {
+          ...job,
+          isverified:
+            profileMap.get(email) === true,
+        };
+      }
+    );
 
     console.log(
       "RETURNING JOBS:",
