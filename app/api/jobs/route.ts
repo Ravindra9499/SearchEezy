@@ -61,6 +61,7 @@ async function verifyJobOwnership(
 
 export async function GET(req: Request) {
   try {
+    const requestStart = performance.now();
     const { searchParams } = new URL(req.url);
 
     const userEmail =
@@ -87,6 +88,8 @@ export async function GET(req: Request) {
       );
     }
 
+    const jobsQueryStart = performance.now();
+
     const { data, error } =
       await query.order(
         "created_at",
@@ -94,6 +97,9 @@ export async function GET(req: Request) {
           ascending: false,
         }
       );
+
+    const jobsQueryMs =
+      Math.round(performance.now() - jobsQueryStart);
 
     if (error) {
       console.error(
@@ -130,8 +136,11 @@ export async function GET(req: Request) {
     );
 
     let profileMap = new Map<string, boolean>();
+    let profilesQueryMs = 0;
 
     if (employerEmails.length > 0) {
+      const profilesQueryStart = performance.now();
+
       const {
         data: profiles,
         error: profilesError,
@@ -139,6 +148,9 @@ export async function GET(req: Request) {
         .from("profiles")
         .select("email, isverified")
         .in("email", employerEmails);
+
+      profilesQueryMs =
+        Math.round(performance.now() - profilesQueryStart);
 
       if (profilesError) {
         console.error(
@@ -168,6 +180,20 @@ export async function GET(req: Request) {
             profileMap.get(email) === true,
         };
       }
+    );
+
+    const totalMs =
+      Math.round(performance.now() - requestStart);
+
+    console.log(
+      "[JOBS PERF]",
+      JSON.stringify({
+        totalMs,
+        jobsQueryMs,
+        profilesQueryMs,
+        jobCount: jobs.length,
+        employerCount: employerEmails.length,
+      })
     );
 
     console.log(
