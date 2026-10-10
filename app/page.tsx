@@ -70,17 +70,45 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_SITE_URL}/api/jobs`,
-    {
-      cache: "no-store",
-    }
-  );
+const homeStart = performance.now();
 
-  const jobs =
-    await res.json();
+const jobsFetchStart = performance.now();
 
-  return (
-    <HomeClient jobs={jobs} />
-  );
+const res = await fetch(
+  `${process.env.NEXT_PUBLIC_SITE_URL}/api/jobs`,
+  {
+    cache: "no-store",
+  }
+);
+
+const jobsFetchMs = Math.round(
+performance.now() - jobsFetchStart
+);
+
+const jobsJsonStart = performance.now();
+
+const jobs = await res.json();
+
+const jobsJsonMs = Math.round(
+performance.now() - jobsJsonStart
+);
+
+const homeFunctionMs = Math.round(
+performance.now() - homeStart
+);
+
+console.log(
+"[HOME PERF]",
+JSON.stringify({
+homeFunctionMs,
+jobsFetchMs,
+jobsJsonMs,
+httpStatus: res.status,
+jobCount: Array.isArray(jobs) ? jobs.length : null,
+})
+);
+
+return (
+<HomeClient jobs={jobs} />
+);
 }
