@@ -969,8 +969,9 @@ export default function JobDetailsPage() {
               display:
                 "grid",
 
-              gridTemplateColumns:
-                "repeat(auto-fit, minmax(320px, 1fr))",
+              gridTemplateColumns: canApply
+  ? "minmax(0, 1.5fr) minmax(320px, 0.9fr)"
+  : "minmax(0, 1fr)",
 
               gap: "28px",
             }}
