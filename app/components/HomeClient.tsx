@@ -35,10 +35,10 @@ export default function HomeClient({
   ] = useState(false);
 
   const [displayJobs, setDisplayJobs] =
-    useState<any[]>([]);
+  useState<any[]>(jobs);
 
-  const [loading, setLoading] =
-    useState(true);
+const [loading, setLoading] =
+  useState(false);
 
   const [authReady, setAuthReady] =
     useState(false);
@@ -365,18 +365,7 @@ export default function HomeClient({
       [filteredJobs]
     );
 
-  if (!authReady) {
-    return (
-      <div
-        style={{
-          background:
-            "#f5f7fb",
-          minHeight:
-            "100vh",
-        }}
-      />
-    );
-  }
+  
 
   return (
     <div
