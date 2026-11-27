@@ -964,31 +964,22 @@ export default function JobDetailsPage() {
 
           {/* MAIN GRID */}
 
-          <div
-            style={{
-              display:
-                "grid",
-
-              gridTemplateColumns: canApply
-  ? "minmax(0, 1.5fr) minmax(320px, 0.9fr)"
-  : "minmax(0, 1fr)",
-
-              gap: "28px",
-            }}
-          >
+<div
+  className={canApply ? "job-layout job-layout--applicant" : "job-layout"}
+>
             {/* LEFT */}
 
             <div>
               <div
-                style={{
+  className="job-description-card"
+  style={{
                   background:
                     "white",
 
                   borderRadius:
                     "22px",
 
-                  padding:
-                    "35px",
+                  padding: "35px 30px",
 
                   boxShadow:
                     "0 4px 20px rgba(0,0,0,0.05)",
@@ -1022,9 +1013,10 @@ export default function JobDetailsPage() {
                       "#374151",
                   }}
                   dangerouslySetInnerHTML={{
-                    __html:
-                      job.description,
-                  }}
+  __html: (job.description || "")
+    .replace(/&nbsp;|&#160;|&#xA0;/gi, " ")
+    .replace(/\u00A0/g, " "),
+}}
                 />
               </div>
             </div>
@@ -1069,7 +1061,7 @@ export default function JobDetailsPage() {
                     onSubmit={
                       handleSubmit
                     }
-                  >
+                  >dangerously
                     <input
                       type="text"
                       placeholder="Full Name"
